@@ -1,0 +1,68 @@
+:root {
+  /* Colors - Sleek Premium Palette */
+  --primary-50: #f0f4ff;
+  --primary-100: #d9e2ff;
+  --primary-200: #b9caff;
+  --primary-500: #4f46e5; /* Indigo */
+  --primary-600: #4338ca;
+  --primary-700: #3730a3;
+
+  --secondary-50: #f8fafc;
+  --secondary-500: #64748b;
+  --secondary-900: #0f172a;
+
+  --accent-500: #ec4899; /* Pink */
+  
+  --success-500: #10b981;
+  --error-500: #ef4444;
+  --warning-500: #f59e0b;
+
+  --bg-main: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-blur: rgba(255, 255, 255, 0.8);
+  
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --text-light: #94a3b8;
+
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+
+  /* Borders & Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-premium: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 500ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* Layout */
+  --sidebar-width: 260px;
+  --topbar-height: 72px;
+  --max-content-width: 1200px;
+}
+
+/* Dark Mode Overrides (Optional skeleton) */
+[data-theme='dark'] {
+  --bg-main: #020617;
+  --bg-card: #1e293b;
+  --bg-blur: rgba(30, 41, 59, 0.8);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-light: #64748b;
+}

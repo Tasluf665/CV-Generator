@@ -1,0 +1,89 @@
+.topbar {
+  height: var(--topbar-height);
+  background-color: var(--bg-blur);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--primary-50);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-xl);
+  position: sticky;
+  top: 0;
+  z-index: 90;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background-color: var(--bg-main);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-full);
+  width: 400px;
+  border: 1px solid transparent;
+  transition: var(--transition-base);
+}
+
+.search-bar:focus-within {
+  border-color: var(--primary-200);
+  background-color: white;
+  box-shadow: var(--shadow-sm);
+}
+
+.search-bar input {
+  background: none;
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 0.875rem;
+}
+
+.search-icon {
+  color: var(--text-light);
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  position: relative;
+}
+
+.icon-btn:hover {
+  background-color: var(--primary-50);
+  color: var(--primary-600);
+}
+
+.badge-dot {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 8px;
+  height: 8px;
+  background-color: var(--error-500);
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.upgrade-btn {
+  background-color: var(--primary-50);
+  color: var(--primary-700);
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.upgrade-btn:hover {
+  background-color: var(--primary-100);
+}
