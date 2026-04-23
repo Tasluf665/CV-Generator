@@ -1,5 +1,96 @@
-export const createResume = {};
-export const updateResume = {};
-export const matchResume = {};
-export const updateDesign = {};
-export const updateSections = {};
+import Joi from 'joi';
+
+const contactSchema = Joi.object({
+  firstName: Joi.string().allow('').optional(),
+  lastName: Joi.string().allow('').optional(),
+  email: Joi.string().email().allow('').optional(),
+  phone: Joi.string().allow('').optional(),
+  location: Joi.string().allow('').optional(),
+  linkedinUrl: Joi.string().uri().allow('').optional(),
+  githubUrl: Joi.string().uri().allow('').optional(),
+  portfolioUrl: Joi.string().uri().allow('').optional(),
+});
+
+const workExperienceSchema = Joi.object({
+  company: Joi.string().required(),
+  role: Joi.string().required(),
+  location: Joi.string().allow('').optional(),
+  startDate: Joi.date().iso().allow(null).optional(),
+  endDate: Joi.date().iso().allow(null).optional(),
+  isCurrent: Joi.boolean().optional(),
+  bullets: Joi.array().items(Joi.string()).optional(),
+  order: Joi.number().optional(),
+});
+
+const educationSchema = Joi.object({
+  institution: Joi.string().required(),
+  degree: Joi.string().allow('').optional(),
+  field: Joi.string().allow('').optional(),
+  location: Joi.string().allow('').optional(),
+  startDate: Joi.date().iso().allow(null).optional(),
+  endDate: Joi.date().iso().allow(null).optional(),
+  gpa: Joi.string().allow('').optional(),
+  bullets: Joi.array().items(Joi.string()).optional(),
+  order: Joi.number().optional(),
+});
+
+const skillSchema = Joi.object({
+  category: Joi.string().required(),
+  items: Joi.array().items(Joi.string()).required(),
+});
+
+const projectSchema = Joi.object({
+  name: Joi.string().required(),
+  description: Joi.string().allow('').optional(),
+  techStack: Joi.array().items(Joi.string()).optional(),
+  url: Joi.string().uri().allow('').optional(),
+  startDate: Joi.date().iso().allow(null).optional(),
+  endDate: Joi.date().iso().allow(null).optional(),
+  bullets: Joi.array().items(Joi.string()).optional(),
+  order: Joi.number().optional(),
+});
+
+export const createResume = Joi.object({
+  title: Joi.string().required().trim(),
+  targetJobTitle: Joi.string().allow('').optional().trim(),
+  linkedJobId: Joi.string().hex().length(24).optional(),
+  contact: contactSchema.optional(),
+  summary: Joi.string().allow('').optional(),
+  workExperience: Joi.array().items(workExperienceSchema).optional(),
+  education: Joi.array().items(educationSchema).optional(),
+  skills: Joi.array().items(skillSchema).optional(),
+  projects: Joi.array().items(projectSchema).optional(),
+});
+
+export const updateResume = Joi.object({
+  title: Joi.string().trim().optional(),
+  targetJobTitle: Joi.string().allow('').trim().optional(),
+  linkedJobId: Joi.string().hex().length(24).allow(null).optional(),
+  contact: contactSchema.optional(),
+  summary: Joi.string().allow('').optional(),
+  workExperience: Joi.array().items(workExperienceSchema).optional(),
+  education: Joi.array().items(educationSchema).optional(),
+  skills: Joi.array().items(skillSchema).optional(),
+  projects: Joi.array().items(projectSchema).optional(),
+});
+
+export const matchResume = Joi.object({
+  jobId: Joi.string().hex().length(24).required(),
+});
+
+export const updateDesign = Joi.object({
+  template: Joi.string().optional(),
+  font: Joi.string().optional(),
+  accentColor: Joi.string().pattern(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/).optional(),
+  lineHeight: Joi.number().optional(),
+  listLineHeight: Joi.number().optional(),
+  fontSize: Joi.number().optional(),
+  margins: Joi.string().valid('narrow', 'normal', 'wide').optional(),
+  dateFormat: Joi.string().valid('MM/YYYY', 'Month YYYY', 'YYYY').optional(),
+});
+
+export const updateSections = Joi.object({
+  sectionOrder: Joi.array().items(Joi.string()).optional(),
+  hiddenSections: Joi.array().items(Joi.string()).optional(),
+});
+
