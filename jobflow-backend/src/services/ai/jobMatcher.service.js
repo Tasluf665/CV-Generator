@@ -1,4 +1,5 @@
 import { openRouterClient } from '../../config/openrouter.js';
+import { buildJobMatchPrompt } from '../../utils/promptBuilder.js';
 
 /**
  * Matches a resume against a job description using AI.
@@ -7,9 +8,6 @@ import { openRouterClient } from '../../config/openrouter.js';
  * @returns {Promise<Object>} - The match results
  */
 export const matchResumeWithJob = async (resumeData, jobData) => {
-  const resumeText = JSON.stringify(resumeData, null, 2);
-  const jobText = JSON.stringify(jobData, null, 2);
-
   const messages = [
     {
       role: 'system',
@@ -20,21 +18,7 @@ You must return your response in valid JSON format.`,
     },
     {
       role: 'user',
-      content: `Compare this resume with this job description.
-      
-Job Description:
-${jobText}
-
-Resume:
-${resumeText}
-
-Return a JSON object with this structure:
-{
-  "matchScore": number (0-100),
-  "matchedKeywords": [string],
-  "missingKeywords": [string],
-  "suggestions": [string]
-}`,
+      content: buildJobMatchPrompt(resumeData, jobData),
     },
   ];
 

@@ -1,5 +1,6 @@
 import { openRouterClient } from '../../config/openrouter.js';
 import { ApiError } from '../../utils/ApiError.js';
+import { buildCoverLetterPrompt } from '../../utils/promptBuilder.js';
 
 /**
  * Generate a cover letter using AI
@@ -17,26 +18,7 @@ export const generateCoverLetter = async ({
   length = 'Standard',
 }) => {
   try {
-    const prompt = `
-      You are an expert career coach. Generate a high-quality cover letter based on the following details:
-      
-      TONE: ${tone}
-      LENGTH: ${length}
-      
-      RESUME DATA (JSON):
-      ${JSON.stringify(resumeData)}
-      
-      JOB DESCRIPTION:
-      ${jobDescription}
-      
-      INSTRUCTIONS:
-      1. Tailor the cover letter specifically to the job description using the candidate's experience from the resume.
-      2. Maintain the requested ${tone} tone.
-      3. Aim for a ${length} length.
-      4. Do not include placeholders like "[Your Name]" if the information is available in the resume.
-      5. Use a professional layout with date, contact info (if available), and proper salutation.
-      6. Return ONLY the final cover letter text. No preamble or conversational filler.
-    `;
+    const prompt = buildCoverLetterPrompt(resumeData, jobDescription, tone, length);
 
     const response = await openRouterClient.chat(
       [
