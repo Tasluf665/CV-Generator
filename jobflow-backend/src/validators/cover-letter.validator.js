@@ -1,3 +1,18 @@
-export const generateCoverLetter = {};
-export const updateCoverLetter = {};
-export const deleteCoverLetter = {};
+import Joi from 'joi';
+
+export const generateCoverLetter = Joi.object({
+  resumeId: Joi.string().required(),
+  jobId: Joi.string(),
+  jobDescription: Joi.string(),
+  tone: Joi.string()
+    .valid('Professional', 'Friendly', 'Enthusiastic', 'Formal')
+    .default('Professional'),
+  length: Joi.string().valid('Short', 'Standard', 'Detailed').default('Standard'),
+}).or('jobId', 'jobDescription');
+
+export const updateCoverLetter = Joi.object({
+  title: Joi.string().max(100),
+  content: Joi.string(),
+  tone: Joi.string().valid('Professional', 'Friendly', 'Enthusiastic', 'Formal'),
+  length: Joi.string().valid('Short', 'Standard', 'Detailed'),
+});
