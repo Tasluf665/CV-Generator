@@ -14,6 +14,7 @@ export const ENV = {
   EMAIL_USER: process.env.EMAIL_USER,
   EMAIL_APP_PASSWORD: process.env.EMAIL_APP_PASSWORD,
   EMAIL_TOKEN_EXPIRATION_TIME: process.env.EMAIL_TOKEN_EXPIRATION_TIME || '10m',
+  OPENROUTER_AI_MODEL: process.env.OPENROUTER_AI_MODEL || 'nvidia/nemotron-3-super-120b-a12b:free',
 };
 
 // Validate critical env variables
