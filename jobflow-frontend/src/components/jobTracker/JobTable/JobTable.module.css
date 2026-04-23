@@ -1,0 +1,85 @@
+.tableContainer {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.table th {
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.table td {
+  padding: 16px;
+  border-bottom: 1px solid var(--color-border-light);
+  font-size: 14px;
+  color: var(--color-text-main);
+}
+
+.table tr:hover {
+  background-color: #fcfcfc;
+}
+
+.checkboxCell {
+  width: 48px;
+  text-align: center;
+}
+
+.positionCell {
+  font-weight: 500;
+  max-width: 200px;
+}
+
+.positionName {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.companyInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.companyLogo {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #131d21;
+}
+
+.stars {
+  display: flex;
+  gap: 2px;
+}
+
+.star {
+  color: #d1d5db;
+  font-size: 14px;
+}
+
+.star.filled {
+  color: #f59e0b;
+}
+
+.dateCell {
+  color: var(--color-text-secondary);
+}

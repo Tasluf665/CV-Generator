@@ -1,0 +1,11 @@
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.text {
+  font-weight: 700;
+  color: var(--color-text-main);
+  letter-spacing: -0.5px;
+}

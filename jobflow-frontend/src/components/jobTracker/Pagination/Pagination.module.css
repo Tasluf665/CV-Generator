@@ -1,0 +1,31 @@
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-bg-white);
+  border-bottom-left-radius: var(--radius-lg);
+  border-bottom-right-radius: var(--radius-lg);
+}
+
+.info {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pages {
+  display: flex;
+  gap: 4px;
+}
+
+.pageBtn {
+  min-width: 32px;
+  padding: 5px 8px;
+}

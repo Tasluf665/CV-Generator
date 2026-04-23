@@ -1,0 +1,17 @@
+.appShell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.mainWrapper {
+  flex: 1;
+  margin-left: 240px; /* Width of Sidebar */
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1;
+  padding: 40px;
+  background-color: var(--color-bg-main);
+}

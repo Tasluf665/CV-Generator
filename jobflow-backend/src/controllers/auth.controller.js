@@ -35,7 +35,14 @@ export const resendVerification = asyncHandler(async (req, res) => {
 export const login = asyncHandler(async (req, res) => {
   const { accessToken, refreshToken, user } = await authService.loginUser(req.body);
 
-  res.cookie('refreshToken', refreshToken, cookieOptions);
+  const accessTokenOptions = {
+    ...cookieOptions,
+    maxAge: 24 * 60 * 60 * 1000, // 1 day matching JWT_EXPIRY
+  };
+
+  res
+    .cookie('accessToken', accessToken, accessTokenOptions)
+    .cookie('refreshToken', refreshToken, cookieOptions);
 
   return res.status(200).json(
     new ApiResponse(
@@ -50,7 +57,14 @@ export const refresh = asyncHandler(async (req, res) => {
   const incomingRefreshToken = req.cookies?.refreshToken;
   const { accessToken, newRefreshToken } = await authService.refreshUserToken(incomingRefreshToken);
 
-  res.cookie('refreshToken', newRefreshToken, cookieOptions);
+  const accessTokenOptions = {
+    ...cookieOptions,
+    maxAge: 24 * 60 * 60 * 1000, // 1 day
+  };
+
+  res
+    .cookie('accessToken', accessToken, accessTokenOptions)
+    .cookie('refreshToken', newRefreshToken, cookieOptions);
 
   return res.status(200).json(new ApiResponse(200, { accessToken }, 'Token refreshed.'));
 });
@@ -72,7 +86,14 @@ export const resetPassword = asyncHandler(async (req, res) => {
 export const logout = asyncHandler(async (req, res) => {
   await authService.logoutUser(req.user._id);
 
-  res.clearCookie('refreshToken', cookieOptions);
+  const clearOptions = {
+    ...cookieOptions,
+    maxAge: 0,
+  };
+
+  res
+    .clearCookie('accessToken', clearOptions)
+    .clearCookie('refreshToken', clearOptions);
 
   return res.status(200).json(new ApiResponse(200, null, 'Logged out successfully.'));
 });

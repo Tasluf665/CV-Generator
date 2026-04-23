@@ -1,0 +1,69 @@
+.pageHeader {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.headerTitle h1 {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-text-main);
+  margin-bottom: 4px;
+  letter-spacing: -0.5px;
+}
+
+.headerTitle p {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.section {
+  margin-bottom: 24px;
+  padding: 24px;
+}
+
+.tableSection {
+  background-color: var(--color-bg-white);
+  display: flex;
+  flex-direction: column;
+}
+
+.tableToolbar {
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.leftActions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.filterInput {
+  width: 256px;
+}
+
+.selectionBadge {
+  background-color: var(--color-bg-main);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+}
+
+.rightActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.viewToggle {
+  display: flex;
+  background-color: var(--color-bg-main);
+  padding: 4px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  gap: 4px;
+}

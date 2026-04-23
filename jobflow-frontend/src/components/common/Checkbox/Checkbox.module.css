@@ -1,0 +1,23 @@
+.checkboxWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--color-border-medium);
+  border-radius: 4px;
+  cursor: pointer;
+  accent-color: var(--color-primary);
+  background-color: var(--color-bg-main);
+}
+
+.label {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  user-select: none;
+}

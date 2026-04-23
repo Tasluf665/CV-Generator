@@ -1,0 +1,44 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.default {
+  background-color: var(--color-status-bookmarked-bg);
+  color: var(--color-status-bookmarked);
+}
+
+.bookmarked {
+  background-color: var(--color-status-bookmarked-bg);
+  color: var(--color-status-bookmarked);
+}
+
+.applying {
+  background-color: var(--color-status-applying-bg);
+  color: var(--color-status-applying);
+}
+
+.applied {
+  background-color: var(--color-status-applied-bg);
+  color: var(--color-status-applied);
+}
+
+.interviewing {
+  background-color: var(--color-status-interviewing-bg);
+  color: var(--color-status-interviewing);
+}
+
+.negotiating {
+  background-color: var(--color-status-negotiating-bg);
+  color: var(--color-status-negotiating);
+}
+
+.accepted {
+  background-color: var(--color-status-accepted-bg);
+  color: var(--color-status-accepted);
+}
