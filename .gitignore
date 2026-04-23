@@ -26,6 +26,6 @@ out/
 *.swo
 
 # Sub-projects
-cv-tailor-backend/node_modules/
-cv-tailor-frontend/node_modules/
-cv-tailor-frontend/dist/
+jobflow-backend/node_modules/
+jobflow-frontend/node_modules/
+jobflow-frontend/dist/
