@@ -15,7 +15,7 @@ export const parseJobDescription = async (rawDescription) => {
     const response = await openRouterClient.chat(
       [
         { role: 'system', content: getJobParserSystemPrompt() },
-        { role: 'user', content: `Parse this job description:\n\n${rawDescription}` },
+        { role: 'user', content: `RAW JOB DESCRIPTION (analyze this):\n\n${rawDescription}` },
       ],
       {
         model: ENV.OPENROUTER_AI_MODEL, // Fast and reliable for extraction

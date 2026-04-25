@@ -20,7 +20,6 @@ export const openRouterClient = {
       body: JSON.stringify({
         model: ENV.OPENROUTER_AI_MODEL, // Default model
         messages,
-        temperature: options.temperature ?? 0.3,
         max_tokens: options.max_tokens ?? 12000,
         response_format: options.json ? { type: 'json_object' } : undefined,
       }),
