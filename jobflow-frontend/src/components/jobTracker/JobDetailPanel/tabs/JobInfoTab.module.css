@@ -4,7 +4,8 @@
   gap: var(--spacing-lg);
 }
 
-.leftColumn, .rightColumn {
+.leftColumn,
+.rightColumn {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-lg);
@@ -46,7 +47,8 @@
   cursor: pointer;
 }
 
-.collapseBtn, .refreshBtn {
+.collapseBtn,
+.refreshBtn {
   background: none;
   border: none;
   cursor: pointer;
@@ -140,6 +142,24 @@
   font-size: 14px;
 }
 
+.noteContentWrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.noteContent {
+  margin: 0;
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-light);
+  background: var(--color-bg-light);
+  color: var(--color-text-main);
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
 /* AI Keywords Section */
 .aiInfo {
   font-size: 12px;
@@ -171,7 +191,8 @@
   border: 1px dashed var(--color-border-medium);
 }
 
-.check, .plus {
+.check,
+.plus {
   font-size: 12px;
 }
 

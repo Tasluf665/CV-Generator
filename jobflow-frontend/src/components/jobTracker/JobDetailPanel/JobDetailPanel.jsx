@@ -1,13 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import styles from './JobDetailPanel.module.css';
 import StatusPipeline from './StatusPipeline';
 import GuidanceBanner from './GuidanceBanner';
 import JobInfoTab from './tabs/JobInfoTab';
-import Button from '../../common/Button/Button';
 import StarRating from '../../common/StarRating/StarRating';
+import { updateJob } from '../../../features/jobTracker/jobSlice';
 
 const JobDetailPanel = ({ job }) => {
+  const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState('job-info');
+  const [isNotesEditing, setIsNotesEditing] = useState(false);
+  const [notesDraft, setNotesDraft] = useState('');
+
+  useEffect(() => {
+    setNotesDraft(job?.notes || '');
+    setIsNotesEditing(false);
+  }, [job?._id, job?.notes]);
 
   if (!job) {
     return (
@@ -27,12 +36,28 @@ const JobDetailPanel = ({ job }) => {
     { id: 'practice-interview', label: 'Practice Interview' },
   ];
 
+  const handleSaveNotes = () => {
+    if (!job?._id) return;
+    dispatch(updateJob({ id: job._id, jobData: { notes: notesDraft } }));
+    setIsNotesEditing(false);
+  };
+
   return (
     <div className={styles.panel}>
       <header className={styles.header}>
         <div className={styles.headerMain}>
           <div className={styles.titleInfo}>
             <h1 className={styles.title}>{job.jobTitle}</h1>
+            {job.sourceUrl && (
+              <a
+                href={job.sourceUrl}
+                target="_blank"
+                rel="noreferrer"
+                className={styles.jobLink}
+              >
+                {job.sourceUrl}
+              </a>
+            )}
             <div className={styles.meta}>
               <span className={styles.company}>{job.company}</span>
               <span className={styles.dot}>•</span>
@@ -79,8 +104,68 @@ const JobDetailPanel = ({ job }) => {
         </nav>
 
         <div className={styles.tabContent}>
-          {activeTab === 'job-info' && <JobInfoTab job={job} />}
-          {activeTab !== 'job-info' && (
+          {activeTab === 'job-info' && (
+            <JobInfoTab
+              job={job}
+              onOpenNotesTab={() => setActiveTab('notes')}
+            />
+          )}
+          {activeTab === 'notes' && (
+            <div
+              className={styles.notesCard}
+              onClick={() => {
+                if (!isNotesEditing) setIsNotesEditing(true);
+              }}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if ((e.key === 'Enter' || e.key === ' ') && !isNotesEditing) {
+                  e.preventDefault();
+                  setIsNotesEditing(true);
+                }
+              }}
+            >
+              <h3 className={styles.notesTitle}>Notes</h3>
+
+              {!isNotesEditing ? (
+                <p className={styles.notesPreview}>
+                  {job.notes?.trim() || 'Content for Notes will be here.'}
+                </p>
+              ) : (
+                <>
+                  <textarea
+                    className={styles.notesTextarea}
+                    value={notesDraft}
+                    onChange={(e) => setNotesDraft(e.target.value)}
+                    placeholder="Write your notes here..."
+                    autoFocus
+                  />
+                  <div className={styles.notesActions}>
+                    <button
+                      className={styles.notesCancelBtn}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setNotesDraft(job.notes || '');
+                        setIsNotesEditing(false);
+                      }}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      className={styles.notesSaveBtn}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSaveNotes();
+                      }}
+                    >
+                      Save Notes
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+          {activeTab !== 'job-info' && activeTab !== 'notes' && (
             <div className={styles.placeholderTab}>
               <h3>{tabs.find(t => t.id === activeTab).label}</h3>
               <p>Content for {tabs.find(t => t.id === activeTab).label} will be here.</p>

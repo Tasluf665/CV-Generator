@@ -28,6 +28,21 @@
   color: var(--color-text-main);
 }
 
+.jobLink {
+  display: inline-block;
+  max-width: 100%;
+  color: var(--color-primary);
+  font-size: 14px;
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.jobLink:hover {
+  text-decoration: underline;
+}
+
 .meta {
   display: flex;
   align-items: center;
@@ -116,7 +131,7 @@
 }
 
 .activeTab::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -1px;
   left: 0;
@@ -143,4 +158,73 @@
   background-color: var(--color-bg-secondary);
   border-radius: var(--radius-lg);
   border: 2px dashed var(--color-border);
+}
+
+.notesCard {
+  padding: var(--spacing-xl);
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  border: 2px dashed var(--color-border);
+  cursor: text;
+}
+
+.notesTitle {
+  margin: 0 0 var(--spacing-md);
+  font-size: 18px;
+  color: var(--color-text-main);
+}
+
+.notesPreview {
+  margin: 0;
+  color: var(--color-text-secondary);
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+
+.notesTextarea {
+  width: 100%;
+  min-height: 180px;
+  resize: vertical;
+  border: 1px solid var(--color-border-medium);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  font-size: 14px;
+  line-height: 1.6;
+  font-family: inherit;
+  color: var(--color-text-main);
+  background: var(--color-bg-white);
+}
+
+.notesTextarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(34, 139, 230, 0.15);
+}
+
+.notesActions {
+  margin-top: var(--spacing-md);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+}
+
+.notesCancelBtn,
+.notesSaveBtn {
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.notesCancelBtn {
+  background: var(--color-bg-white);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-medium);
+}
+
+.notesSaveBtn {
+  background: var(--color-primary);
+  color: #fff;
 }

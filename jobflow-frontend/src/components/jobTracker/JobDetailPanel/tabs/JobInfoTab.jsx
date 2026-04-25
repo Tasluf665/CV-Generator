@@ -4,7 +4,7 @@ import SectionCard from '../../../common/SectionCard/SectionCard';
 import Badge from '../../../common/Badge/Badge';
 import Button from '../../../common/Button/Button';
 
-const JobInfoTab = ({ job }) => {
+const JobInfoTab = ({ job, onOpenNotesTab }) => {
   const [showRaw, setShowRaw] = React.useState(false);
 
   if (!job) return null;
@@ -15,8 +15,8 @@ const JobInfoTab = ({ job }) => {
   return (
     <div className={styles.container}>
       <div className={styles.leftColumn}>
-        <SectionCard 
-          title="Dates" 
+        <SectionCard
+          title="Dates"
           icon="📅"
           headerActions={
             <button className={styles.collapseBtn}>
@@ -45,8 +45,8 @@ const JobInfoTab = ({ job }) => {
           </div>
         </SectionCard>
 
-        <SectionCard 
-          title="Job Description" 
+        <SectionCard
+          title="Job Description"
           icon="📄"
           headerActions={
             <Button variant="ghost" size="sm" icon="✏️">Edit</Button>
@@ -83,13 +83,13 @@ const JobInfoTab = ({ job }) => {
             )}
 
             <div className={styles.rawSection}>
-              <button 
+              <button
                 className={styles.readMore}
                 onClick={() => setShowRaw(!showRaw)}
               >
                 {showRaw ? 'Hide Raw Description' : 'View Raw Job Description...'}
               </button>
-              
+
               {showRaw && (
                 <div className={styles.rawContent}>
                   {rawJobDescription || 'No raw description available.'}
@@ -101,8 +101,8 @@ const JobInfoTab = ({ job }) => {
       </div>
 
       <div className={styles.rightColumn}>
-        <SectionCard 
-          title="AI Extracted Keywords" 
+        <SectionCard
+          title="AI Extracted Keywords"
           icon="💡"
           variant="ai"
           headerActions={
@@ -125,14 +125,21 @@ const JobInfoTab = ({ job }) => {
           </div>
         </SectionCard>
 
-        <SectionCard 
-          title="Insights & Notes" 
+        <SectionCard
+          title="Insights & Notes"
           icon="📓"
         >
-          <div className={styles.placeholderNote}>
-            <p>Add notes about company culture, interview tips, or follow-up strategies here.</p>
-            <Button variant="secondary" size="sm" block>Add Note</Button>
-          </div>
+          {job.notes?.trim() ? (
+            <div className={styles.noteContentWrap}>
+              <p className={styles.noteContent}>{job.notes}</p>
+              <Button variant="secondary" size="sm" block onClick={onOpenNotesTab}>Edit Note</Button>
+            </div>
+          ) : (
+            <div className={styles.placeholderNote}>
+              <p>Add notes about company culture, interview tips, or follow-up strategies here.</p>
+              <Button variant="secondary" size="sm" block onClick={onOpenNotesTab}>Add Note</Button>
+            </div>
+          )}
         </SectionCard>
       </div>
     </div>
