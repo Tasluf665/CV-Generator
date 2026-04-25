@@ -19,11 +19,20 @@ export const createJob = asyncHandler(async (req, res) => {
 });
 
 /**
+ * Scrape job data from URL (LinkedIn for now)
+ */
+export const scrapeJobFromUrl = asyncHandler(async (req, res) => {
+  const { jobUrl } = req.body;
+  const scraped = await jobService.scrapeJobFromUrl(jobUrl);
+  res.status(200).json(new ApiResponse(200, scraped, 'Job data scraped successfully.'));
+});
+
+/**
  * Parse a job description and create a job entry
  */
 export const parseJobDescription = asyncHandler(async (req, res) => {
-  const { rawJobDescription } = req.body;
-  const job = await jobService.parseAndSaveJob(req.user._id, rawJobDescription);
+  const job = await jobService.parseAndSaveJob(req.user._id, req.body);
+
   res.status(201).json(new ApiResponse(201, job, 'Job description parsed and saved successfully.'));
 });
 

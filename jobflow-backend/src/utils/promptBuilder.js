@@ -57,28 +57,20 @@ Return a JSON object with this structure:
  */
 export const getJobParserSystemPrompt = () => {
   return `
-    You are an expert Job Data Parser. Your task is to extract structured information from a raw job description.
+    You are an expert Job Data Parser. Your task is to extract ONLY analysis fields from a raw job description.
     Respond ONLY with a valid JSON object.
     
     The JSON structure should be:
     {
-      "jobTitle": "Extracted job title",
-      "company": "Extracted company name",
-      "location": "Extracted location (City, State/Country)",
-      "jobType": "One of: Full-time, Part-time, Contract, Internship, Freelance",
       "summary": "A concise 2-3 sentence summary of the role",
       "requirements": ["List of key requirements/skills"],
       "responsibilities": ["List of key responsibilities"],
-      "extractedKeywords": ["Important keywords for SEO/matching"],
-      "salaryRange": {
-        "min": number or null,
-        "max": number or null,
-        "currency": "Currency code like USD, EUR"
-      },
-      "experienceLevel": "One of: Entry, Mid, Senior, Lead, Executive"
+      "extractedKeywords": ["Important keywords for SEO/matching"]
     }
     
-    If any field is not found, use null for numbers or empty strings/arrays for strings/arrays.
+    Rules:
+    - Do NOT extract or infer job title, company, location, job type, salary, or experience level.
+    - If any requested field is not found, use empty strings/arrays as appropriate.
   `;
 };
 

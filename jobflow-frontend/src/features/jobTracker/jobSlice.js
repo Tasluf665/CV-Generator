@@ -37,6 +37,18 @@ export const parseJob = createAsyncThunk(
   }
 );
 
+export const scrapeJob = createAsyncThunk(
+  'jobs/scrapeJob',
+  async (jobUrl, { rejectWithValue }) => {
+    try {
+      const response = await jobService.scrapeJob(jobUrl);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to scrape job data');
+    }
+  }
+);
+
 export const updateJob = createAsyncThunk(
   'jobs/updateJob',
   async ({ id, jobData }, { rejectWithValue }) => {
@@ -94,6 +106,7 @@ const jobSlice = createSlice({
     },
     status: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
     error: null,
+    scrapeStatus: 'idle',
     parseStatus: 'idle',
   },
   reducers: {
@@ -169,7 +182,7 @@ const jobSlice = createSlice({
             }
           }
         }
-        
+
         // Update selectedJob so JobDetailPage updates immediately
         if (state.selectedJob && (state.selectedJob._id || state.selectedJob.id) === updatedId) {
           state.selectedJob = action.payload;
@@ -186,6 +199,17 @@ const jobSlice = createSlice({
         if (state.selectedJob && (state.selectedJob._id || state.selectedJob.id) === deletedId) {
           state.selectedJob = null;
         }
+      })
+      // Parse Job
+      .addCase(scrapeJob.pending, (state) => {
+        state.scrapeStatus = 'loading';
+      })
+      .addCase(scrapeJob.fulfilled, (state) => {
+        state.scrapeStatus = 'succeeded';
+      })
+      .addCase(scrapeJob.rejected, (state, action) => {
+        state.scrapeStatus = 'failed';
+        state.error = action.payload;
       })
       // Parse Job
       .addCase(parseJob.pending, (state) => {

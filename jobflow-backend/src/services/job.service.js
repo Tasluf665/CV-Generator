@@ -1,6 +1,7 @@
 import Job from '../models/Job.model.js';
 import { ApiError } from '../utils/ApiError.js';
 import * as jobParserService from './ai/jobParser.service.js';
+import { scrapeLinkedInJobDetails } from './scrapers/linkedin/linkedinJobScraper.service.js';
 
 /**
  * Fetch all jobs for a user with optional filters and pagination
@@ -55,27 +56,46 @@ export const createJob = async (userId, jobData) => {
 };
 
 /**
- * Parse a job description, extract details, and save
+ * Scrape a job URL (currently LinkedIn only)
  */
-export const parseAndSaveJob = async (userId, rawJobDescription) => {
+export const scrapeJobFromUrl = async (jobUrl) => {
+  const scraped = await scrapeLinkedInJobDetails(jobUrl);
+
+  return {
+    jobTitle: scraped.jobTitle,
+    company: scraped.company,
+    location: scraped.location,
+    rawJobDescription: scraped.aboutTheJob,
+    sourceUrl: jobUrl,
+  };
+};
+
+/**
+ * Parse a user-confirmed job description and save
+ */
+export const parseAndSaveJob = async (
+  userId,
+  { jobTitle, company, location, rawJobDescription, sourceUrl, jobType, status, excitement, deadline }
+) => {
   const parsedData = await jobParserService.parseJobDescription(rawJobDescription);
 
   const job = await Job.create({
     userId,
-    jobTitle: parsedData.jobTitle || 'Unknown Position',
-    company: parsedData.company || 'Unknown Company',
-    location: parsedData.location,
-    jobType: parsedData.jobType,
+    jobTitle,
+    company,
+    location,
+    sourceUrl,
+    jobType,
+    status: status || 'Bookmarked',
+    excitement,
+    deadline,
     rawJobDescription,
     parsedData: {
       summary: parsedData.summary,
       requirements: parsedData.requirements,
       responsibilities: parsedData.responsibilities,
       extractedKeywords: parsedData.extractedKeywords,
-      salaryRange: parsedData.salaryRange,
-      experienceLevel: parsedData.experienceLevel,
     },
-    status: 'Bookmarked',
   });
 
   return job;
@@ -181,12 +201,7 @@ export const reparseJob = async (userId, jobId) => {
     requirements: parsedData.requirements,
     responsibilities: parsedData.responsibilities,
     extractedKeywords: parsedData.extractedKeywords,
-    salaryRange: parsedData.salaryRange,
-    experienceLevel: parsedData.experienceLevel,
   };
-
-  if (parsedData.jobTitle && job.jobTitle === 'Unknown Position') job.jobTitle = parsedData.jobTitle;
-  if (parsedData.company && job.company === 'Unknown Company') job.company = parsedData.company;
 
   await job.save();
   return job;

@@ -9,14 +9,16 @@ import TextArea from '../../components/common/TextArea/TextArea';
 import Select from '../../components/common/Select/Select';
 import Rating from '../../components/common/Rating/Rating';
 import { ROUTE_PATHS } from '../../routes/routePaths';
-import { createJob, parseJob } from '../../features/jobTracker/jobSlice';
+import { createJob, parseJob, scrapeJob } from '../../features/jobTracker/jobSlice';
+import { formatJobDescription } from '../../utils/formatJobDescription';
 
 const AddJobPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { status, parseStatus, error } = useSelector((state) => state.jobs);
+  const { status, scrapeStatus, parseStatus, error } = useSelector((state) => state.jobs);
 
   const [formData, setFormData] = useState({
+    jobUrl: '',
     jobDescription: '',
     jobTitle: '',
     company: '',
@@ -46,10 +48,39 @@ const AddJobPage = () => {
   };
 
   const handleParse = async () => {
-    if (!formData.jobDescription) return;
-    const resultAction = await dispatch(parseJob(formData.jobDescription));
+    if (!formData.jobTitle || !formData.company || !formData.jobDescription) return;
+
+    const resultAction = await dispatch(parseJob({
+      jobTitle: formData.jobTitle,
+      company: formData.company,
+      location: formData.location,
+      rawJobDescription: formData.jobDescription,
+      sourceUrl: formData.sourceUrl || formData.jobUrl,
+      jobType: formData.jobType,
+      status: formData.status,
+      excitement: formData.excitement,
+      deadline: formData.deadline || null,
+    }));
+
     if (parseJob.fulfilled.match(resultAction)) {
       navigate(ROUTE_PATHS.JOB_TRACKER);
+    }
+  };
+
+  const handleScrape = async () => {
+    if (!formData.jobUrl?.trim()) return;
+
+    const resultAction = await dispatch(scrapeJob(formData.jobUrl.trim()));
+    if (scrapeJob.fulfilled.match(resultAction)) {
+      const scraped = resultAction.payload;
+      setFormData((prev) => ({
+        ...prev,
+        jobTitle: scraped.jobTitle || prev.jobTitle,
+        company: scraped.company || prev.company,
+        location: scraped.location || prev.location,
+        jobDescription: formatJobDescription(scraped.rawJobDescription || prev.jobDescription),
+        sourceUrl: scraped.sourceUrl || prev.sourceUrl || prev.jobUrl,
+      }));
     }
   };
 
@@ -73,11 +104,58 @@ const AddJobPage = () => {
 
           <div className={styles.modalContent}>
             {error && <div className={styles.error}>{error}</div>}
-            
-            {/* AI Section */}
+
+            {/* Scrape + Parse Section */}
             <div className={styles.aiSection}>
-              <p className={styles.aiHint}>Paste the job description below and AI will extract the details automatically</p>
-              <TextArea 
+              <p className={styles.aiHint}>
+                Paste a LinkedIn URL, scrape the fields, verify them, then send to AI parsing.
+              </p>
+
+              <div className={styles.scrapeRow}>
+                <Input
+                  label="Job URL"
+                  placeholder="https://www.linkedin.com/jobs/view/..."
+                  name="jobUrl"
+                  value={formData.jobUrl}
+                  onChange={handleChange}
+                  className={styles.urlInput}
+                />
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className={styles.scrapeBtn}
+                  onClick={handleScrape}
+                  loading={scrapeStatus === 'loading'}
+                  disabled={!formData.jobUrl || scrapeStatus === 'loading'}
+                >
+                  {scrapeStatus === 'loading' ? 'Scraping...' : 'Scrape Data'}
+                </Button>
+              </div>
+
+              <Input
+                label="Title"
+                placeholder="Job title"
+                name="jobTitle"
+                value={formData.jobTitle}
+                onChange={handleChange}
+              />
+              <Input
+                label="Company"
+                placeholder="Company name"
+                name="company"
+                value={formData.company}
+                onChange={handleChange}
+              />
+              <Input
+                label="Location"
+                placeholder="Location"
+                name="location"
+                value={formData.location}
+                onChange={handleChange}
+              />
+
+              <TextArea
+                label="Job Description"
                 placeholder="Paste full job description here..."
                 value={formData.jobDescription}
                 onChange={handleChange}
@@ -85,12 +163,16 @@ const AddJobPage = () => {
                 className={styles.descriptionArea}
                 rows={6}
               />
-              <Button 
-                variant="primary" 
+
+              <p className={styles.secondaryHint}>Review and edit these fields before AI parsing.</p>
+
+              <Button
+                type="button"
+                variant="primary"
                 className={styles.aiBtn}
                 onClick={handleParse}
                 loading={parseStatus === 'loading'}
-                disabled={!formData.jobDescription || parseStatus === 'loading'}
+                disabled={!formData.jobTitle || !formData.company || !formData.jobDescription || parseStatus === 'loading'}
                 icon={
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
@@ -99,7 +181,7 @@ const AddJobPage = () => {
                   </svg>
                 }
               >
-                {parseStatus === 'loading' ? 'Parsing...' : 'Parse with AI'}
+                {parseStatus === 'loading' ? 'Parsing...' : 'Parse with AI & Save Job'}
               </Button>
             </div>
 
@@ -110,30 +192,7 @@ const AddJobPage = () => {
             {/* Manual Form */}
             <form className={styles.manualForm} onSubmit={handleSave}>
               <div className={styles.formGrid}>
-                <Input 
-                  label="Job Title"
-                  placeholder="e.g. Senior Product Designer"
-                  name="jobTitle"
-                  value={formData.jobTitle}
-                  onChange={handleChange}
-                  required
-                />
-                <Input 
-                  label="Company Name"
-                  placeholder="e.g. Acme Corp"
-                  name="company"
-                  value={formData.company}
-                  onChange={handleChange}
-                  required
-                />
-                <Input 
-                  label="Location"
-                  placeholder="e.g. Remote, NY, etc."
-                  name="location"
-                  value={formData.location}
-                  onChange={handleChange}
-                />
-                <Select 
+                <Select
                   label="Job Type"
                   name="jobType"
                   value={formData.jobType}
@@ -146,14 +205,14 @@ const AddJobPage = () => {
                     { label: 'Internship', value: 'Internship' }
                   ]}
                 />
-                <Input 
+                <Input
                   label="Deadline"
                   type="date"
                   name="deadline"
                   value={formData.deadline}
                   onChange={handleChange}
                 />
-                <Select 
+                <Select
                   label="Status"
                   name="status"
                   value={formData.status}
@@ -167,12 +226,12 @@ const AddJobPage = () => {
                     { label: 'Accepted', value: 'Accepted' }
                   ]}
                 />
-                <Rating 
+                <Rating
                   label="Excitement"
                   value={formData.excitement}
                   onChange={handleRatingChange}
                 />
-                <Input 
+                <Input
                   label="Source URL (Optional)"
                   placeholder="https://..."
                   name="sourceUrl"
@@ -185,8 +244,8 @@ const AddJobPage = () => {
 
           <div className={styles.modalFooter}>
             <Button variant="secondary" onClick={handleCancel}>Cancel</Button>
-            <Button 
-              variant="primary" 
+            <Button
+              variant="primary"
               onClick={handleSave}
               loading={status === 'loading'}
               disabled={status === 'loading'}

@@ -3,6 +3,7 @@ import styles from './JobInfoTab.module.css';
 import SectionCard from '../../../common/SectionCard/SectionCard';
 import Badge from '../../../common/Badge/Badge';
 import Button from '../../../common/Button/Button';
+import { formatJobDescription } from '../../../../utils/formatJobDescription';
 
 const JobInfoTab = ({ job, onOpenNotesTab }) => {
   const [showRaw, setShowRaw] = React.useState(false);
@@ -92,7 +93,7 @@ const JobInfoTab = ({ job, onOpenNotesTab }) => {
 
               {showRaw && (
                 <div className={styles.rawContent}>
-                  {rawJobDescription || 'No raw description available.'}
+                  {formatJobDescription(rawJobDescription) || 'No raw description available.'}
                 </div>
               )}
             </div>

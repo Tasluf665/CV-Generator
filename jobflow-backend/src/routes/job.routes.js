@@ -11,6 +11,7 @@ router.use(verifyJWT);
 
 router.get('/', jobController.getAllJobs);
 router.post('/', validate(jobValidator.createJob), jobController.createJob);
+router.post('/scrape', validate(jobValidator.scrapeJob), jobController.scrapeJobFromUrl);
 router.post('/parse', validate(jobValidator.parseJob), jobController.parseJobDescription);
 
 router.get('/:id', jobController.getJobById);

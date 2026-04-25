@@ -11,8 +11,13 @@ export const jobService = {
     return response.data;
   },
 
-  parseJob: async (rawJobDescription) => {
-    const response = await api.post('/jobs/parse', { rawJobDescription });
+  scrapeJob: async (jobUrl) => {
+    const response = await api.post('/jobs/scrape', { jobUrl });
+    return response.data;
+  },
+
+  parseJob: async (payload) => {
+    const response = await api.post('/jobs/parse', payload);
     return response.data;
   },
 

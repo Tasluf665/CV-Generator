@@ -33,8 +33,53 @@ export const createJob = Joi.object({
   notes: Joi.string().allow('').optional(),
 });
 
+export const scrapeJob = Joi.object({
+  jobUrl: Joi.string()
+    .uri({ scheme: ['http', 'https'] })
+    .custom((value, helpers) => {
+      try {
+        const { hostname, pathname } = new URL(value);
+        const validHost = hostname === 'linkedin.com' || hostname === 'www.linkedin.com';
+        const validPath = pathname.includes('/jobs/');
+
+        if (!validHost || !validPath) {
+          return helpers.error('any.invalid');
+        }
+
+        return value;
+      } catch {
+        return helpers.error('any.invalid');
+      }
+    }, 'LinkedIn URL validation')
+    .messages({
+      'any.invalid': 'jobUrl must be a valid LinkedIn job URL.',
+    })
+    .required(),
+});
+
 export const parseJob = Joi.object({
+  jobTitle: Joi.string().required().trim(),
+  company: Joi.string().required().trim(),
+  location: Joi.string().allow('').optional().trim(),
   rawJobDescription: Joi.string().required().min(10),
+  sourceUrl: Joi.string().uri().allow('').optional().trim(),
+  jobType: Joi.string()
+    .valid('Full-time', 'Part-time', 'Contract', 'Internship', 'Freelance')
+    .optional(),
+  status: Joi.string()
+    .valid(
+      'Bookmarked',
+      'Applying',
+      'Applied',
+      'Interviewing',
+      'Negotiating',
+      'Accepted',
+      'Rejected',
+      'Closed'
+    )
+    .optional(),
+  excitement: Joi.number().min(0).max(5).optional(),
+  deadline: Joi.date().iso().allow(null).optional(),
 });
 
 export const updateJob = Joi.object({

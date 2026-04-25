@@ -29,7 +29,14 @@ export const parseJobDescription = async (rawDescription) => {
     }
 
     try {
-      return JSON.parse(content);
+      const parsed = JSON.parse(content);
+
+      return {
+        summary: typeof parsed?.summary === 'string' ? parsed.summary : '',
+        requirements: Array.isArray(parsed?.requirements) ? parsed.requirements : [],
+        responsibilities: Array.isArray(parsed?.responsibilities) ? parsed.responsibilities : [],
+        extractedKeywords: Array.isArray(parsed?.extractedKeywords) ? parsed.extractedKeywords : [],
+      };
     } catch (parseError) {
       console.error('AI JSON Parse Error:', content);
       throw new ApiError(500, 'AI returned invalid JSON format.');
