@@ -6,7 +6,7 @@ export const fetchJobs = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const response = await jobService.getJobs(params);
-      return response.data; // This includes { jobs, pipelineCounts, pagination }
+      return response.data; // Extracts result from ApiResponse (response is the response body)
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch jobs');
     }
@@ -18,7 +18,7 @@ export const createJob = createAsyncThunk(
   async (jobData, { rejectWithValue }) => {
     try {
       const response = await jobService.createJob(jobData);
-      return response.data;
+      return response.data; // Extracts job from ApiResponse
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to create job');
     }
@@ -30,9 +30,21 @@ export const parseJob = createAsyncThunk(
   async (rawJD, { rejectWithValue }) => {
     try {
       const response = await jobService.parseJob(rawJD);
-      return response.data;
+      return response.data; // Extracts job from ApiResponse
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to parse job');
+    }
+  }
+);
+
+export const updateJob = createAsyncThunk(
+  'jobs/updateJob',
+  async ({ id, jobData }, { rejectWithValue }) => {
+    try {
+      const response = await jobService.updateJob(id, jobData);
+      return response.data; // Extracts job from ApiResponse
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to update job');
     }
   }
 );
@@ -42,7 +54,7 @@ export const fetchJobById = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const response = await jobService.getJobById(id);
-      return response.data;
+      return response.data; // Extracts job from ApiResponse
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch job details');
     }
@@ -119,6 +131,31 @@ const jobSlice = createSlice({
       .addCase(createJob.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
+      })
+      // Update Job
+      .addCase(updateJob.fulfilled, (state, action) => {
+        const index = state.items.findIndex(item => (item._id || item.id) === (action.payload._id || action.payload.id));
+        if (index !== -1) {
+          const oldStatus = state.items[index].status;
+          const newStatus = action.payload.status;
+          
+          state.items[index] = action.payload;
+
+          // If status changed, update pipeline counts
+          if (oldStatus !== newStatus) {
+            // Decrement old status count
+            if (state.pipelineCounts[oldStatus] !== undefined) {
+              state.pipelineCounts[oldStatus] = Math.max(0, state.pipelineCounts[oldStatus] - 1);
+            }
+            
+            // Increment new status count
+            if (state.pipelineCounts[newStatus] === undefined) {
+              state.pipelineCounts[newStatus] = 1;
+            } else {
+              state.pipelineCounts[newStatus] += 1;
+            }
+          }
+        }
       })
       // Parse Job
       .addCase(parseJob.pending, (state) => {

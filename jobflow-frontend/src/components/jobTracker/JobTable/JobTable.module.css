@@ -84,11 +84,59 @@
   color: var(--color-text-secondary);
 }
 
-.clickableRow {
+.navCell {
   cursor: pointer;
+  transition: color 0.2s;
+}
+
+.navCell:hover .positionName,
+.navCell:hover span {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.editableValue {
+  cursor: pointer;
+  padding: 4px 8px;
+  margin: -4px -8px;
+  border-radius: 4px;
   transition: background-color 0.2s;
 }
 
-.clickableRow:hover {
+.editableValue:hover {
   background-color: var(--color-bg-secondary);
+}
+
+.editInput,
+.editSelect {
+  width: 100%;
+  padding: 4px 8px;
+  border: 1px solid var(--color-primary);
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--color-text-main);
+  background-color: white;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.1);
+}
+
+.star {
+  color: #d1d5db;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.star:hover {
+  transform: scale(1.2);
+}
+
+.star.filled {
+  color: #f59e0b;
+}
+
+.dateCell {
+  color: var(--color-text-secondary);
+  min-width: 120px;
 }

@@ -10,28 +10,42 @@ import Button from '../../components/common/Button/Button';
 import Input from '../../components/common/Input/Input';
 import Badge from '../../components/common/Badge/Badge';
 import { ROUTE_PATHS } from '../../routes/routePaths';
-import { fetchJobs } from '../../features/jobTracker/jobSlice';
+import { fetchJobs, updateJob } from '../../features/jobTracker/jobSlice';
 
 const JobTrackerPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { items, pipelineCounts, pagination, status, error } = useSelector((state) => state.jobs);
 
+  const [selectedStatus, setSelectedStatus] = React.useState(null);
+
   useEffect(() => {
-    dispatch(fetchJobs());
-  }, [dispatch]);
+    dispatch(fetchJobs({ status: selectedStatus }));
+  }, [dispatch, selectedStatus]);
 
   const stages = [
-    { id: 'bookmarked', label: 'Bookmarked', count: pipelineCounts.Bookmarked, bgColor: '#f3f4f6', color: '#4b5563' },
-    { id: 'applying', label: 'Applying', count: pipelineCounts.Applying, bgColor: '#fefce8', color: '#ca8a04' },
-    { id: 'applied', label: 'Applied', count: pipelineCounts.Applied, bgColor: '#eff6ff', color: '#1d4ed8' },
-    { id: 'interviewing', label: 'Interviewing', count: pipelineCounts.Interviewing, bgColor: '#faf5ff', color: '#7e22ce' },
-    { id: 'negotiating', label: 'Negotiating', count: pipelineCounts.Negotiating, bgColor: '#fff7ed', color: '#ea580c' },
-    { id: 'accepted', label: 'Accepted', count: pipelineCounts.Accepted, bgColor: '#f0fdf4', color: '#16a34a' },
+    { id: 'Bookmarked', label: 'Bookmarked', count: pipelineCounts.Bookmarked || 0, bgColor: '#f3f4f6', color: '#4b5563', active: selectedStatus === 'Bookmarked' },
+    { id: 'Applying', label: 'Applying', count: pipelineCounts.Applying || 0, bgColor: '#fefce8', color: '#ca8a04', active: selectedStatus === 'Applying' },
+    { id: 'Applied', label: 'Applied', count: pipelineCounts.Applied || 0, bgColor: '#eff6ff', color: '#1d4ed8', active: selectedStatus === 'Applied' },
+    { id: 'Interviewing', label: 'Interviewing', count: pipelineCounts.Interviewing || 0, bgColor: '#faf5ff', color: '#7e22ce', active: selectedStatus === 'Interviewing' },
+    { id: 'Negotiating', label: 'Negotiating', count: pipelineCounts.Negotiating || 0, bgColor: '#fff7ed', color: '#ea580c', active: selectedStatus === 'Negotiating' },
+    { id: 'Accepted', label: 'Accepted', count: pipelineCounts.Accepted || 0, bgColor: '#f0fdf4', color: '#16a34a', active: selectedStatus === 'Accepted' },
   ];
 
   const handleSearch = (e) => {
-    dispatch(fetchJobs({ search: e.target.value }));
+    dispatch(fetchJobs({ search: e.target.value, status: selectedStatus }));
+  };
+
+  const handleUpdateJob = (id, jobData) => {
+    dispatch(updateJob({ id, jobData }));
+  };
+
+  const handleStageClick = (stageId) => {
+    if (selectedStatus === stageId) {
+      setSelectedStatus(null); // Clear filter if clicking the same stage
+    } else {
+      setSelectedStatus(stageId);
+    }
   };
 
   return (
@@ -44,14 +58,14 @@ const JobTrackerPage = () => {
       </div>
 
       <div className={`${styles.section} premium-card`}>
-        <PipelineFunnel stages={stages} />
+        <PipelineFunnel stages={stages} onStageClick={handleStageClick} />
       </div>
 
       <div className={`${styles.tableSection} premium-card`}>
         <div className={styles.tableToolbar}>
           <div className={styles.leftActions}>
-            <Input 
-              placeholder="Filter jobs..." 
+            <Input
+              placeholder="Filter jobs..."
               className={styles.filterInput}
               onChange={handleSearch}
               icon={
@@ -64,29 +78,26 @@ const JobTrackerPage = () => {
             <Badge status="default" className={styles.selectionBadge}>0 selected</Badge>
           </div>
           <div className={styles.rightActions}>
-            <div className={styles.viewToggle}>
-              <Button variant="secondary" size="sm" icon="📋" />
-              <Button variant="ghost" size="sm" icon="🎴" />
-            </div>
             <Button variant="primary" size="md" icon="+" onClick={() => navigate(ROUTE_PATHS.ADD_JOB)}>Add Job</Button>
           </div>
         </div>
-        
+
         {status === 'loading' ? (
           <div className={styles.loading}>Loading jobs...</div>
         ) : error ? (
           <div className={styles.error}>{error}</div>
         ) : (
           <>
-            <JobTable 
-              jobs={items} 
-              onRowClick={(id) => navigate(ROUTE_PATHS.JOB_DETAIL.replace(':id', id))} 
+            <JobTable
+              jobs={items}
+              onRowClick={(id) => navigate(ROUTE_PATHS.JOB_DETAIL.replace(':id', id))}
+              onUpdateJob={handleUpdateJob}
             />
-            <Pagination 
-              currentPage={pagination.page} 
-              totalEntries={pagination.total} 
-              entriesPerPage={pagination.limit} 
-              onPageChange={(page) => dispatch(fetchJobs({ page }))}
+            <Pagination
+              currentPage={pagination.page}
+              totalEntries={pagination.total}
+              entriesPerPage={pagination.limit}
+              onPageChange={(page) => dispatch(fetchJobs({ page, status: selectedStatus }))}
             />
           </>
         )}

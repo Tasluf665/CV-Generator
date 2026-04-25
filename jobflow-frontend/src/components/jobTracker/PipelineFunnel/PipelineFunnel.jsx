@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './PipelineFunnel.module.css';
 
-const PipelineFunnel = ({ stages }) => {
+const PipelineFunnel = ({ stages, onStageClick }) => {
   return (
     <div className={styles.funnel}>
       {stages.map((stage, index) => (
@@ -9,6 +9,7 @@ const PipelineFunnel = ({ stages }) => {
           key={stage.id} 
           className={`${styles.stage} ${stage.active ? styles.active : ''}`}
           style={{ '--stage-bg': stage.bgColor, '--stage-color': stage.color }}
+          onClick={() => onStageClick && onStageClick(stage.id)}
         >
           <div className={styles.content}>
             <span className={styles.count}>{stage.count}</span>

@@ -28,6 +28,7 @@ export const createJob = Joi.object({
     )
     .optional(),
   excitement: Joi.number().min(0).max(5).optional(),
+  dateSaved: Joi.date().iso().allow(null).optional(),
   deadline: Joi.date().iso().allow(null).optional(),
   notes: Joi.string().allow('').optional(),
 });
@@ -57,6 +58,7 @@ export const updateJob = Joi.object({
     )
     .optional(),
   excitement: Joi.number().min(0).max(5).optional(),
+  dateSaved: Joi.date().iso().allow(null).optional(),
   deadline: Joi.date().iso().allow(null).optional(),
   dateApplied: Joi.date().iso().allow(null).optional(),
   followUpDate: Joi.date().iso().allow(null).optional(),

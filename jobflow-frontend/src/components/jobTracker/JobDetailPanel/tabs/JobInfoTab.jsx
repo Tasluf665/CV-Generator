@@ -5,15 +5,12 @@ import Badge from '../../../common/Badge/Badge';
 import Button from '../../../common/Button/Button';
 
 const JobInfoTab = ({ job }) => {
+  const [showRaw, setShowRaw] = React.useState(false);
+
   if (!job) return null;
 
-  const { dateSaved, deadline, parsedData } = job;
+  const { dateSaved, deadline, parsedData, rawJobDescription } = job;
   const { summary, requirements, responsibilities, extractedKeywords } = parsedData || {};
-
-  const displayDescription = summary || 
-    (job.rawJobDescription ? 
-      (job.rawJobDescription.length > 300 ? job.rawJobDescription.substring(0, 300) + '...' : job.rawJobDescription) : 
-      'No description available.');
 
   return (
     <div className={styles.container}>
@@ -56,15 +53,49 @@ const JobInfoTab = ({ job }) => {
           }
         >
           <div className={styles.description}>
-            <p>{displayDescription}</p>
-            {responsibilities && responsibilities.length > 0 && (
-              <ul className={styles.bulletList}>
-                {responsibilities.map((item, index) => (
-                  <li key={index}>{item}</li>
-                ))}
-              </ul>
+            {summary && (
+              <div className={styles.subSection}>
+                <h4 className={styles.subTitle}>SUMMARY</h4>
+                <p>{summary}</p>
+              </div>
             )}
-            <button className={styles.readMore}>Read Full Description...</button>
+
+            {requirements && requirements.length > 0 && (
+              <div className={styles.subSection}>
+                <h4 className={styles.subTitle}>REQUIREMENTS</h4>
+                <ul className={styles.bulletList}>
+                  {requirements.map((req, index) => (
+                    <li key={index}>{req}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {responsibilities && responsibilities.length > 0 && (
+              <div className={styles.subSection}>
+                <h4 className={styles.subTitle}>RESPONSIBILITIES</h4>
+                <ul className={styles.bulletList}>
+                  {responsibilities.map((resp, index) => (
+                    <li key={index}>{resp}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <div className={styles.rawSection}>
+              <button 
+                className={styles.readMore}
+                onClick={() => setShowRaw(!showRaw)}
+              >
+                {showRaw ? 'Hide Raw Description' : 'View Raw Job Description...'}
+              </button>
+              
+              {showRaw && (
+                <div className={styles.rawContent}>
+                  {rawJobDescription || 'No raw description available.'}
+                </div>
+              )}
+            </div>
           </div>
         </SectionCard>
       </div>
@@ -95,18 +126,12 @@ const JobInfoTab = ({ job }) => {
         </SectionCard>
 
         <SectionCard 
-          title="Requirements" 
-          icon="📋"
+          title="Insights & Notes" 
+          icon="📓"
         >
-          <div className={styles.requirementsList}>
-            {requirements?.map((req, index) => (
-              <div key={index} className={styles.requirementItem}>
-                <div className={styles.checkbox}>
-                  {/* Since we don't have per-requirement status in DB, we'll just show them as a list */}
-                </div>
-                <span className={styles.reqUnchecked}>{req}</span>
-              </div>
-            )) || <p>No requirements listed.</p>}
+          <div className={styles.placeholderNote}>
+            <p>Add notes about company culture, interview tips, or follow-up strategies here.</p>
+            <Button variant="secondary" size="sm" block>Add Note</Button>
           </div>
         </SectionCard>
       </div>
