@@ -20,16 +20,18 @@ const JobTrackerPage = () => {
 
   const [selectedStatus, setSelectedStatus] = React.useState(null);
   const [searchTerm, setSearchTerm] = React.useState('');
+  const [locationFilter, setLocationFilter] = React.useState('');
   const [currentPage, setCurrentPage] = React.useState(1);
   const [sortConfig, setSortConfig] = React.useState({ key: 'dateSaved', direction: 'desc' });
 
   const jobQuery = React.useMemo(() => ({
     status: selectedStatus,
     search: searchTerm,
+    location: locationFilter,
     page: currentPage,
     sortBy: sortConfig.key,
     sortOrder: sortConfig.direction,
-  }), [selectedStatus, searchTerm, currentPage, sortConfig]);
+  }), [selectedStatus, searchTerm, locationFilter, currentPage, sortConfig]);
 
   useEffect(() => {
     dispatch(fetchJobs(jobQuery));
@@ -46,6 +48,11 @@ const JobTrackerPage = () => {
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleLocationFilter = (e) => {
+    setLocationFilter(e.target.value);
     setCurrentPage(1);
   };
 
@@ -99,7 +106,12 @@ const JobTrackerPage = () => {
                 </svg>
               }
             />
-            <Badge status="default" className={styles.selectionBadge}>0 selected</Badge>
+            <Input
+              placeholder="Filter by location..."
+              className={styles.locationFilterInput}
+              value={locationFilter}
+              onChange={handleLocationFilter}
+            />
           </div>
           <div className={styles.rightActions}>
             <Button variant="primary" size="md" icon="+" onClick={() => navigate(ROUTE_PATHS.ADD_JOB)}>Add Job</Button>

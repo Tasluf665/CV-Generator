@@ -1,5 +1,6 @@
 import Job from '../models/Job.model.js';
 import { ApiError } from '../utils/ApiError.js';
+import { normalizeLocation } from '../utils/locationNormalizer.js';
 import * as jobParserService from './ai/jobParser.service.js';
 import { scrapeLinkedInJobDetails } from './scrapers/linkedin/linkedinJobScraper.service.js';
 
@@ -10,6 +11,7 @@ export const getAllJobs = async (userId, query = {}) => {
   const {
     status,
     search,
+    location,
     page = 1,
     limit = 10,
     sortBy = 'dateSaved',
@@ -23,6 +25,10 @@ export const getAllJobs = async (userId, query = {}) => {
       { jobTitle: { $regex: search, $options: 'i' } },
       { company: { $regex: search, $options: 'i' } },
     ];
+  }
+
+  if (location) {
+    filter.location = { $regex: location, $options: 'i' };
   }
 
   const normalizedSortBy = ['dateSaved', 'deadline', 'excitement'].includes(sortBy) ? sortBy : 'dateSaved';
@@ -67,7 +73,11 @@ export const getAllJobs = async (userId, query = {}) => {
  * Create a new job manually
  */
 export const createJob = async (userId, jobData) => {
-  return await Job.create({ ...jobData, userId });
+  return await Job.create({
+    ...jobData,
+    location: normalizeLocation(jobData.location),
+    userId,
+  });
 };
 
 /**
@@ -98,7 +108,7 @@ export const parseAndSaveJob = async (
     userId,
     jobTitle,
     company,
-    location,
+    location: normalizeLocation(location),
     sourceUrl,
     jobType,
     status: status || 'Bookmarked',
@@ -129,9 +139,15 @@ export const getJobById = async (userId, jobId) => {
  * Update job details
  */
 export const updateJob = async (userId, jobId, updateData) => {
+  const normalizedUpdateData = { ...updateData };
+
+  if (Object.prototype.hasOwnProperty.call(normalizedUpdateData, 'location')) {
+    normalizedUpdateData.location = normalizeLocation(normalizedUpdateData.location);
+  }
+
   const job = await Job.findOneAndUpdate(
     { _id: jobId, userId },
-    { $set: updateData },
+    { $set: normalizedUpdateData },
     { new: true, runValidators: true }
   );
   if (!job) throw new ApiError(404, 'Job not found');

@@ -153,6 +153,10 @@
   width: 256px;
 }
 
+.locationFilterInput {
+  width: 220px;
+}
+
 .selectionBadge {
   background-color: var(--color-bg-main);
   color: var(--color-text-secondary);
