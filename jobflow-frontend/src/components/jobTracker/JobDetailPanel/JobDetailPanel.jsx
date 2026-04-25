@@ -72,9 +72,6 @@ const JobDetailPanel = ({ job }) => {
               <StarRating rating={job.excitement || 0} size="sm" />
             </div>
           </div>
-          <div className={styles.headerActions}>
-            <button className={styles.iconBtn} title="Bookmark">🔖</button>
-          </div>
         </div>
       </header>
 

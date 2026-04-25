@@ -165,9 +165,6 @@ const JobInfoTab = ({ job, onOpenNotesTab }) => {
         <SectionCard
           title="Job Description"
           icon="📄"
-          headerActions={
-            <Button variant="ghost" size="sm" icon="✏️">Edit</Button>
-          }
         >
           <div className={styles.description}>
             {summary && (

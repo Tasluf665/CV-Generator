@@ -226,11 +226,16 @@
 }
 
 .bulletList {
+  list-style: disc;
   margin: 0;
   padding-left: var(--spacing-lg);
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xs);
+}
+
+.bulletList li {
+  display: list-item;
 }
 
 .subSection {
