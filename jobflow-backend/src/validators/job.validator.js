@@ -6,6 +6,20 @@ const salaryRangeSchema = Joi.object({
   currency: Joi.string().default('USD').optional(),
 });
 
+const statusHistoryItemSchema = Joi.object({
+  status: Joi.string()
+    .valid(
+      'Bookmarked',
+      'Applied',
+      'Interviewing',
+      'Accepted',
+      'Ghosted',
+      'Closed',
+    )
+    .required(),
+  date: Joi.date().iso().required(),
+});
+
 export const createJob = Joi.object({
   jobTitle: Joi.string().required().trim(),
   company: Joi.string().required().trim(),
@@ -101,6 +115,7 @@ export const updateJob = Joi.object({
   deadline: Joi.date().iso().allow(null).optional(),
   dateApplied: Joi.date().iso().allow(null).optional(),
   followUpDate: Joi.date().iso().allow(null).optional(),
+  statusHistory: Joi.array().items(statusHistoryItemSchema).optional(),
   notes: Joi.string().allow('').optional(),
   attachedResumeId: Joi.string().hex().length(24).optional(),
 });

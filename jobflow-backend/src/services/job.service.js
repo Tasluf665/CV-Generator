@@ -73,8 +73,19 @@ export const getAllJobs = async (userId, query = {}) => {
  * Create a new job manually
  */
 export const createJob = async (userId, jobData) => {
+  const initialStatus = jobData.status || 'Bookmarked';
+  const savedAt = jobData.dateSaved || new Date();
+
   return await Job.create({
     ...jobData,
+    dateSaved: savedAt,
+    status: initialStatus,
+    statusHistory: [
+      {
+        status: initialStatus,
+        date: savedAt,
+      },
+    ],
     location: normalizeLocation(jobData.location),
     userId,
   });
@@ -102,6 +113,9 @@ export const parseAndSaveJob = async (
   userId,
   { jobTitle, company, location, rawJobDescription, sourceUrl, jobType, status, excitement, deadline }
 ) => {
+  const initialStatus = status || 'Bookmarked';
+  const savedAt = new Date();
+
   const parsedData = await jobParserService.parseJobDescription(rawJobDescription);
 
   const job = await Job.create({
@@ -111,7 +125,14 @@ export const parseAndSaveJob = async (
     location: normalizeLocation(location),
     sourceUrl,
     jobType,
-    status: status || 'Bookmarked',
+    dateSaved: savedAt,
+    status: initialStatus,
+    statusHistory: [
+      {
+        status: initialStatus,
+        date: savedAt,
+      },
+    ],
     excitement,
     deadline,
     rawJobDescription,
@@ -145,12 +166,34 @@ export const updateJob = async (userId, jobId, updateData) => {
     normalizedUpdateData.location = normalizeLocation(normalizedUpdateData.location);
   }
 
-  const job = await Job.findOneAndUpdate(
-    { _id: jobId, userId },
-    { $set: normalizedUpdateData },
-    { new: true, runValidators: true }
-  );
+  const job = await Job.findOne({ _id: jobId, userId });
   if (!job) throw new ApiError(404, 'Job not found');
+
+  const previousStatus = job.status;
+
+  Object.assign(job, normalizedUpdateData);
+
+  if (Object.prototype.hasOwnProperty.call(normalizedUpdateData, 'status')) {
+    const nextStatus = normalizedUpdateData.status;
+
+    if (nextStatus && nextStatus !== previousStatus) {
+      if (!Array.isArray(job.statusHistory)) {
+        job.statusHistory = [];
+      }
+
+      job.statusHistory.push({
+        status: nextStatus,
+        date: new Date(),
+      });
+
+      if (nextStatus === 'Applied' && !job.dateApplied) {
+        job.dateApplied = new Date();
+      }
+    }
+  }
+
+  await job.save();
+
   return job;
 };
 

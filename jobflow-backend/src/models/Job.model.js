@@ -61,6 +61,29 @@ const jobSchema = new mongoose.Schema(
       ],
       default: 'Bookmarked',
     },
+    statusHistory: {
+      type: [
+        {
+          status: {
+            type: String,
+            enum: [
+              'Bookmarked',
+              'Applied',
+              'Interviewing',
+              'Accepted',
+              'Ghosted',
+              'Closed',
+            ],
+            required: true,
+          },
+          date: {
+            type: Date,
+            default: Date.now,
+          },
+        },
+      ],
+      default: [],
+    },
     excitement: {
       type: Number,
       min: 0,

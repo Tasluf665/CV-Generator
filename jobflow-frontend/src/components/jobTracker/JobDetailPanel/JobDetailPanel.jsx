@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styles from './JobDetailPanel.module.css';
 import StatusPipeline from './StatusPipeline';
-import GuidanceBanner from './GuidanceBanner';
 import JobInfoTab from './tabs/JobInfoTab';
 import StarRating from '../../common/StarRating/StarRating';
 import { updateJob } from '../../../features/jobTracker/jobSlice';
@@ -82,13 +81,6 @@ const JobDetailPanel = ({ job }) => {
       <div className={styles.content}>
         <section className={styles.pipelineSection}>
           <StatusPipeline currentStatus={job.status} />
-        </section>
-
-        <section className={styles.guidanceSection}>
-          <GuidanceBanner
-            progress={0}
-            message="Review the job description, extract keywords, and upload your resume to move the application forward."
-          />
         </section>
 
         <nav className={styles.tabsNav}>
