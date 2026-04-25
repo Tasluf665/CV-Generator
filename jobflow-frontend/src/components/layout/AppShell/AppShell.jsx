@@ -3,13 +3,13 @@ import Sidebar from '../Sidebar/Sidebar';
 import Topbar from '../Topbar/Topbar';
 import styles from './AppShell.module.css';
 
-const AppShell = ({ children }) => {
+const AppShell = ({ children, noPadding = false }) => {
   return (
     <div className={styles.appShell}>
       <Sidebar />
       <div className={styles.mainWrapper}>
         <Topbar />
-        <main className={styles.content}>
+        <main className={`${styles.content} ${noPadding ? styles.noPadding : ''}`}>
           {children}
         </main>
       </div>

@@ -78,7 +78,10 @@ const JobTrackerPage = () => {
           <div className={styles.error}>{error}</div>
         ) : (
           <>
-            <JobTable jobs={items} />
+            <JobTable 
+              jobs={items} 
+              onRowClick={(id) => navigate(ROUTE_PATHS.JOB_DETAIL.replace(':id', id))} 
+            />
             <Pagination 
               currentPage={pagination.page} 
               totalEntries={pagination.total} 

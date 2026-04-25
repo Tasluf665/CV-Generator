@@ -1,0 +1,146 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--color-bg-white);
+}
+
+.header {
+  padding: var(--spacing-xxl) var(--spacing-xxl) var(--spacing-lg);
+}
+
+.headerMain {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.titleInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-text-main);
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  font-size: 16px;
+  color: var(--color-text-secondary);
+}
+
+.company {
+  font-weight: 500;
+}
+
+.dot {
+  color: var(--color-text-muted);
+}
+
+.addSalary {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-weight: 500;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.rating {
+  margin-top: var(--spacing-xs);
+}
+
+.headerActions {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.iconBtn {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--color-border-medium);
+  border-radius: var(--radius-md);
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.2s;
+}
+
+.iconBtn:hover {
+  background-color: var(--color-bg-secondary);
+}
+
+.content {
+  padding: 0 var(--spacing-xxl) var(--spacing-xxl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.tabsNav {
+  display: flex;
+  gap: var(--spacing-xl);
+  border-bottom: 1px solid var(--color-border-medium);
+  margin-top: var(--spacing-md);
+}
+
+.tabLink {
+  background: none;
+  border: none;
+  padding: var(--spacing-md) var(--spacing-xs);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.tabLink:hover {
+  color: var(--color-primary);
+}
+
+.activeTab {
+  color: var(--color-primary);
+}
+
+.activeTab::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--color-primary);
+}
+
+.tabContent {
+  padding-top: var(--spacing-lg);
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--color-text-muted);
+}
+
+.placeholderTab {
+  padding: var(--spacing-xl);
+  text-align: center;
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  border: 2px dashed var(--color-border);
+}

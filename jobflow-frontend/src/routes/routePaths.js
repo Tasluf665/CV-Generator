@@ -5,6 +5,7 @@ export const ROUTE_PATHS = {
   FORGOT_PASSWORD: '/forgot-password',
   VERIFY_EMAIL: '/verify-email',
   JOB_TRACKER: '/jobs',
+  JOB_DETAIL: '/jobs/:id',
   ADD_JOB: '/jobs/add',
   RESUME_BUILDER: '/resumes',
   ANALYTICS: '/analytics',

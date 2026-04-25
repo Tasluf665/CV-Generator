@@ -1,0 +1,56 @@
+.card {
+  background: var(--color-bg-white);
+  border: 1px solid var(--color-border-medium);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  padding: var(--spacing-md) var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.titleArea {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+}
+
+.title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-main);
+}
+
+.content {
+  padding: var(--spacing-lg);
+}
+
+/* AI Variant */
+.ai .header {
+  background-color: var(--color-primary);
+  color: white;
+  border-bottom: none;
+}
+
+.ai .title {
+  color: white;
+}
+
+.ai .icon {
+  color: white;
+}

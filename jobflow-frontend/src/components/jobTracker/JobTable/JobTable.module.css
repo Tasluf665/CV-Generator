@@ -83,3 +83,12 @@
 .dateCell {
   color: var(--color-text-secondary);
 }
+
+.clickableRow {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.clickableRow:hover {
+  background-color: var(--color-bg-secondary);
+}

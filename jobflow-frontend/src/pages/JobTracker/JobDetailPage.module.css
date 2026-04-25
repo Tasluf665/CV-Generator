@@ -1,0 +1,157 @@
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 0px); /* Adjust based on AppShell header if any */
+  overflow: hidden;
+}
+
+.topNav {
+  height: 64px;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--spacing-xl);
+  flex-shrink: 0;
+}
+
+.navLinks {
+  display: flex;
+  gap: var(--spacing-xl);
+  height: 100%;
+}
+
+.navLink {
+  background: none;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-top: 4px;
+}
+
+.navLink.active {
+  color: #0d9488;
+}
+
+.navLink.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #14b8a6;
+}
+
+.topActions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.userProfile {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  border-left: 1px solid var(--color-border);
+  padding-left: var(--spacing-lg);
+  margin-left: var(--spacing-sm);
+}
+
+.iconBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+}
+
+.mainWorkspace {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 320px;
+  background-color: #eaf5fa;
+  border-right: 1px solid var(--color-border-medium);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.sidebarHeader {
+  padding: var(--spacing-md) var(--spacing-lg);
+  background-color: var(--color-bg-white);
+  border-bottom: 1px solid var(--color-border-medium);
+}
+
+.backBtn {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.backIcon {
+  font-size: 16px;
+}
+
+.jobList {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.detailArea {
+  flex: 1;
+  overflow-y: auto;
+  background-color: var(--color-bg-white);
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 64px);
+  color: var(--color-text-secondary);
+}
+
+.loader {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--color-bg-secondary);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: var(--spacing-md);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

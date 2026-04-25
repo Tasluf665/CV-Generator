@@ -42,3 +42,8 @@
   background-color: var(--color-status-accepted-bg);
   color: var(--color-status-accepted);
 }
+
+.success {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+}

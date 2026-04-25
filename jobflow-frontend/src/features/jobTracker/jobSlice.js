@@ -37,10 +37,23 @@ export const parseJob = createAsyncThunk(
   }
 );
 
+export const fetchJobById = createAsyncThunk(
+  'jobs/fetchJobById',
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await jobService.getJobById(id);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch job details');
+    }
+  }
+);
+
 const jobSlice = createSlice({
   name: 'jobs',
   initialState: {
     items: [],
+    selectedJob: null,
     pipelineCounts: {
       Bookmarked: 0,
       Applying: 0,
@@ -62,6 +75,9 @@ const jobSlice = createSlice({
   reducers: {
     clearJobError: (state) => {
       state.error = null;
+    },
+    setSelectedJob: (state, action) => {
+      state.selectedJob = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -77,6 +93,18 @@ const jobSlice = createSlice({
         state.pagination = action.payload.pagination;
       })
       .addCase(fetchJobs.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      })
+      // Fetch Job By Id
+      .addCase(fetchJobById.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchJobById.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.selectedJob = action.payload;
+      })
+      .addCase(fetchJobById.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
       })
@@ -107,5 +135,5 @@ const jobSlice = createSlice({
   }
 });
 
-export const { clearJobError } = jobSlice.actions;
+export const { clearJobError, setSelectedJob } = jobSlice.actions;
 export default jobSlice.reducer;

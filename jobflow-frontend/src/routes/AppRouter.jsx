@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ROUTE_PATHS } from './routePaths';
 import JobTrackerPage from '../pages/JobTracker/JobTrackerPage';
+import JobDetailPage from '../pages/JobTracker/JobDetailPage';
 import AddJobPage from '../pages/JobTracker/AddJobPage';
 import LoginPage from '../pages/Auth/LoginPage';
 import RegisterPage from '../pages/Auth/RegisterPage';
@@ -22,6 +23,7 @@ const AppRouter = () => {
         <Route path={ROUTE_PATHS.VERIFY_EMAIL} element={<VerifyEmailPage />} />
 
         <Route path={ROUTE_PATHS.JOB_TRACKER} element={<JobTrackerPage />} />
+        <Route path={ROUTE_PATHS.JOB_DETAIL} element={<JobDetailPage />} />
         <Route path={ROUTE_PATHS.ADD_JOB} element={<AddJobPage />} />
         
         {/* Placeholder for other routes */}

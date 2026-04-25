@@ -15,3 +15,7 @@
   padding: 40px;
   background-color: var(--color-bg-main);
 }
+
+.noPadding {
+  padding: 0;
+}

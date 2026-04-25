@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './JobTable.module.css';
 import Badge from '../../common/Badge/Badge';
 
-const JobTable = ({ jobs }) => {
+const JobTable = ({ jobs, onRowClick }) => {
   return (
     <div className={styles.tableContainer}>
       <table className={styles.table}>
@@ -22,7 +22,11 @@ const JobTable = ({ jobs }) => {
         </thead>
         <tbody>
           {jobs.map((job) => (
-            <tr key={job._id}>
+            <tr 
+              key={job._id} 
+              onClick={() => onRowClick && onRowClick(job._id)}
+              className={styles.clickableRow}
+            >
               <td className={styles.checkboxCell}>
                 <input type="checkbox" />
               </td>
