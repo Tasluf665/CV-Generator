@@ -49,8 +49,7 @@ const JobDetailPanel = ({ job }) => {
             </div>
           </div>
           <div className={styles.headerActions}>
-            <button className={styles.iconBtn}>🔖</button>
-            <button className={styles.iconBtn}>...</button>
+            <button className={styles.iconBtn} title="Bookmark">🔖</button>
           </div>
         </div>
       </header>
@@ -61,15 +60,15 @@ const JobDetailPanel = ({ job }) => {
         </section>
 
         <section className={styles.guidanceSection}>
-          <GuidanceBanner 
-            progress={0} 
-            message="Review the job description, extract keywords, and upload your resume to move to 'Applying'." 
+          <GuidanceBanner
+            progress={0}
+            message="Review the job description, extract keywords, and upload your resume to move to 'Applying'."
           />
         </section>
 
         <nav className={styles.tabsNav}>
           {tabs.map(tab => (
-            <button 
+            <button
               key={tab.id}
               className={`${styles.tabLink} ${activeTab === tab.id ? styles.activeTab : ''}`}
               onClick={() => setActiveTab(tab.id)}

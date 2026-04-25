@@ -42,6 +42,19 @@
   background-color: rgba(0, 0, 0, 0.05);
 }
 
+.danger {
+  background-color: #ef4444;
+  color: white;
+  border-color: #ef4444;
+}
+
+.danger:hover {
+  background-color: #dc2626;
+  border-color: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
 .sm {
   padding: 6px 12px;
   font-size: 13px;

@@ -1,0 +1,91 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.displayArea {
+  min-height: 200px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.displayArea:hover {
+  background-color: var(--color-bg-secondary);
+  border-color: var(--color-border-medium);
+}
+
+.notesText {
+  white-space: pre-wrap;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-text-main);
+  padding: var(--spacing-lg);
+}
+
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  height: 200px;
+  color: var(--color-text-secondary);
+  border: 2px dashed var(--color-border-medium);
+  border-radius: var(--radius-md);
+  transition: all 0.2s;
+  background-color: var(--color-bg-white);
+}
+
+.displayArea:hover .placeholder {
+  border-color: var(--color-primary);
+  background-color: var(--color-bg-secondary);
+}
+
+.placeholderIcon {
+  font-size: 24px;
+  opacity: 0.7;
+}
+
+.placeholder h3 {
+  margin: 0;
+  font-size: 16px;
+  color: var(--color-text-main);
+}
+
+.placeholder p {
+  margin: 0;
+  font-size: 14px;
+  text-align: center;
+  max-width: 300px;
+}
+
+.editArea {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.textarea {
+  width: 100%;
+  min-height: 300px;
+  padding: var(--spacing-lg);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-text-main);
+  resize: vertical;
+  outline: none;
+  background-color: var(--color-bg-white);
+  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+}

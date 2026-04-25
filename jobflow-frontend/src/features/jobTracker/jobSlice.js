@@ -42,9 +42,21 @@ export const updateJob = createAsyncThunk(
   async ({ id, jobData }, { rejectWithValue }) => {
     try {
       const response = await jobService.updateJob(id, jobData);
-      return response.data; // Extracts job from ApiResponse
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to update job');
+    }
+  }
+);
+
+export const deleteJob = createAsyncThunk(
+  'jobs/deleteJob',
+  async (id, { rejectWithValue }) => {
+    try {
+      await jobService.deleteJob(id);
+      return id;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to delete job');
     }
   }
 );
@@ -134,11 +146,12 @@ const jobSlice = createSlice({
       })
       // Update Job
       .addCase(updateJob.fulfilled, (state, action) => {
-        const index = state.items.findIndex(item => (item._id || item.id) === (action.payload._id || action.payload.id));
+        const updatedId = action.payload._id || action.payload.id;
+        const index = state.items.findIndex(item => (item._id || item.id) === updatedId);
         if (index !== -1) {
           const oldStatus = state.items[index].status;
           const newStatus = action.payload.status;
-          
+
           state.items[index] = action.payload;
 
           // If status changed, update pipeline counts
@@ -147,7 +160,7 @@ const jobSlice = createSlice({
             if (state.pipelineCounts[oldStatus] !== undefined) {
               state.pipelineCounts[oldStatus] = Math.max(0, state.pipelineCounts[oldStatus] - 1);
             }
-            
+
             // Increment new status count
             if (state.pipelineCounts[newStatus] === undefined) {
               state.pipelineCounts[newStatus] = 1;
@@ -155,6 +168,23 @@ const jobSlice = createSlice({
               state.pipelineCounts[newStatus] += 1;
             }
           }
+        }
+        
+        // Update selectedJob so JobDetailPage updates immediately
+        if (state.selectedJob && (state.selectedJob._id || state.selectedJob.id) === updatedId) {
+          state.selectedJob = action.payload;
+        }
+      })
+      // Delete Job
+      .addCase(deleteJob.fulfilled, (state, action) => {
+        const deletedId = action.payload;
+        const job = state.items.find(j => (j._id || j.id) === deletedId);
+        if (job && state.pipelineCounts[job.status] !== undefined) {
+          state.pipelineCounts[job.status] = Math.max(0, state.pipelineCounts[job.status] - 1);
+        }
+        state.items = state.items.filter(j => (j._id || j.id) !== deletedId);
+        if (state.selectedJob && (state.selectedJob._id || state.selectedJob.id) === deletedId) {
+          state.selectedJob = null;
         }
       })
       // Parse Job
