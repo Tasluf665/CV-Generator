@@ -16,36 +16,60 @@ const JobTrackerPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { items, pipelineCounts, pagination, status, error } = useSelector((state) => state.jobs);
+  const isLoading = status === 'loading';
 
   const [selectedStatus, setSelectedStatus] = React.useState(null);
+  const [searchTerm, setSearchTerm] = React.useState('');
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [sortConfig, setSortConfig] = React.useState({ key: 'dateSaved', direction: 'desc' });
+
+  const jobQuery = React.useMemo(() => ({
+    status: selectedStatus,
+    search: searchTerm,
+    page: currentPage,
+    sortBy: sortConfig.key,
+    sortOrder: sortConfig.direction,
+  }), [selectedStatus, searchTerm, currentPage, sortConfig]);
 
   useEffect(() => {
-    dispatch(fetchJobs({ status: selectedStatus }));
-  }, [dispatch, selectedStatus]);
+    dispatch(fetchJobs(jobQuery));
+  }, [dispatch, jobQuery]);
 
   const stages = [
     { id: 'Bookmarked', label: 'Bookmarked', count: pipelineCounts.Bookmarked || 0, bgColor: '#f3f4f6', color: '#4b5563', active: selectedStatus === 'Bookmarked' },
-    { id: 'Applying', label: 'Applying', count: pipelineCounts.Applying || 0, bgColor: '#fefce8', color: '#ca8a04', active: selectedStatus === 'Applying' },
     { id: 'Applied', label: 'Applied', count: pipelineCounts.Applied || 0, bgColor: '#eff6ff', color: '#1d4ed8', active: selectedStatus === 'Applied' },
     { id: 'Interviewing', label: 'Interviewing', count: pipelineCounts.Interviewing || 0, bgColor: '#faf5ff', color: '#7e22ce', active: selectedStatus === 'Interviewing' },
-    { id: 'Negotiating', label: 'Negotiating', count: pipelineCounts.Negotiating || 0, bgColor: '#fff7ed', color: '#ea580c', active: selectedStatus === 'Negotiating' },
     { id: 'Accepted', label: 'Accepted', count: pipelineCounts.Accepted || 0, bgColor: '#f0fdf4', color: '#16a34a', active: selectedStatus === 'Accepted' },
+    { id: 'Ghosted', label: 'Ghosted', count: pipelineCounts.Ghosted || 0, bgColor: '#f1f5f9', color: '#64748b', active: selectedStatus === 'Ghosted' },
+    { id: 'Closed', label: 'Closed', count: pipelineCounts.Closed || 0, bgColor: '#fff1f2', color: '#e11d48', active: selectedStatus === 'Closed' },
   ];
 
   const handleSearch = (e) => {
-    dispatch(fetchJobs({ search: e.target.value, status: selectedStatus }));
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleUpdateJob = (id, jobData) => {
-    dispatch(updateJob({ id, jobData }));
+    dispatch(updateJob({ id, jobData })).then(() => {
+      dispatch(fetchJobs(jobQuery));
+    });
   };
 
   const handleStageClick = (stageId) => {
+    setCurrentPage(1);
     if (selectedStatus === stageId) {
       setSelectedStatus(null); // Clear filter if clicking the same stage
     } else {
       setSelectedStatus(stageId);
     }
+  };
+
+  const handleSort = (field) => {
+    setCurrentPage(1);
+    setSortConfig((currentSort) => ({
+      key: field,
+      direction: currentSort.key === field && currentSort.direction === 'desc' ? 'asc' : 'desc',
+    }));
   };
 
   return (
@@ -82,24 +106,48 @@ const JobTrackerPage = () => {
           </div>
         </div>
 
-        {status === 'loading' ? (
-          <div className={styles.loading}>Loading jobs...</div>
-        ) : error ? (
+        {error ? (
           <div className={styles.error}>{error}</div>
         ) : (
-          <>
-            <JobTable
-              jobs={items}
-              onRowClick={(id) => navigate(ROUTE_PATHS.JOB_DETAIL.replace(':id', id))}
-              onUpdateJob={handleUpdateJob}
-            />
-            <Pagination
-              currentPage={pagination.page}
-              totalEntries={pagination.total}
-              entriesPerPage={pagination.limit}
-              onPageChange={(page) => dispatch(fetchJobs({ page, status: selectedStatus }))}
-            />
-          </>
+          <div className={`${styles.tableContent} ${isLoading ? styles.loadingState : ''}`} aria-busy={isLoading}>
+            {isLoading && (
+              <div className={styles.loadingOverlay} aria-hidden="true">
+                <div className={styles.loadingSkeletonHeader}>
+                  <div className={styles.skeletonLine} />
+                  <div className={styles.skeletonLineShort} />
+                </div>
+                <div className={styles.loadingSkeletonRows}>
+                  {Array.from({ length: 7 }).map((_, index) => (
+                    <div key={index} className={styles.loadingSkeletonRow}>
+                      <div className={styles.skeletonCellWide} />
+                      <div className={styles.skeletonCellMedium} />
+                      <div className={styles.skeletonCellMedium} />
+                      <div className={styles.skeletonCellSmall} />
+                      <div className={styles.skeletonCellSmall} />
+                      <div className={styles.skeletonCellSmall} />
+                      <div className={styles.skeletonCellStars} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className={styles.loadingBackdrop}>
+              <JobTable
+                jobs={items}
+                onRowClick={(id) => navigate(ROUTE_PATHS.JOB_DETAIL.replace(':id', id))}
+                onUpdateJob={handleUpdateJob}
+                sortConfig={sortConfig}
+                onSort={handleSort}
+              />
+              <Pagination
+                currentPage={pagination.page}
+                totalEntries={pagination.total}
+                entriesPerPage={pagination.limit}
+                onPageChange={setCurrentPage}
+              />
+            </div>
+          </div>
         )}
       </div>
     </AppShell>

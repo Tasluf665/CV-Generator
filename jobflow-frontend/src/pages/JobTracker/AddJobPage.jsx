@@ -219,11 +219,11 @@ const AddJobPage = () => {
                   onChange={handleChange}
                   options={[
                     { label: 'Bookmarked', value: 'Bookmarked' },
-                    { label: 'Applying', value: 'Applying' },
                     { label: 'Applied', value: 'Applied' },
                     { label: 'Interviewing', value: 'Interviewing' },
-                    { label: 'Negotiating', value: 'Negotiating' },
-                    { label: 'Accepted', value: 'Accepted' }
+                    { label: 'Accepted', value: 'Accepted' },
+                    { label: 'Ghosted', value: 'Ghosted' },
+                    { label: 'Closed', value: 'Closed' },
                   ]}
                 />
                 <Rating

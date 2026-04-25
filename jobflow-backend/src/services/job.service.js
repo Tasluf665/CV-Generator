@@ -7,7 +7,14 @@ import { scrapeLinkedInJobDetails } from './scrapers/linkedin/linkedinJobScraper
  * Fetch all jobs for a user with optional filters and pagination
  */
 export const getAllJobs = async (userId, query = {}) => {
-  const { status, search, page = 1, limit = 10 } = query;
+  const {
+    status,
+    search,
+    page = 1,
+    limit = 10,
+    sortBy = 'dateSaved',
+    sortOrder = 'desc',
+  } = query;
   const filter = { userId };
 
   if (status) filter.status = status;
@@ -18,8 +25,16 @@ export const getAllJobs = async (userId, query = {}) => {
     ];
   }
 
+  const normalizedSortBy = ['dateSaved', 'deadline', 'excitement'].includes(sortBy) ? sortBy : 'dateSaved';
+  const normalizedSortOrder = sortOrder === 'asc' ? 1 : -1;
+  const sortOptions = { [normalizedSortBy]: normalizedSortOrder };
+
+  if (normalizedSortBy !== 'dateSaved') {
+    sortOptions.dateSaved = -1;
+  }
+
   const jobs = await Job.find(filter)
-    .sort({ dateSaved: -1 })
+    .sort(sortOptions)
     .skip((page - 1) * limit)
     .limit(limit);
 

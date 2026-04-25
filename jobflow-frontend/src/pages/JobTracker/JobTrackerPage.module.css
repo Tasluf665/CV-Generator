@@ -29,6 +29,112 @@
   flex-direction: column;
 }
 
+.tableContent {
+  position: relative;
+}
+
+.loadingState .loadingBackdrop {
+  filter: blur(2px);
+  pointer-events: none;
+  user-select: none;
+}
+
+.loadingState .loadingBackdrop :global(table) {
+  opacity: 0.7;
+}
+
+.loadingOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  pointer-events: none;
+}
+
+.loadingSkeletonHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 4px 8px 12px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.loadingSkeletonRows {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.loadingSkeletonRow {
+  display: grid;
+  grid-template-columns: 2.1fr 1.2fr 1.1fr 1.2fr 1fr 1fr 1.2fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.skeletonLine,
+.skeletonLineShort,
+.skeletonCellWide,
+.skeletonCellMedium,
+.skeletonCellSmall,
+.skeletonCellStars {
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(226, 232, 240, 0.8) 0%,
+    rgba(203, 213, 225, 0.9) 50%,
+    rgba(226, 232, 240, 0.8) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeletonPulse 1.3s ease-in-out infinite;
+}
+
+.skeletonLine {
+  width: 180px;
+  height: 14px;
+}
+
+.skeletonLineShort {
+  width: 120px;
+  height: 14px;
+}
+
+.skeletonCellWide {
+  height: 18px;
+  width: 100%;
+}
+
+.skeletonCellMedium {
+  height: 18px;
+  width: 88%;
+}
+
+.skeletonCellSmall {
+  height: 18px;
+  width: 70%;
+}
+
+.skeletonCellStars {
+  height: 18px;
+  width: 86px;
+}
+
+@keyframes skeletonPulse {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
 .tableToolbar {
   padding: 16px;
   display: flex;

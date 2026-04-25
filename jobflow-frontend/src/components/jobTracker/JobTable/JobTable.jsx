@@ -2,9 +2,15 @@ import React, { useState } from 'react';
 import styles from './JobTable.module.css';
 import Badge from '../../common/Badge/Badge';
 
-const STATUS_OPTIONS = ['Bookmarked', 'Applying', 'Applied', 'Interviewing', 'Negotiating', 'Accepted'];
+const STATUS_OPTIONS = ['Bookmarked', 'Applied', 'Interviewing', 'Accepted', 'Ghosted', 'Closed'];
 
-const JobTable = ({ jobs, onRowClick, onUpdateJob }) => {
+const SORTABLE_FIELDS = {
+  dateSaved: 'DATE SAVED',
+  deadline: 'DEADLINE',
+  excitement: 'EXCITEMENT',
+};
+
+const JobTable = ({ jobs, onRowClick, onUpdateJob, sortConfig, onSort }) => {
   const [editingCell, setEditingCell] = useState(null); // { id, field }
   const [tempValue, setTempValue] = useState('');
 
@@ -112,6 +118,11 @@ const JobTable = ({ jobs, onRowClick, onUpdateJob }) => {
     );
   };
 
+  const renderSortIndicator = (field) => {
+    if (sortConfig?.key !== field) return '↕';
+    return sortConfig.direction === 'asc' ? '↑' : '↓';
+  };
+
   return (
     <div className={styles.tableContainer}>
       <table className={styles.table}>
@@ -124,9 +135,20 @@ const JobTable = ({ jobs, onRowClick, onUpdateJob }) => {
             <th>COMPANY</th>
             <th>LOCATION</th>
             <th>STATUS</th>
-            <th>DATE SAVED</th>
-            <th>DEADLINE</th>
-            <th>EXCITEMENT</th>
+            {Object.entries(SORTABLE_FIELDS).map(([field, label]) => (
+              <th key={field}>
+                <button
+                  type="button"
+                  className={`${styles.sortHeaderButton} ${sortConfig?.key === field ? styles.activeSortHeader : ''}`}
+                  onClick={() => onSort && onSort(field)}
+                  aria-label={`Sort by ${label}`}
+                  aria-sort={sortConfig?.key === field ? (sortConfig.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
+                >
+                  <span>{label}</span>
+                  <span className={styles.sortIndicator}>{renderSortIndicator(field)}</span>
+                </button>
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>

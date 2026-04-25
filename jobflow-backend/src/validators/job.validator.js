@@ -18,13 +18,11 @@ export const createJob = Joi.object({
   status: Joi.string()
     .valid(
       'Bookmarked',
-      'Applying',
       'Applied',
       'Interviewing',
-      'Negotiating',
       'Accepted',
-      'Rejected',
-      'Closed'
+      'Ghosted',
+      'Closed',
     )
     .optional(),
   excitement: Joi.number().min(0).max(5).optional(),
@@ -69,13 +67,11 @@ export const parseJob = Joi.object({
   status: Joi.string()
     .valid(
       'Bookmarked',
-      'Applying',
       'Applied',
       'Interviewing',
-      'Negotiating',
       'Accepted',
-      'Rejected',
-      'Closed'
+      'Ghosted',
+      'Closed',
     )
     .optional(),
   excitement: Joi.number().min(0).max(5).optional(),
@@ -93,13 +89,11 @@ export const updateJob = Joi.object({
   status: Joi.string()
     .valid(
       'Bookmarked',
-      'Applying',
       'Applied',
       'Interviewing',
-      'Negotiating',
       'Accepted',
-      'Rejected',
-      'Closed'
+      'Ghosted',
+      'Closed',
     )
     .optional(),
   excitement: Joi.number().min(0).max(5).optional(),

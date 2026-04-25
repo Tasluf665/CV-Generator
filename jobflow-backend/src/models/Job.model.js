@@ -53,12 +53,10 @@ const jobSchema = new mongoose.Schema(
       required: true,
       enum: [
         'Bookmarked',
-        'Applying',
         'Applied',
         'Interviewing',
-        'Negotiating',
         'Accepted',
-        'Rejected',
+        'Ghosted',
         'Closed',
       ],
       default: 'Bookmarked',

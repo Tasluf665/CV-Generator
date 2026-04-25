@@ -87,7 +87,7 @@ const JobDetailPanel = ({ job }) => {
         <section className={styles.guidanceSection}>
           <GuidanceBanner
             progress={0}
-            message="Review the job description, extract keywords, and upload your resume to move to 'Applying'."
+            message="Review the job description, extract keywords, and upload your resume to move the application forward."
           />
         </section>
 

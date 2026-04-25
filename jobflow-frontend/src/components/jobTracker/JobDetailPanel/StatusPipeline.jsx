@@ -3,11 +3,10 @@ import styles from './StatusPipeline.module.css';
 
 const stages = [
   { id: 'bookmarked', label: 'Bookmarked', icon: '🔖' },
-  { id: 'applying', label: 'Applying', icon: '✈️' },
   { id: 'applied', label: 'Applied', icon: '📧' },
   { id: 'interviewing', label: 'Interviewing', icon: '💬' },
-  { id: 'negotiating', label: 'Negotiating', icon: '🤝' },
   { id: 'accepted', label: 'Accepted', icon: '✅' },
+  { id: 'ghosted', label: 'Ghosted', icon: '👻' },
   { id: 'closed', label: 'Close Job', icon: '🚫' },
 ];
 
@@ -17,8 +16,8 @@ const StatusPipeline = ({ currentStatus }) => {
   return (
     <div className={styles.pipeline}>
       <div className={styles.line}>
-        <div 
-          className={styles.progressLine} 
+        <div
+          className={styles.progressLine}
           style={{ width: `${(currentIndex / (stages.length - 1)) * 100}%` }}
         ></div>
       </div>
@@ -26,10 +25,10 @@ const StatusPipeline = ({ currentStatus }) => {
         {stages.map((stage, index) => {
           const isActive = index === currentIndex;
           const isCompleted = index < currentIndex;
-          
+
           return (
-            <div 
-              key={stage.id} 
+            <div
+              key={stage.id}
               className={`${styles.stage} ${isActive ? styles.active : ''} ${isCompleted ? styles.completed : ''}`}
             >
               <div className={styles.iconWrapper}>

@@ -18,11 +18,6 @@
   color: var(--color-status-bookmarked);
 }
 
-.applying {
-  background-color: var(--color-status-applying-bg);
-  color: var(--color-status-applying);
-}
-
 .applied {
   background-color: var(--color-status-applied-bg);
   color: var(--color-status-applied);
@@ -33,14 +28,19 @@
   color: var(--color-status-interviewing);
 }
 
-.negotiating {
-  background-color: var(--color-status-negotiating-bg);
-  color: var(--color-status-negotiating);
+.closed {
+  background-color: var(--color-status-closed-bg);
+  color: var(--color-status-closed);
 }
 
 .accepted {
   background-color: var(--color-status-accepted-bg);
   color: var(--color-status-accepted);
+}
+
+.ghosted {
+  background-color: var(--color-status-ghosted-bg);
+  color: var(--color-status-ghosted);
 }
 
 .success {

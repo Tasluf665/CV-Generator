@@ -92,11 +92,11 @@ const jobSlice = createSlice({
     selectedJob: null,
     pipelineCounts: {
       Bookmarked: 0,
-      Applying: 0,
       Applied: 0,
       Interviewing: 0,
-      Negotiating: 0,
-      Accepted: 0
+      Accepted: 0,
+      Ghosted: 0,
+      Closed: 0,
     },
     pagination: {
       total: 0,
