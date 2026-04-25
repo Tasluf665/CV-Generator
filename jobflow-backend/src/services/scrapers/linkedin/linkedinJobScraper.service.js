@@ -2,6 +2,7 @@ import { load } from 'cheerio';
 import { ApiError } from '../../../utils/ApiError.js';
 
 const LINKEDIN_JOB_HOSTS = new Set(['linkedin.com', 'www.linkedin.com']);
+const BLOCK_TAGS = new Set(['p', 'div', 'section', 'article', 'header', 'footer', 'aside', 'ul', 'ol', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']);
 
 const normalizeText = (value = '') =>
     value
@@ -10,17 +11,84 @@ const normalizeText = (value = '') =>
         .trim();
 
 const htmlToReadableText = (html = '') => {
-    const text = load(
-        html
-            .replace(/<\s*br\s*\/?\s*>/gi, '\n')
-            .replace(/<\s*\/\s*(p|div|section|article|li|h[1-6]|ul|ol)\s*>/gi, '\n')
-            .replace(/<\s*(p|div|section|article|li|h[1-6]|ul|ol)(\s[^>]*)?>/gi, '')
-    ).text();
+    if (!html) return '';
 
-    return text
-        .replace(/\r\n/g, '\n')
-        .replace(/[\t ]+/g, ' ')
-        .replace(/\n[ \t]+/g, '\n')
+    const $ = load(`<div id="job-description-root">${html}</div>`);
+    const root = $('#job-description-root');
+    const lines = [];
+
+    const pushLine = (value, prefix = '') => {
+        const text = normalizeText(value);
+        if (!text) return;
+        lines.push(`${prefix}${text}`.trimEnd());
+    };
+
+    const collectInlineText = (node) => {
+        if (!node) return '';
+
+        const children = node.children || [];
+        if (!children.length) {
+            return normalizeText($(node).text());
+        }
+
+        return children
+            .map((child) => {
+                if (child.type === 'text') {
+                    return child.data || '';
+                }
+
+                if (child.type === 'tag') {
+                    if (child.name === 'br') return '\n';
+                    if (child.name === 'li') return `• ${collectInlineText(child)}`;
+                    return collectInlineText(child);
+                }
+
+                return '';
+            })
+            .join(' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+    };
+
+    const walk = (node) => {
+        if (!node) return;
+
+        if (node.type === 'text') {
+            const text = normalizeText(node.data || '');
+            if (text) lines.push(text);
+            return;
+        }
+
+        if (node.type !== 'tag') return;
+
+        if (node.name === 'br') {
+            lines.push('');
+            return;
+        }
+
+        if (node.name === 'li') {
+            pushLine(collectInlineText(node), '• ');
+            return;
+        }
+
+        const isBlock = BLOCK_TAGS.has(node.name);
+        const beforeCount = lines.length;
+
+        for (const child of node.children || []) {
+            walk(child);
+        }
+
+        if (isBlock && lines.length > beforeCount) {
+            lines.push('');
+        }
+    };
+
+    for (const child of root.contents().toArray()) {
+        walk(child);
+    }
+
+    return lines
+        .join('\n')
         .replace(/\n{3,}/g, '\n\n')
         .trim();
 };
@@ -100,9 +168,9 @@ const parseFromDom = ($) => {
     );
 
     const aboutTheJob = normalizeText(
-        $('.show-more-less-html__markup').first().text() ||
-        $('.description__text').first().text() ||
-        $('.jobs-description__content').first().text() ||
+        htmlToReadableText($('.show-more-less-html__markup').first().html() || '') ||
+        htmlToReadableText($('.description__text').first().html() || '') ||
+        htmlToReadableText($('.jobs-description__content').first().html() || '') ||
         ''
     );
 

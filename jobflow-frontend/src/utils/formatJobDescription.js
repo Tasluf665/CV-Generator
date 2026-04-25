@@ -7,11 +7,15 @@ export const formatJobDescription = (value = '') => {
         .trim();
 
     if (normalized.includes('\n')) {
-        return normalized.replace(/\n{3,}/g, '\n\n');
+        return normalized
+            .replace(/\n\s*([•·*-])\s*/g, '\n• ')
+            .replace(/\n{3,}/g, '\n\n')
+            .trim();
     }
 
     return normalized
-        .replace(/\s*([•·-])\s+/g, '\n$1 ')
+        .replace(/\s*([•·*-])\s+/g, '\n• ')
+        .replace(/\s*(\d+)\.\s+/g, '\n$1. ')
         .replace(/\s+(?=\d+\.\s+)/g, '\n')
         .replace(/([.?!])\s+(?=[A-Z0-9(])/g, '$1\n\n')
         .replace(/;\s+(?=[A-Z0-9(])/g, ';\n')

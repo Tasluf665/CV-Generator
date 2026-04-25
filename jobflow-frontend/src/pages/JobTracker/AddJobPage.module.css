@@ -87,8 +87,14 @@
 .aiBtn {
   width: 100%;
   justify-content: center;
-  background-color: var(--color-brand-primary);
-  color: white;
+  background-color: var(--color-primary) !important;
+  color: var(--color-bg-white) !important;
+  border-color: var(--color-primary) !important;
+}
+
+.aiBtn:hover {
+  background-color: var(--color-primary-dark) !important;
+  color: var(--color-bg-white) !important;
 }
 
 .divider {
