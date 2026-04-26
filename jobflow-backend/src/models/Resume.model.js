@@ -141,10 +141,9 @@ const resumeSchema = new mongoose.Schema(
       lineHeight: { type: Number, default: 120 },
       listLineHeight: { type: Number, default: 120 },
       fontSize: { type: Number, default: 13 },
-      margins: {
-        type: String,
-        enum: ['narrow', 'normal', 'wide'],
-        default: 'normal',
+      margin: {
+        type: Number,
+        default: 48,
       },
       dateFormat: {
         type: String,

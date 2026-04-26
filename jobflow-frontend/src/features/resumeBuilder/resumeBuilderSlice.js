@@ -83,6 +83,16 @@ const initialResumeData = {
   education: [],
   skills: [],
   projects: [],
+  design: {
+    template: 'modern',
+    font: 'Inter',
+    lineHeight: 1.4,
+    listLineHeight: 1.2,
+    accentColor: '#00b894',
+    dateFormat: 'MM/YYYY',
+    margin: 48,
+    fontSize: 14,
+  },
 };
 
 
@@ -202,6 +212,9 @@ const resumeBuilderSlice = createSlice({
     removeProject: (state, action) => {
       state.resumeData.projects = state.resumeData.projects.filter(p => p.id !== action.payload);
     },
+    updateDesign: (state, action) => {
+      state.resumeData.design = { ...state.resumeData.design, ...action.payload };
+    },
 
     setActiveTab: (state, action) => {
       state.ui.activeTab = action.payload;
@@ -313,6 +326,7 @@ export const {
   toggleSection,
   setZoomLevel,
   resetResumeState,
+  updateDesign,
 } = resumeBuilderSlice.actions;
 
 

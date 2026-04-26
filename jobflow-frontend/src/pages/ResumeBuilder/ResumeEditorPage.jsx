@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Tabs from '../../components/common/Tabs/Tabs';
 import Button from '../../components/common/Button/Button';
 import ContentEditor from '../../components/resumeBuilder/ContentEditor/ContentEditor';
+import DesignerPanel from '../../components/resumeBuilder/DesignerPanel/DesignerPanel';
 import ResumePreview from '../../components/resumeBuilder/ResumePreview/ResumePreview';
 import {
   selectActiveTab,
@@ -240,7 +241,8 @@ const ResumeEditorPage = () => {
       <main className={styles.mainContent}>
         <aside className={styles.sidebar} style={{ width: `${sidebarWidth}px` }}>
           {activeTab === 'content' && <ContentEditor />}
-          {activeTab !== 'content' && (
+          {activeTab === 'designer' && <DesignerPanel />}
+          {activeTab !== 'content' && activeTab !== 'designer' && (
             <div className={styles.placeholder}>
               <h2>{tabs.find(t => t.id === activeTab)?.label} coming soon!</h2>
             </div>

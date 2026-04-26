@@ -75,6 +75,7 @@ export const updateResume = Joi.object({
   education: Joi.array().items(educationSchema).optional(),
   skills: Joi.array().items(skillSchema).optional(),
   projects: Joi.array().items(projectSchema).optional(),
+  design: Joi.object().optional(),
 });
 
 export const matchResume = Joi.object({
@@ -88,8 +89,8 @@ export const updateDesign = Joi.object({
   lineHeight: Joi.number().optional(),
   listLineHeight: Joi.number().optional(),
   fontSize: Joi.number().optional(),
-  margins: Joi.string().valid('narrow', 'normal', 'wide').optional(),
-  dateFormat: Joi.string().valid('MM/YYYY', 'Month YYYY', 'YYYY').optional(),
+  margin: Joi.number().optional(),
+  dateFormat: Joi.string().allow('').optional(),
 });
 
 export const updateSections = Joi.object({
