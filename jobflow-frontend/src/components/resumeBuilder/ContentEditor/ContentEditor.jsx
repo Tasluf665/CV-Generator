@@ -1,0 +1,23 @@
+import React from 'react';
+import ContactSection from './sections/ContactSection';
+import TitleSection from './sections/TitleSection';
+import SummarySection from './sections/SummarySection';
+import WorkExperienceSection from './sections/WorkExperienceSection';
+import EducationSection from './sections/EducationSection';
+import SkillsSection from './sections/SkillsSection';
+import styles from './ContentEditor.module.css';
+
+const ContentEditor = () => {
+  return (
+    <div className={styles.container}>
+      <ContactSection />
+      <TitleSection />
+      <SummarySection />
+      <WorkExperienceSection />
+      <EducationSection />
+      <SkillsSection />
+    </div>
+  );
+};
+
+export default ContentEditor;

@@ -10,6 +10,9 @@ import ForgotPasswordPage from '../pages/Auth/ForgotPasswordPage';
 import VerifyEmailPage from '../pages/Auth/VerifyEmailPage';
 import NotFound from '../pages/NotFound/NotFound';
 
+import ResumeBuilderPage from '../pages/ResumeBuilder/ResumeBuilderPage';
+import ResumeEditorPage from '../pages/ResumeBuilder/ResumeEditorPage';
+
 const AppRouter = () => {
   return (
     <BrowserRouter>
@@ -21,14 +24,17 @@ const AppRouter = () => {
         <Route path={ROUTE_PATHS.REGISTER} element={<RegisterPage />} />
         <Route path={ROUTE_PATHS.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
         <Route path={ROUTE_PATHS.VERIFY_EMAIL} element={<VerifyEmailPage />} />
-
+ 
         <Route path={ROUTE_PATHS.JOB_TRACKER} element={<JobTrackerPage />} />
         <Route path={ROUTE_PATHS.JOB_DETAIL} element={<JobDetailPage />} />
         <Route path={ROUTE_PATHS.ADD_JOB} element={<AddJobPage />} />
         
-        {/* Placeholder for other routes */}
-        <Route path={ROUTE_PATHS.RESUME_BUILDER} element={<div>Resume Builder Placeholder</div>} />
+        {/* Resume Builder Routes */}
+        <Route path={ROUTE_PATHS.RESUME_BUILDER} element={<ResumeBuilderPage />} />
+        <Route path={ROUTE_PATHS.RESUME_EDITOR} element={<ResumeEditorPage />} />
+        
         <Route path={ROUTE_PATHS.ANALYTICS} element={<div>Analytics Placeholder</div>} />
+
         
         <Route path="*" element={<NotFound />} />
       </Routes>

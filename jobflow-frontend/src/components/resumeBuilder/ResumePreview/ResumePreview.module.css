@@ -1,0 +1,142 @@
+.a4Page {
+  width: 794px;
+  min-height: 1123px;
+  background-color: white;
+  padding: 60px;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  font-family: 'Poppins', 'Inter', sans-serif;
+  color: var(--color-text-main);
+  transform-origin: top center;
+}
+
+.header {
+  border-bottom: 2px solid var(--color-primary);
+  padding-bottom: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.name {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: -0.8px;
+}
+
+.title {
+  font-size: 15px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.contactInfo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-top: 5px;
+}
+
+.contactItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sectionTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.summaryText {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.itemHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.itemTitle {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.itemDate {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.itemSubTitle {
+  font-size: 14px;
+  font-weight: 500;
+  font-style: italic;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.itemDescription {
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bullet {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  margin: 0;
+  position: relative;
+  padding-left: 12px;
+}
+
+.bullet::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--color-primary);
+}
+
+.skillsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skillItem {
+  font-size: 13px;
+  margin: 0;
+}
+
+.skillCategory {
+  font-weight: 700;
+}

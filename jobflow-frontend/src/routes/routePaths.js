@@ -8,5 +8,6 @@ export const ROUTE_PATHS = {
   JOB_DETAIL: '/jobs/:id',
   ADD_JOB: '/jobs/add',
   RESUME_BUILDER: '/resumes',
+  RESUME_EDITOR: '/resumes/:id/edit',
   ANALYTICS: '/analytics',
 };
