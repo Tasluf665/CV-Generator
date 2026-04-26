@@ -64,8 +64,7 @@ Return ONLY this JSON structure:
 {
   "summary": "<string>",
   "requirements": ["<string>", "..."],
-  "responsibilities": ["<string>", "..."],
-  "extractedKeywords": ["<string>", "..."]
+  "responsibilities": ["<string>", "..."]
 }
 ---
 ## FIELD INSTRUCTIONS
@@ -76,8 +75,6 @@ Write 2–3 sentences covering: company or team context (if mentioned), the seni
 Extract all hard requirements: minimum years of experience, education level, certifications, licenses, and specific must-have skills or technologies. Use the exact terminology from the job description. Each requirement is one item in the array.
 ### responsibilities
 Extract the core duties and ownership areas. Preserve the original action-verb phrasing (e.g., "Lead cross-functional teams" not "Leadership"). Each responsibility is one item in the array. Remove duplicate or near-duplicate bullets.
-### extractedKeywords
-This is the most critical field. These keywords will be used to optimize a CV for ATS (Applicant Tracking Systems).
 ---
 ## EXAMPLE
 ### Input (raw job description):
@@ -96,9 +93,42 @@ This is the most critical field. These keywords will be used to optimize a CV fo
     "Design and maintain scalable data pipelines",
     "Work closely with Data Scientists and analysts",
     "Contribute to the Data Platform team infrastructure"
-  ],
+  ]
+}
+  `;
+};
+
+/**
+ * Builds the system prompt for ATS keyword generation
+ */
+export const getKeywordGeneratorSystemPrompt = () => {
+  return `
+You are an ATS keyword generator for a Job Tracking Dashboard. Your task is to analyze the raw job description and return a single, strictly formatted JSON object — no markdown, no explanation, no extra text outside the JSON.
+---
+## OUTPUT SCHEMA
+Return ONLY this JSON structure:
+{
+  "extractedKeywords": ["<string>", "..."]
+}
+---
+## FIELD INSTRUCTIONS
+
+### extractedKeywords
+Extract the most relevant ATS keywords from the job description, including role titles, tools, technologies, methodologies, domain terms, and core skills.
+- Prefer exact terminology used in the posting.
+- Include both hard skills and high-signal domain phrases.
+- Deduplicate near-identical terms.
+- Return around 8–30 keywords when available.
+- Keep each keyword concise and useful for resume optimization.
+
+---
+## EXAMPLE
+### Input (raw job description):
+"We are looking for a Senior Data Engineer to join our growing Data Platform team at FinEdge. You will design and maintain scalable data pipelines using Apache Spark and dbt, and work closely with Data Scientists and analysts. Requirements: 5+ years of data engineering experience, proficiency in Python and SQL, experience with cloud platforms (AWS or GCP), familiarity with Airflow. Nice to have: Kafka, Terraform. You thrive in Agile teams and communicate clearly across departments."
+### Expected Output:
+{
   "extractedKeywords": [
-    "data engineering", "data pipelines", "Python", "SQL", "Apache Spark", "dbt", "AWS", "GCP", "Apache Airflow", "cloud platforms", "Kafka", "Terraform", "Agile", "data platform", "scalable pipelines", "Senior Data Engineer", "Data Scientist", "design", "maintain", "collaborate", "communicate"
+    "Senior Data Engineer", "Data Platform", "data engineering", "data pipelines", "Apache Spark", "dbt", "Python", "SQL", "AWS", "GCP", "Apache Airflow", "Kafka", "Terraform", "Agile", "Data Scientist"
   ]
 }
   `;

@@ -21,6 +21,11 @@ export const jobService = {
     return response.data;
   },
 
+  generateKeywords: async (id) => {
+    const response = await api.post(`/jobs/${id}/keywords`);
+    return response.data;
+  },
+
   getJobById: async (id) => {
     const response = await api.get(`/jobs/${id}`);
     return response.data;

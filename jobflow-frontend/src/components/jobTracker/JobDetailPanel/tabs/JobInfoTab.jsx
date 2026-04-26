@@ -5,7 +5,7 @@ import SectionCard from '../../../common/SectionCard/SectionCard';
 import Badge from '../../../common/Badge/Badge';
 import Button from '../../../common/Button/Button';
 import { formatJobDescription } from '../../../../utils/formatJobDescription';
-import { updateJob } from '../../../../features/jobTracker/jobSlice';
+import { generateKeywords, updateJob } from '../../../../features/jobTracker/jobSlice';
 
 const APPLICATION_STAGES = [
   { id: 'Bookmarked', label: 'Bookmarked' },
@@ -39,11 +39,12 @@ const JobInfoTab = ({ job, onOpenNotesTab }) => {
   const [showRaw, setShowRaw] = React.useState(false);
   const [editingStageId, setEditingStageId] = React.useState(null);
   const [editingDateValue, setEditingDateValue] = React.useState('');
+  const [isGeneratingKeywords, setIsGeneratingKeywords] = React.useState(false);
 
   if (!job) return null;
 
   const { dateSaved, deadline, parsedData, rawJobDescription } = job;
-  const { summary, requirements, responsibilities, extractedKeywords } = parsedData || {};
+  const { summary, requirements, responsibilities, extractedKeywords = [] } = parsedData || {};
 
   const currentStatusIndex = APPLICATION_STAGES.findIndex((stage) => stage.id === job.status);
 
@@ -127,6 +128,17 @@ const JobInfoTab = ({ job, onOpenNotesTab }) => {
 
     dispatch(updateJob({ id: job._id, jobData }));
     handleCancelDateEdit();
+  };
+
+  const handleGenerateKeywords = async () => {
+    if (!job?._id || isGeneratingKeywords) return;
+
+    setIsGeneratingKeywords(true);
+    try {
+      await dispatch(generateKeywords(job._id)).unwrap();
+    } finally {
+      setIsGeneratingKeywords(false);
+    }
   };
 
   return (
@@ -303,22 +315,27 @@ const JobInfoTab = ({ job, onOpenNotesTab }) => {
           icon="💡"
           variant="ai"
           headerActions={
-            <button className={styles.refreshBtn}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M23 4v6h-6"></path>
-                <path d="M1 20v-6h6"></path>
-                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-              </svg>
-            </button>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={handleGenerateKeywords}
+              disabled={isGeneratingKeywords}
+            >
+              {isGeneratingKeywords ? 'Generating...' : extractedKeywords.length > 0 ? 'Regenerate Keywords' : 'Generate Keywords'}
+            </Button>
           }
         >
           <p className={styles.aiInfo}>Highlighting crucial skills to include in your resume for this specific role.</p>
           <div className={styles.tagCloud}>
-            {extractedKeywords?.map(tag => (
-              <Badge key={tag} status="success" className={styles.keywordTag}>
-                {tag} <span className={styles.check}>✓</span>
-              </Badge>
-            )) || <p>No keywords extracted.</p>}
+            {extractedKeywords.length > 0 ? (
+              extractedKeywords.map((tag) => (
+                <Badge key={tag} status="success" className={styles.keywordTag}>
+                  {tag} <span className={styles.check}>✓</span>
+                </Badge>
+              ))
+            ) : (
+              <p>No keywords generated yet.</p>
+            )}
           </div>
         </SectionCard>
 

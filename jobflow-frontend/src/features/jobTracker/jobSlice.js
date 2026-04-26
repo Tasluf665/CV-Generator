@@ -37,6 +37,18 @@ export const parseJob = createAsyncThunk(
   }
 );
 
+export const generateKeywords = createAsyncThunk(
+  'jobs/generateKeywords',
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await jobService.generateKeywords(id);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to generate keywords');
+    }
+  }
+);
+
 export const scrapeJob = createAsyncThunk(
   'jobs/scrapeJob',
   async (jobUrl, { rejectWithValue }) => {
@@ -167,14 +179,11 @@ const jobSlice = createSlice({
 
           state.items[index] = action.payload;
 
-          // If status changed, update pipeline counts
           if (oldStatus !== newStatus) {
-            // Decrement old status count
             if (state.pipelineCounts[oldStatus] !== undefined) {
               state.pipelineCounts[oldStatus] = Math.max(0, state.pipelineCounts[oldStatus] - 1);
             }
 
-            // Increment new status count
             if (state.pipelineCounts[newStatus] === undefined) {
               state.pipelineCounts[newStatus] = 1;
             } else {
@@ -183,10 +192,23 @@ const jobSlice = createSlice({
           }
         }
 
-        // Update selectedJob so JobDetailPage updates immediately
         if (state.selectedJob && (state.selectedJob._id || state.selectedJob.id) === updatedId) {
           state.selectedJob = action.payload;
         }
+      })
+      .addCase(generateKeywords.fulfilled, (state, action) => {
+        const updatedId = action.payload._id || action.payload.id;
+        const index = state.items.findIndex(item => (item._id || item.id) === updatedId);
+        if (index !== -1) {
+          state.items[index] = action.payload;
+        }
+
+        if (state.selectedJob && (state.selectedJob._id || state.selectedJob.id) === updatedId) {
+          state.selectedJob = action.payload;
+        }
+      })
+      .addCase(generateKeywords.rejected, (state, action) => {
+        state.error = action.payload;
       })
       // Delete Job
       .addCase(deleteJob.fulfilled, (state, action) => {

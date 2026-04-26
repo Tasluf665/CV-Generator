@@ -4,6 +4,17 @@ import { normalizeLocation } from '../utils/locationNormalizer.js';
 import * as jobParserService from './ai/jobParser.service.js';
 import { scrapeLinkedInJobDetails } from './scrapers/linkedin/linkedinJobScraper.service.js';
 
+const normalizeKeywords = (keywords) =>
+  Array.from(
+    new Set(
+      Array.isArray(keywords)
+        ? keywords
+          .map((keyword) => (typeof keyword === 'string' ? keyword.trim() : ''))
+          .filter(Boolean)
+        : []
+    )
+  ).slice(0, 30);
+
 /**
  * Fetch all jobs for a user with optional filters and pagination
  */
@@ -140,7 +151,7 @@ export const parseAndSaveJob = async (
       summary: parsedData.summary,
       requirements: parsedData.requirements,
       responsibilities: parsedData.responsibilities,
-      extractedKeywords: parsedData.extractedKeywords,
+      extractedKeywords: [],
     },
   });
 
@@ -268,15 +279,35 @@ export const reparseJob = async (userId, jobId) => {
 
   const parsedData = await jobParserService.parseJobDescription(job.rawJobDescription);
 
-  // Update existing job with newly parsed data but keep manually edited fields if they were changed?
-  // For simplicity, we just update the parsedData field and any missing basic fields.
   job.parsedData = {
     summary: parsedData.summary,
     requirements: parsedData.requirements,
     responsibilities: parsedData.responsibilities,
-    extractedKeywords: parsedData.extractedKeywords,
+    extractedKeywords: Array.isArray(job.parsedData?.extractedKeywords) ? job.parsedData.extractedKeywords : [],
   };
 
   await job.save();
   return job;
+};
+
+/**
+ * Generate ATS keywords for an existing job
+ */
+export const generateKeywordsForJob = async (userId, jobId) => {
+  const job = await Job.findOne({ _id: jobId, userId });
+  if (!job) throw new ApiError(404, 'Job not found');
+  if (!job.parsedData) throw new ApiError(400, 'No parsed job data found to generate keywords');
+
+  const extractedKeywords = await jobParserService.generateJobKeywords(job.parsedData);
+  const normalizedKeywords = normalizeKeywords(extractedKeywords);
+
+  const updatedJob = await Job.findOneAndUpdate(
+    { _id: jobId, userId },
+    { $set: { 'parsedData.extractedKeywords': normalizedKeywords } },
+    { new: true, runValidators: true }
+  );
+
+  if (!updatedJob) throw new ApiError(404, 'Job not found');
+
+  return updatedJob;
 };

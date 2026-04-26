@@ -26,5 +26,6 @@ router.delete('/:id/contacts/:contactId', jobController.deleteContact);
 router.post('/:id/email-templates', validate(jobValidator.addEmailTemplate), jobController.addEmailTemplate);
 
 router.post('/:id/reparse', jobController.reparseJobDescription);
+router.post('/:id/keywords', jobController.generateJobKeywords);
 
 export default router;

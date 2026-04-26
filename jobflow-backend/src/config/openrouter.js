@@ -25,11 +25,18 @@ export const openRouterClient = {
       }),
     });
 
+    let data;
+    try {
+      data = await response.json(); // read once
+    } catch {
+      data = null;
+    }
+
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(`OpenRouter API error: ${errorData.error?.message || response.statusText}`);
     }
 
-    return await response.json();
+    return data;
   },
 };

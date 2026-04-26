@@ -100,3 +100,11 @@ export const reparseJobDescription = asyncHandler(async (req, res) => {
   const job = await jobService.reparseJob(req.user._id, req.params.id);
   res.status(200).json(new ApiResponse(200, job, 'Job description reparsed successfully.'));
 });
+
+/**
+ * Generate ATS keywords for an existing job
+ */
+export const generateJobKeywords = asyncHandler(async (req, res) => {
+  const job = await jobService.generateKeywordsForJob(req.user._id, req.params.id);
+  res.status(200).json(new ApiResponse(200, job, 'ATS keywords generated successfully.'));
+});
