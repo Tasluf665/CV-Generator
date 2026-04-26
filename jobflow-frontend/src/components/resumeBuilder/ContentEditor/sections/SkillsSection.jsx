@@ -2,12 +2,15 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import SectionCard from '../../../common/SectionCard/SectionCard';
 import Input from '../../../common/Input/Input';
+import Button from '../../../common/Button/Button';
 import { 
   selectSkills, 
   selectIsSectionExpanded 
 } from '../../../../features/resumeBuilder/resumeBuilderSelectors';
 import { 
-  updateSkills, 
+  addSkill,
+  updateSkill,
+  removeSkill,
   toggleSection 
 } from '../../../../features/resumeBuilder/resumeBuilderSlice';
 
@@ -16,10 +19,16 @@ const SkillsSection = () => {
   const skills = useSelector(selectSkills);
   const isExpanded = useSelector((state) => selectIsSectionExpanded(state, 'skills'));
 
-  const handleUpdate = (index, updates) => {
-    const newSkills = [...skills];
-    newSkills[index] = { ...newSkills[index], ...updates };
-    dispatch(updateSkills(newSkills));
+  const handleUpdate = (id, updates) => {
+    dispatch(updateSkill({ id, updates }));
+  };
+
+  const handleAdd = () => {
+    dispatch(addSkill());
+  };
+
+  const handleRemove = (id) => {
+    dispatch(removeSkill(id));
   };
 
   const icon = (
@@ -36,15 +45,41 @@ const SkillsSection = () => {
       onToggle={() => dispatch(toggleSection('skills'))}
     >
       {skills.map((skill, index) => (
-        <div key={index} style={{ marginBottom: index < skills.length - 1 ? '16px' : 0 }}>
+        <div key={skill.id || index} style={{ borderBottom: index < skills.length - 1 ? '1px solid #d9e4e9' : 'none', paddingBottom: '16px', marginBottom: '16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+            <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 600 }}>Skill Group #{index + 1}</h4>
+            <button 
+              onClick={() => handleRemove(skill.id)}
+              style={{ background: 'none', border: 'none', color: '#ba1a1a', cursor: 'pointer', fontSize: '12px' }}
+            >
+              Remove
+            </button>
+          </div>
+
           <Input
-            label={skill.category}
+            label="Category (e.g. Technical Skills)"
+            value={skill.category}
+            onChange={(e) => handleUpdate(skill.id, { category: e.target.value })}
+            placeholder="e.g. Programming Languages"
+            style={{ marginBottom: '16px' }}
+          />
+
+          <Input
+            label="Skills (comma separated)"
             value={skill.items}
-            onChange={(e) => handleUpdate(index, { items: e.target.value })}
-            placeholder="e.g. React, Node.js, Design Systems..."
+            onChange={(e) => handleUpdate(skill.id, { items: e.target.value })}
+            placeholder="e.g. React, Node.js, Python..."
           />
         </div>
       ))}
+
+      <Button 
+        variant="ghost" 
+        onClick={handleAdd}
+        style={{ color: 'var(--color-primary)', alignSelf: 'flex-start', paddingLeft: 0 }}
+      >
+        <span style={{ marginRight: '8px' }}>+</span> Add skill group
+      </Button>
     </SectionCard>
   );
 };

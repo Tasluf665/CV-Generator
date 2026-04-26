@@ -1,5 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+import html2pdf from 'html2pdf.js';
 import { useSelector, useDispatch } from 'react-redux';
+
 import { useNavigate, useParams } from 'react-router-dom';
 import Tabs from '../../components/common/Tabs/Tabs';
 import Button from '../../components/common/Button/Button';
@@ -14,7 +16,8 @@ import {
   selectIsSaving,
   selectLastSaved,
   selectCurrentResumeId,
-  selectResumeError
+  selectResumeError,
+  selectZoomLevel
 } from '../../features/resumeBuilder/resumeBuilderSelectors';
 import {
   setActiveTab,
@@ -22,7 +25,8 @@ import {
   fetchResumeById,
   saveResume,
   deleteResume,
-  resetResumeState
+  resetResumeState,
+  setZoomLevel
 } from '../../features/resumeBuilder/resumeBuilderSlice';
 
 
@@ -41,8 +45,10 @@ const ResumeEditorPage = () => {
   const lastSaved = useSelector(selectLastSaved);
   const currentResumeId = useSelector(selectCurrentResumeId);
   const error = useSelector(selectResumeError);
+  const zoomLevel = useSelector(selectZoomLevel);
 
-
+  const [sidebarWidth, setSidebarWidth] = useState(380);
+  const isResizing = useRef(false);
   const saveTimeoutRef = useRef(null);
   const initialLoadRef = useRef(true);
 
@@ -113,6 +119,46 @@ const ResumeEditorPage = () => {
     dispatch(setActiveTab(tabId));
   };
 
+  const handleMouseDown = (e) => {
+    isResizing.current = true;
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+    document.body.style.cursor = 'col-resize';
+  };
+
+  const handleMouseMove = useCallback((e) => {
+    if (!isResizing.current) return;
+    const newWidth = e.clientX;
+    if (newWidth > 250 && newWidth < 600) {
+      setSidebarWidth(newWidth);
+    }
+  }, []);
+
+  const handleMouseUp = () => {
+    isResizing.current = false;
+    document.removeEventListener('mousemove', handleMouseMove);
+    document.removeEventListener('mouseup', handleMouseUp);
+    document.body.style.cursor = 'default';
+  };
+
+  const handleExportPDF = () => {
+    window.print();
+  };
+
+  const handleZoomIn = () => {
+
+    dispatch(setZoomLevel(Math.min(zoomLevel + 10, 200)));
+  };
+
+  const handleZoomOut = () => {
+    dispatch(setZoomLevel(Math.max(zoomLevel - 10, 50)));
+  };
+
+  const handleResetZoom = () => {
+    dispatch(setZoomLevel(100));
+  };
+
+
   const handleDelete = () => {
     const deleteId = currentResumeId || id;
     dispatch(deleteResume(deleteId))
@@ -173,7 +219,7 @@ const ResumeEditorPage = () => {
               </svg>
               Delete
             </Button>
-            <Button variant="outline" className={styles.exportBtn}>Export PDF</Button>
+            <Button variant="outline" className={styles.exportBtn} onClick={handleExportPDF}>Export PDF</Button>
 
             <button className={styles.menuBtn}>
               <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
@@ -192,7 +238,7 @@ const ResumeEditorPage = () => {
       </header>
 
       <main className={styles.mainContent}>
-        <aside className={styles.sidebar}>
+        <aside className={styles.sidebar} style={{ width: `${sidebarWidth}px` }}>
           {activeTab === 'content' && <ContentEditor />}
           {activeTab !== 'content' && (
             <div className={styles.placeholder}>
@@ -200,26 +246,38 @@ const ResumeEditorPage = () => {
             </div>
           )}
         </aside>
-        <section className={styles.previewArea}>
-          <ResumePreview />
+        <div className={styles.resizer} onMouseDown={handleMouseDown} />
+        <div className={styles.previewContainer}>
+          <section className={styles.previewArea}>
+            <div
+              id="resume-preview-content"
+              className={styles.previewWrapper}
+              style={{ transform: `scale(${zoomLevel / 100})`, transformOrigin: 'top center' }}
+            >
+              <ResumePreview />
+            </div>
+          </section>
+
           <div className={styles.zoomControls}>
-            <button className={styles.zoomBtn}>
+            <button className={styles.zoomBtn} onClick={handleZoomOut}>
               <svg width="12" height="2" viewBox="0 0 12 2" fill="none"><path d="M0 1H12" stroke="#131D21" strokeWidth="2" /></svg>
             </button>
-            <span className={styles.zoomText}>100%</span>
-            <button className={styles.zoomBtn}>
+            <span className={styles.zoomText}>{zoomLevel}%</span>
+            <button className={styles.zoomBtn} onClick={handleZoomIn}>
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 0V12M0 6H12" stroke="#131D21" strokeWidth="2" /></svg>
             </button>
             <div className={styles.divider} />
-            <button className={styles.zoomBtn}>
+            <button className={styles.zoomBtn} onClick={handleResetZoom}>
               <svg width="16" height="14" viewBox="0 0 16 14" fill="none">
                 <rect x="0.5" y="0.5" width="15" height="13" rx="1.5" stroke="#131D21" />
                 <path d="M4 4H12V10H4V4Z" fill="#131D21" />
               </svg>
             </button>
           </div>
-        </section>
+        </div>
+
       </main>
+
     </div>
   );
 };

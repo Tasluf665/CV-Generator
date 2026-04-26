@@ -42,11 +42,12 @@ const resumeSchema = new mongoose.Schema(
     },
     workExperience: [
       {
-        company: { type: String, required: true },
-        role: { type: String, required: true },
+        company: { type: String },
+        role: { type: String },
+
         location: String,
-        startDate: Date,
-        endDate: Date,
+        startDate: String,
+        endDate: String,
         isCurrent: { type: Boolean, default: false },
         bullets: [String],
         order: Number,
@@ -54,12 +55,13 @@ const resumeSchema = new mongoose.Schema(
     ],
     education: [
       {
-        institution: { type: String, required: true },
+        institution: { type: String },
+
         degree: String,
         field: String,
         location: String,
-        startDate: Date,
-        endDate: Date,
+        startDate: String,
+        endDate: String,
         gpa: String,
         bullets: [String],
         order: Number,
@@ -73,12 +75,13 @@ const resumeSchema = new mongoose.Schema(
     ],
     projects: [
       {
-        name: { type: String, required: true },
+        name: { type: String },
+
         description: String,
         techStack: [String],
         url: String,
-        startDate: Date,
-        endDate: Date,
+        startDate: String,
+        endDate: String,
         bullets: [String],
         order: Number,
       },
@@ -87,7 +90,7 @@ const resumeSchema = new mongoose.Schema(
       {
         name: { type: String, required: true },
         issuer: String,
-        date: Date,
+        date: String,
         url: String,
       },
     ],
@@ -95,7 +98,7 @@ const resumeSchema = new mongoose.Schema(
       {
         title: { type: String, required: true },
         issuer: String,
-        date: Date,
+        date: String,
         description: String,
       },
     ],
@@ -103,8 +106,8 @@ const resumeSchema = new mongoose.Schema(
       {
         organization: { type: String, required: true },
         role: String,
-        startDate: Date,
-        endDate: Date,
+        startDate: String,
+        endDate: String,
         bullets: [String],
       },
     ],
@@ -112,7 +115,7 @@ const resumeSchema = new mongoose.Schema(
       {
         title: { type: String, required: true },
         publisher: String,
-        date: Date,
+        date: String,
         url: String,
       },
     ],

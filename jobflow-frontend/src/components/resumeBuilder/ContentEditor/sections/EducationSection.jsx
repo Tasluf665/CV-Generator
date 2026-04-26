@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import SectionCard from '../../../common/SectionCard/SectionCard';
 import Input from '../../../common/Input/Input';
+import TextArea from '../../../common/TextArea/TextArea';
 import Button from '../../../common/Button/Button';
 import { 
   selectEducation, 
@@ -74,7 +75,7 @@ const EducationSection = () => {
             style={{ marginBottom: '16px' }}
           />
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
             <Input
               label="Start Date"
               value={edu.startDate}
@@ -88,6 +89,14 @@ const EducationSection = () => {
               placeholder="e.g. 2018"
             />
           </div>
+
+          <TextArea
+            label="Description / Bullet Points"
+            value={edu.description}
+            onChange={(e) => handleUpdate(edu.id, { description: e.target.value })}
+            placeholder="List your academic achievements, awards, or relevant coursework..."
+          />
+
         </div>
       ))}
 

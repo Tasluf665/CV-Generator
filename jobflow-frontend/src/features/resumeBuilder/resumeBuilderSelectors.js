@@ -6,6 +6,8 @@ export const selectSummary = (state) => state.resumeBuilder.resumeData.summary;
 export const selectWorkExperience = (state) => state.resumeBuilder.resumeData.workExperience;
 export const selectEducation = (state) => state.resumeBuilder.resumeData.education;
 export const selectSkills = (state) => state.resumeBuilder.resumeData.skills;
+export const selectProjects = (state) => state.resumeBuilder.resumeData.projects;
+
 
 export const selectActiveTab = (state) => state.resumeBuilder.ui.activeTab;
 export const selectExpandedSections = (state) => state.resumeBuilder.ui.expandedSections;

@@ -1,15 +1,57 @@
+.pagedContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  align-items: center;
+  padding-bottom: 60px;
+}
+
 .a4Page {
   width: 794px;
-  min-height: 1123px;
+  height: 1122px;
   background-color: white;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
   padding: 60px;
-  box-shadow: var(--shadow-lg);
   display: flex;
   flex-direction: column;
   gap: 24px;
   font-family: 'Poppins', 'Inter', sans-serif;
-  color: var(--color-text-main);
-  transform-origin: top center;
+  color: #131D21;
+}
+
+/* Remove gaps and shadows during PDF export */
+:global(.is-exporting-pdf) {
+  gap: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+}
+
+:global(.is-exporting-pdf) * {
+  box-shadow: none !important;
+}
+
+:global(.is-exporting-pdf) .a4Page {
+  box-shadow: none !important;
+  margin: 0 !important;
+}
+
+.hiddenMaster {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 794px;
+  padding: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  font-family: 'Poppins', 'Inter', sans-serif;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: -100;
 }
 
 .header {
@@ -76,6 +118,7 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  break-inside: avoid;
 }
 
 .itemHeader {
@@ -93,6 +136,12 @@
   font-size: 13px;
   font-weight: 500;
   color: var(--color-text-secondary);
+}
+
+.itemLink {
+  font-size: 13px;
+  color: var(--color-primary);
+  text-decoration: none;
 }
 
 .itemSubTitle {
@@ -139,4 +188,33 @@
 
 .skillCategory {
   font-weight: 700;
+}
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
+@media print {
+  .pagedContainer {
+    display: block !important;
+    gap: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: white !important;
+  }
+
+  .a4Page {
+    break-after: page;
+    box-shadow: none !important;
+    margin: 0 !important;
+    border: none !important;
+    height: 1122px !important; 
+    padding: 60px !important;
+    overflow: visible !important;
+  }
+
+  .hiddenMaster, :global(.is-exporting-pdf) {
+    display: none !important;
+  }
 }

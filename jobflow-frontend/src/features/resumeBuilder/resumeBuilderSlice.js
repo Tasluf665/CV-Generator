@@ -82,7 +82,9 @@ const initialResumeData = {
   workExperience: [],
   education: [],
   skills: [],
+  projects: [],
 };
+
 
 
 const resumeBuilderSlice = createSlice({
@@ -145,8 +147,10 @@ const resumeBuilderSlice = createSlice({
         degree: '',
         startDate: '',
         endDate: '',
+        description: '',
       });
     },
+
     updateEducation: (state, action) => {
       const { id, updates } = action.payload;
       const index = state.resumeData.education.findIndex(e => e.id === id);
@@ -160,6 +164,45 @@ const resumeBuilderSlice = createSlice({
     updateSkills: (state, action) => {
       state.resumeData.skills = action.payload;
     },
+    addSkill: (state) => {
+      state.resumeData.skills.push({
+        id: Date.now(),
+        category: '',
+        items: '',
+      });
+    },
+    updateSkill: (state, action) => {
+      const { id, updates } = action.payload;
+      const index = state.resumeData.skills.findIndex(s => s.id === id);
+      if (index !== -1) {
+        state.resumeData.skills[index] = { ...state.resumeData.skills[index], ...updates };
+      }
+    },
+    removeSkill: (state, action) => {
+      state.resumeData.skills = state.resumeData.skills.filter(s => s.id !== action.payload);
+    },
+
+    addProject: (state) => {
+      const newId = Date.now();
+      state.resumeData.projects.push({
+        id: newId,
+        name: '',
+        title: '',
+        link: '',
+        description: '',
+      });
+    },
+    updateProject: (state, action) => {
+      const { id, updates } = action.payload;
+      const index = state.resumeData.projects.findIndex(p => p.id === id);
+      if (index !== -1) {
+        state.resumeData.projects[index] = { ...state.resumeData.projects[index], ...updates };
+      }
+    },
+    removeProject: (state, action) => {
+      state.resumeData.projects = state.resumeData.projects.filter(p => p.id !== action.payload);
+    },
+
     setActiveTab: (state, action) => {
       state.ui.activeTab = action.payload;
     },
@@ -260,11 +303,18 @@ export const {
   updateEducation,
   removeEducation,
   updateSkills,
+  addSkill,
+  updateSkill,
+  removeSkill,
+  addProject,
+  updateProject,
+  removeProject,
   setActiveTab,
   toggleSection,
   setZoomLevel,
   resetResumeState,
 } = resumeBuilderSlice.actions;
+
 
 
 export default resumeBuilderSlice.reducer;

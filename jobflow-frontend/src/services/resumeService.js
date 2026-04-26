@@ -23,8 +23,37 @@ const mapToBackend = (data) => {
       portfolioUrl: contact?.website,
     },
     targetJobTitle: contact?.title, // Move title from contact to targetJobTitle
+    workExperience: (data.workExperience || []).map(job => ({
+      company: job.company,
+      role: job.role,
+      location: job.location,
+      startDate: job.startDate,
+      endDate: job.endDate,
+      bullets: job.description ? job.description.split('\n') : [],
+    })),
+    education: (data.education || []).map(edu => ({
+      institution: edu.school,
+      degree: edu.degree,
+      startDate: edu.startDate,
+      endDate: edu.endDate,
+      bullets: edu.description ? edu.description.split('\n') : [],
+    })),
+
+
+    projects: (data.projects || []).map(p => ({
+      name: p.name,
+      description: p.title, // Map frontend "Title" to backend "description"
+      url: p.link, // Map frontend "Link" to backend "url"
+      bullets: p.description ? p.description.split('\n') : [], // Map frontend "Description" to backend "bullets"
+    })),
+    skills: (data.skills || []).map(s => ({
+      category: s.category,
+      items: typeof s.items === 'string' ? s.items.split(',').map(item => item.trim()).filter(Boolean) : s.items,
+    })),
+
   };
 };
+
 
 /**
  * Maps backend resume data to frontend format
@@ -44,9 +73,42 @@ const mapToFrontend = (data) => {
       location: contact?.location || '',
       linkedin: contact?.linkedinUrl || '',
       website: contact?.portfolioUrl || '',
-    }
+    },
+    workExperience: (rest.workExperience || []).map(job => ({
+      id: job._id || Date.now() + Math.random(),
+      company: job.company || '',
+      role: job.role || '',
+      location: job.location || '',
+      startDate: job.startDate || '',
+      endDate: job.endDate || '',
+      description: (job.bullets || []).join('\n'),
+    })),
+    education: (rest.education || []).map(edu => ({
+      id: edu._id || Date.now() + Math.random(),
+      school: edu.institution || '',
+      degree: edu.degree || '',
+      startDate: edu.startDate || '',
+      endDate: edu.endDate || '',
+      description: (edu.bullets || []).join('\n'),
+    })),
+
+
+    projects: (rest.projects || []).map(p => ({
+      id: p._id || Date.now() + Math.random(),
+      name: p.name || '',
+      title: p.description || '', // Map backend "description" to frontend "Title"
+      link: p.url || '', // Map backend "url" to frontend "Link"
+      description: (p.bullets || []).join('\n'), // Map backend "bullets" to frontend "Description"
+    })),
+    skills: (rest.skills || []).map(s => ({
+      id: s._id || Date.now() + Math.random(),
+      category: s.category || '',
+      items: (s.items || []).join(', '),
+    })),
+
   };
 };
+
 
 const resumeService = {
   getAllResumes: async () => {

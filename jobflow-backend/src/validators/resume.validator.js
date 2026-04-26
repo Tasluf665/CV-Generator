@@ -12,40 +12,43 @@ const contactSchema = Joi.object({
 });
 
 const workExperienceSchema = Joi.object({
-  company: Joi.string().required(),
-  role: Joi.string().required(),
+  company: Joi.string().allow('').optional(),
+  role: Joi.string().allow('').optional(),
+
   location: Joi.string().allow('').optional(),
-  startDate: Joi.date().iso().allow(null).optional(),
-  endDate: Joi.date().iso().allow(null).optional(),
+  startDate: Joi.string().allow('').optional(),
+  endDate: Joi.string().allow('').optional(),
   isCurrent: Joi.boolean().optional(),
   bullets: Joi.array().items(Joi.string()).optional(),
   order: Joi.number().optional(),
 });
 
 const educationSchema = Joi.object({
-  institution: Joi.string().required(),
+  institution: Joi.string().allow('').optional(),
+
   degree: Joi.string().allow('').optional(),
   field: Joi.string().allow('').optional(),
   location: Joi.string().allow('').optional(),
-  startDate: Joi.date().iso().allow(null).optional(),
-  endDate: Joi.date().iso().allow(null).optional(),
+  startDate: Joi.string().allow('').optional(),
+  endDate: Joi.string().allow('').optional(),
   gpa: Joi.string().allow('').optional(),
   bullets: Joi.array().items(Joi.string()).optional(),
   order: Joi.number().optional(),
 });
 
 const skillSchema = Joi.object({
-  category: Joi.string().required(),
-  items: Joi.array().items(Joi.string()).required(),
+  category: Joi.string().allow('').optional(),
+  items: Joi.array().items(Joi.string()).optional(),
 });
 
 const projectSchema = Joi.object({
-  name: Joi.string().required(),
+  name: Joi.string().allow('').optional(),
+
   description: Joi.string().allow('').optional(),
   techStack: Joi.array().items(Joi.string()).optional(),
   url: Joi.string().uri().allow('').optional(),
-  startDate: Joi.date().iso().allow(null).optional(),
-  endDate: Joi.date().iso().allow(null).optional(),
+  startDate: Joi.string().allow('').optional(),
+  endDate: Joi.string().allow('').optional(),
   bullets: Joi.array().items(Joi.string()).optional(),
   order: Joi.number().optional(),
 });
