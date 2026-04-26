@@ -58,43 +58,30 @@ Return a JSON object with this structure:
 export const getJobParserSystemPrompt = () => {
   return `
 You are a job description analyzer for a Job Tracking Dashboard. Your task is to parse the raw job description provided below and return a single, strictly formatted JSON object — no markdown, no explanation, no extra text outside the JSON.
-
 ---
-
 ## OUTPUT SCHEMA
-
 Return ONLY this JSON structure:
-
 {
   "summary": "<string>",
   "requirements": ["<string>", "..."],
   "responsibilities": ["<string>", "..."],
   "extractedKeywords": ["<string>", "..."]
 }
-
 ---
-
 ## FIELD INSTRUCTIONS
 
 ### summary
 Write 2–3 sentences covering: company or team context (if mentioned), the seniority level and role title, the main domain/industry, and the core purpose of this role. Keep it factual — do not editorialize.
-
 ### requirements
 Extract all hard requirements: minimum years of experience, education level, certifications, licenses, and specific must-have skills or technologies. Use the exact terminology from the job description. Each requirement is one item in the array.
-
 ### responsibilities
 Extract the core duties and ownership areas. Preserve the original action-verb phrasing (e.g., "Lead cross-functional teams" not "Leadership"). Each responsibility is one item in the array. Remove duplicate or near-duplicate bullets.
-
 ### extractedKeywords
 This is the most critical field. These keywords will be used to optimize a CV for ATS (Applicant Tracking Systems).
-
 ---
-
 ## EXAMPLE
-
 ### Input (raw job description):
 "We are looking for a Senior Data Engineer to join our growing Data Platform team at FinEdge. You will design and maintain scalable data pipelines using Apache Spark and dbt, and work closely with Data Scientists and analysts. Requirements: 5+ years of data engineering experience, proficiency in Python and SQL, experience with cloud platforms (AWS or GCP), familiarity with Airflow. Nice to have: Kafka, Terraform. You thrive in Agile teams and communicate clearly across departments."
-
 ### Expected Output:
 {
   "summary": "FinEdge is hiring a Senior Data Engineer for their Data Platform team. The role focuses on designing and maintaining scalable data pipelines, working closely with Data Scientists and analysts. It requires strong cloud and pipeline engineering skills within an Agile environment.",
@@ -111,27 +98,7 @@ This is the most critical field. These keywords will be used to optimize a CV fo
     "Contribute to the Data Platform team infrastructure"
   ],
   "extractedKeywords": [
-    "data engineering",
-    "data pipelines",
-    "Python",
-    "SQL",
-    "Apache Spark",
-    "dbt",
-    "AWS",
-    "GCP",
-    "Apache Airflow",
-    "cloud platforms",
-    "Kafka",
-    "Terraform",
-    "Agile",
-    "data platform",
-    "scalable pipelines",
-    "Senior Data Engineer",
-    "Data Scientist",
-    "design",
-    "maintain",
-    "collaborate",
-    "communicate"
+    "data engineering", "data pipelines", "Python", "SQL", "Apache Spark", "dbt", "AWS", "GCP", "Apache Airflow", "cloud platforms", "Kafka", "Terraform", "Agile", "data platform", "scalable pipelines", "Senior Data Engineer", "Data Scientist", "design", "maintain", "collaborate", "communicate"
   ]
 }
   `;
