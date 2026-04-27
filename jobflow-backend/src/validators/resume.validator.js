@@ -115,6 +115,16 @@ export const matchResume = Joi.object({
   jobId: Joi.string().hex().length(24).required(),
 });
 
+const sectionStyleSchema = Joi.object({
+  fontSize: Joi.number().optional(),
+  fontFamily: Joi.string().optional(),
+  color: Joi.string().pattern(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/).optional(),
+  margin: Joi.number().optional(),
+  lineHeight: Joi.number().optional(),
+  letterSpacing: Joi.number().optional(),
+  alignment: Joi.string().valid('left', 'center', 'right').optional(),
+});
+
 export const updateDesign = Joi.object({
   template: Joi.string().optional(),
   font: Joi.string().optional(),
@@ -124,6 +134,14 @@ export const updateDesign = Joi.object({
   fontSize: Joi.number().optional(),
   margin: Joi.number().optional(),
   dateFormat: Joi.string().allow('').optional(),
+  sectionStyles: Joi.object({
+    title: sectionStyleSchema.optional(),
+    summary: sectionStyleSchema.optional(),
+    experience: sectionStyleSchema.optional(),
+    education: sectionStyleSchema.optional(),
+    projects: sectionStyleSchema.optional(),
+    skills: sectionStyleSchema.optional(),
+  }).optional(),
 });
 
 export const updateSections = Joi.object({

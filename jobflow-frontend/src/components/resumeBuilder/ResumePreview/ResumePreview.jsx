@@ -98,46 +98,21 @@ const ResumePreview = () => {
             <p className={styles.summaryText}>{summary}</p>
           </section>
         ) : null;
-      case 'skills':
-        return (
-          <section key="skills" className={styles.section}>
-            <h2 className={styles.sectionTitle}>Tech Skills</h2>
-            <div className={styles.skillsList}>
-              {skills?.map((skill, index) => (
-                <p key={index} className={styles.skillItem}>
-                  <span className={styles.skillCategory}>{skill.category}: </span>
-                  {skill.items}
-                </p>
-              ))}
-            </div>
-          </section>
-        );
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <div 
-      className={styles.pagedContainer} 
-      ref={containerRef}
-      style={{
-        '--font-family': design?.font || 'Inter',
-        '--accent-color': design?.accentColor || '#00b894',
-        '--line-height': design?.lineHeight || 140,
-        '--list-line-height': design?.listLineHeight || 120,
-        '--font-size': `${design?.fontSize || 14}px`,
-        '--page-margin': `${design?.margin || 48}px`,
-      }}
-    >
-      {/* Hidden measure area */}
-      <div className={styles.hiddenMaster} ref={measureRef} data-html2pdf-ignore="true">
-        {renderSection('header')}
-        {renderSection('summary')}
-        
-        {/* Work Experience */}
-        {workExperience?.length > 0 && (
-          <section className={styles.section}>
+      case 'workExperience':
+        return workExperience?.length > 0 && (
+          <section 
+            key="workExperience"
+            className={styles.section}
+            style={{
+              fontFamily: 'var(--experience-font)',
+              fontSize: 'var(--experience-size)',
+              color: 'var(--experience-color)',
+              marginBottom: 'var(--experience-margin)',
+              lineHeight: 'var(--experience-line-height)',
+              letterSpacing: 'var(--experience-letter-spacing)',
+              textAlign: 'var(--experience-align)',
+            }}
+          >
             <h2 className={styles.sectionTitle}>Work Experience</h2>
             {workExperience
               .filter(job => job.isVisible)
@@ -172,11 +147,22 @@ const ResumePreview = () => {
                 </div>
               ))}
           </section>
-        )}
-
-        {/* Education Header */}
-        {education?.length > 0 && education.some(edu => edu.isVisible) && (
-          <section className={styles.section}>
+        );
+      case 'education':
+        return education?.length > 0 && education.some(edu => edu.isVisible) && (
+          <section 
+            key="education"
+            className={styles.section}
+            style={{
+              fontFamily: 'var(--education-font)',
+              fontSize: 'var(--education-size)',
+              color: 'var(--education-color)',
+              marginBottom: 'var(--education-margin)',
+              lineHeight: 'var(--education-line-height)',
+              letterSpacing: 'var(--education-letter-spacing)',
+              textAlign: 'var(--education-align)',
+            }}
+          >
             <h2 className={styles.sectionTitle}>Education</h2>
             {education
               .filter(edu => edu.isVisible)
@@ -215,11 +201,22 @@ const ResumePreview = () => {
                 </div>
               ))}
           </section>
-        )}
-
-        {/* Projects Header */}
-        {projects?.length > 0 && projects.some(p => p.isVisible) && (
-          <section className={styles.section}>
+        );
+      case 'projects':
+        return projects?.length > 0 && projects.some(p => p.isVisible) && (
+          <section 
+            key="projects"
+            className={styles.section}
+            style={{
+              fontFamily: 'var(--projects-font)',
+              fontSize: 'var(--projects-size)',
+              color: 'var(--projects-color)',
+              marginBottom: 'var(--projects-margin)',
+              lineHeight: 'var(--projects-line-height)',
+              letterSpacing: 'var(--projects-letter-spacing)',
+              textAlign: 'var(--projects-align)',
+            }}
+          >
             <h2 className={styles.sectionTitle}>Projects</h2>
             {projects
               .filter(p => p.isVisible)
@@ -251,8 +248,100 @@ const ResumePreview = () => {
                 </div>
               ))}
           </section>
-        )}
+        );
+      case 'skills':
+        return (
+          <section key="skills" className={styles.section}>
+            <h2 className={styles.sectionTitle}>Tech Skills</h2>
+            <div className={styles.skillsList}>
+              {skills?.map((skill, index) => (
+                <p key={index} className={styles.skillItem}>
+                  <span className={styles.skillCategory}>{skill.category}: </span>
+                  {skill.items}
+                </p>
+              ))}
+            </div>
+          </section>
+        );
+      default:
+        return null;
+    }
+  };
 
+  return (
+    <div 
+      className={styles.pagedContainer} 
+      ref={containerRef}
+      style={{
+        '--font-family': design?.font || 'Inter',
+        '--accent-color': design?.accentColor || '#00b894',
+        '--line-height': design?.lineHeight || 140,
+        '--list-line-height': design?.listLineHeight || 120,
+        '--font-size': `${design?.fontSize || 14}px`,
+        '--page-margin': `${design?.margin || 48}px`,
+        
+        // Title styles
+        '--title-font': design?.sectionStyles?.title?.fontFamily || design?.font || 'Inter',
+        '--title-size': `${design?.sectionStyles?.title?.fontSize || 24}px`,
+        '--title-color': design?.sectionStyles?.title?.color || '#2d3436',
+        '--title-margin': `${design?.sectionStyles?.title?.margin || 10}px`,
+        '--title-line-height': (design?.sectionStyles?.title?.lineHeight || 120) / 100,
+        '--title-letter-spacing': `${design?.sectionStyles?.title?.letterSpacing || 0}px`,
+        '--title-align': design?.sectionStyles?.title?.alignment || 'left',
+
+        // Summary styles
+        '--summary-font': design?.sectionStyles?.summary?.fontFamily || design?.font || 'Inter',
+        '--summary-size': `${design?.sectionStyles?.summary?.fontSize || 14}px`,
+        '--summary-color': design?.sectionStyles?.summary?.color || '#506169',
+        '--summary-margin': `${design?.sectionStyles?.summary?.margin || 10}px`,
+        '--summary-line-height': (design?.sectionStyles?.summary?.lineHeight || 140) / 100,
+        '--summary-letter-spacing': `${design?.sectionStyles?.summary?.letterSpacing || 0}px`,
+        '--summary-align': design?.sectionStyles?.summary?.alignment || 'left',
+
+        // Experience styles
+        '--experience-font': design?.sectionStyles?.experience?.fontFamily || design?.font || 'Inter',
+        '--experience-size': `${design?.sectionStyles?.experience?.fontSize || 14}px`,
+        '--experience-color': design?.sectionStyles?.experience?.color || '#2d3436',
+        '--experience-margin': `${design?.sectionStyles?.experience?.margin || 15}px`,
+        '--experience-line-height': (design?.sectionStyles?.experience?.lineHeight || 140) / 100,
+        '--experience-letter-spacing': `${design?.sectionStyles?.experience?.letterSpacing || 0}px`,
+        '--experience-align': design?.sectionStyles?.experience?.alignment || 'left',
+
+        // Education styles
+        '--education-font': design?.sectionStyles?.education?.fontFamily || design?.font || 'Inter',
+        '--education-size': `${design?.sectionStyles?.education?.fontSize || 14}px`,
+        '--education-color': design?.sectionStyles?.education?.color || '#2d3436',
+        '--education-margin': `${design?.sectionStyles?.education?.margin || 15}px`,
+        '--education-line-height': (design?.sectionStyles?.education?.lineHeight || 140) / 100,
+        '--education-letter-spacing': `${design?.sectionStyles?.education?.letterSpacing || 0}px`,
+        '--education-align': design?.sectionStyles?.education?.alignment || 'left',
+
+        // Projects styles
+        '--projects-font': design?.sectionStyles?.projects?.fontFamily || design?.font || 'Inter',
+        '--projects-size': `${design?.sectionStyles?.projects?.fontSize || 14}px`,
+        '--projects-color': design?.sectionStyles?.projects?.color || '#2d3436',
+        '--projects-margin': `${design?.sectionStyles?.projects?.margin || 15}px`,
+        '--projects-line-height': (design?.sectionStyles?.projects?.lineHeight || 140) / 100,
+        '--projects-letter-spacing': `${design?.sectionStyles?.projects?.letterSpacing || 0}px`,
+        '--projects-align': design?.sectionStyles?.projects?.alignment || 'left',
+
+        // Skills styles
+        '--skills-font': design?.sectionStyles?.skills?.fontFamily || design?.font || 'Inter',
+        '--skills-size': `${design?.sectionStyles?.skills?.fontSize || 14}px`,
+        '--skills-color': design?.sectionStyles?.skills?.color || '#2d3436',
+        '--skills-margin': `${design?.sectionStyles?.skills?.margin || 10}px`,
+        '--skills-line-height': (design?.sectionStyles?.skills?.lineHeight || 140) / 100,
+        '--skills-letter-spacing': `${design?.sectionStyles?.skills?.letterSpacing || 0}px`,
+        '--skills-align': design?.sectionStyles?.skills?.alignment || 'left',
+      }}
+    >
+      {/* Hidden measure area */}
+      <div className={styles.hiddenMaster} ref={measureRef} data-html2pdf-ignore="true">
+        {renderSection('header')}
+        {renderSection('summary')}
+        {renderSection('workExperience')}
+        {renderSection('education')}
+        {renderSection('projects')}
         {renderSection('skills')}
       </div>
 

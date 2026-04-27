@@ -94,12 +94,20 @@ const initialResumeData = {
   design: {
     template: 'modern',
     font: 'Inter',
-    lineHeight: 1.4,
-    listLineHeight: 1.2,
+    lineHeight: 140,
+    listLineHeight: 120,
     accentColor: '#00b894',
     dateFormat: 'MM/YYYY',
     margin: 48,
     fontSize: 14,
+    sectionStyles: {
+      title: { fontSize: 24, fontFamily: 'Inter', color: '#2d3436', margin: 10, lineHeight: 120, letterSpacing: 0, alignment: 'left' },
+      summary: { fontSize: 14, fontFamily: 'Inter', color: '#506169', margin: 10, lineHeight: 140, letterSpacing: 0, alignment: 'left' },
+      experience: { fontSize: 14, fontFamily: 'Inter', color: '#2d3436', margin: 15, lineHeight: 140, letterSpacing: 0, alignment: 'left' },
+      education: { fontSize: 14, fontFamily: 'Inter', color: '#2d3436', margin: 15, lineHeight: 140, letterSpacing: 0, alignment: 'left' },
+      projects: { fontSize: 14, fontFamily: 'Inter', color: '#2d3436', margin: 15, lineHeight: 140, letterSpacing: 0, alignment: 'left' },
+      skills: { fontSize: 14, fontFamily: 'Inter', color: '#2d3436', margin: 10, lineHeight: 140, letterSpacing: 0, alignment: 'left' },
+    }
   },
 };
 

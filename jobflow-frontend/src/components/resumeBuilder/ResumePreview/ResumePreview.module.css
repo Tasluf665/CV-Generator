@@ -66,11 +66,14 @@
 }
 
 .name {
-  font-size: calc(var(--font-size, 14px) * 2.2);
-  font-weight: 700;
-  color: var(--accent-color, #000000);
-  margin: 0;
-  text-transform: uppercase;
+  font-family: var(--title-font);
+  font-size: var(--title-size);
+  color: var(--title-color);
+  margin-bottom: var(--title-margin);
+  line-height: var(--title-line-height);
+  letter-spacing: var(--title-letter-spacing);
+  text-align: var(--title-align);
+  width: 100%;
 }
 
 .contactInfo {
@@ -112,10 +115,13 @@
 }
 
 .summaryText {
-  font-size: 13px;
-  line-height: 1.6;
-  color: var(--color-text-secondary);
-  margin: 0;
+  font-family: var(--summary-font);
+  font-size: var(--summary-size);
+  color: var(--summary-color);
+  margin-bottom: var(--summary-margin);
+  line-height: var(--summary-line-height);
+  letter-spacing: var(--summary-letter-spacing);
+  text-align: var(--summary-align);
 }
 
 .item {
@@ -123,6 +129,7 @@
   flex-direction: column;
   gap: 4px;
   break-inside: avoid;
+  text-align: inherit;
 }
 
 .itemHeader {
@@ -132,12 +139,12 @@
 }
 
 .itemTitle {
-  font-size: 14px;
+  font-size: inherit;
   font-weight: 700;
 }
 
 .itemDate {
-  font-size: 14px;
+  font-size: 0.9em;
   font-weight: 400;
 }
 
@@ -169,7 +176,7 @@
 }
 
 .itemLocation {
-  font-size: 13px;
+  font-size: 0.9em;
   color: #444;
 }
 
@@ -181,15 +188,15 @@
 }
 
 .companyDescription, .roleDescription {
-  font-size: 13px;
+  font-size: 0.9em;
   font-style: italic;
   color: #444;
   margin: 2px 0;
 }
 
 .bullet {
-  font-size: var(--font-size, 14px);
-  line-height: calc(var(--list-line-height, 120) / 100);
+  font-size: inherit;
+  line-height: inherit;
   color: #000;
   margin: 0;
   position: relative;
@@ -207,10 +214,17 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  font-family: var(--skills-font);
+  font-size: var(--skills-size);
+  color: var(--skills-color);
+  margin-bottom: var(--skills-margin);
+  line-height: var(--skills-line-height);
+  letter-spacing: var(--skills-letter-spacing);
+  text-align: var(--skills-align);
 }
 
 .skillItem {
-  font-size: 13px;
+  font-size: inherit;
   margin: 0;
 }
 
