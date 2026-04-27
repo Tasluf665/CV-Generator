@@ -6,6 +6,7 @@ const SectionCard = ({
   icon, 
   isExpanded, 
   onToggle, 
+  onAdd,
   children, 
   className = '',
   isHighlighted = false
@@ -19,10 +20,18 @@ const SectionCard = ({
         </div>
         <div className={styles.headerRight}>
           <div className={styles.actions}>
-            <button className={styles.actionBtn}>
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 0V12M0 6H12" stroke="currentColor" strokeWidth="2"/></svg>
-            </button>
-            <button className={styles.actionBtn}>
+            {onAdd && (
+              <button 
+                className={styles.actionBtn} 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onAdd();
+                }}
+              >
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 0V12M0 6H12" stroke="currentColor" strokeWidth="2"/></svg>
+              </button>
+            )}
+            <button className={styles.actionBtn} onClick={(e) => e.stopPropagation()}>
               <svg width="4" height="14" viewBox="0 0 4 14" fill="none"><circle cx="2" cy="2" r="2" fill="currentColor"/><circle cx="2" cy="7" r="2" fill="currentColor"/><circle cx="2" cy="12" r="2" fill="currentColor"/></svg>
             </button>
           </div>

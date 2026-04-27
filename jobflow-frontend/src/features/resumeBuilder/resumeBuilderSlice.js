@@ -69,6 +69,8 @@ export const saveResume = createAsyncThunk(
 
 const initialResumeData = {
   title: 'Untitled Resume',
+  targetJobTitle: '',
+  targetTitles: [],
   contact: {
     firstName: '',
     lastName: '',
@@ -129,6 +131,12 @@ const resumeBuilderSlice = createSlice({
     updateContact: (state, action) => {
 
       state.resumeData.contact = { ...state.resumeData.contact, ...action.payload };
+    },
+    updateTargetTitles: (state, action) => {
+      state.resumeData.targetTitles = action.payload;
+    },
+    setTargetJobTitle: (state, action) => {
+      state.resumeData.targetJobTitle = action.payload;
     },
     updateSummary: (state, action) => {
       state.resumeData.summary = action.payload;
@@ -313,6 +321,8 @@ export const {
   setResumeData,
   updateResumeTitle,
   updateContact,
+  updateTargetTitles,
+  setTargetJobTitle,
   updateSummary,
   addWorkExperience,
   updateWorkExperience,

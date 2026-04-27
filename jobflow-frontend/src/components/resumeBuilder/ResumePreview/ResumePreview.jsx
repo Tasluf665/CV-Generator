@@ -90,9 +90,11 @@ const ResumePreview = () => {
           </header>
         );
       case 'summary':
-        return summary ? (
+        return (resumeData.targetJobTitle || summary) ? (
           <section key="summary" className={styles.section}>
-            <h2 className={styles.sectionTitle}>Summary</h2>
+            <h2 className={styles.sectionTitle}>
+              {resumeData.targetJobTitle || 'Summary'}
+            </h2>
             <p className={styles.summaryText}>{summary}</p>
           </section>
         ) : null;

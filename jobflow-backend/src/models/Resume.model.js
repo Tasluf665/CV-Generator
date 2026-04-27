@@ -18,6 +18,10 @@ const resumeSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    targetTitles: {
+      type: [String],
+      default: [],
+    },
     linkedJobId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Job',

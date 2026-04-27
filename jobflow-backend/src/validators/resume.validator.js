@@ -60,6 +60,7 @@ const projectSchema = Joi.object({
 export const createResume = Joi.object({
   title: Joi.string().required().trim(),
   targetJobTitle: Joi.string().allow('').optional().trim(),
+  targetTitles: Joi.array().items(Joi.string()).optional(),
   linkedJobId: Joi.string().hex().length(24).optional(),
   contact: contactSchema.optional(),
   summary: Joi.string().allow('').optional(),
@@ -72,6 +73,7 @@ export const createResume = Joi.object({
 export const updateResume = Joi.object({
   title: Joi.string().trim().optional(),
   targetJobTitle: Joi.string().allow('').trim().optional(),
+  targetTitles: Joi.array().items(Joi.string()).optional(),
   linkedJobId: Joi.string().hex().length(24).allow(null).optional(),
   contact: contactSchema.optional(),
   summary: Joi.string().allow('').optional(),
