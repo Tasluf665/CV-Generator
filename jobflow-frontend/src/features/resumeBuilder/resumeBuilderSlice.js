@@ -280,14 +280,22 @@ const resumeBuilderSlice = createSlice({
       state.resumeData.skills = state.resumeData.skills.filter(s => s.id !== action.payload);
     },
 
-    addProject: (state) => {
+    addProject: (state, action) => {
       const newId = Date.now();
+      const initialData = action.payload || {};
       state.resumeData.projects.push({
         id: newId,
-        name: '',
-        title: '',
-        link: '',
-        description: '',
+        isVisible: initialData.isVisible ?? true,
+        name: initialData.name || '',
+        isNameVisible: initialData.isNameVisible ?? true,
+        title: initialData.title || '', // maps to backend description
+        link: initialData.link || '', // maps to backend url
+        isUrlVisible: initialData.isUrlVisible ?? true,
+        startDate: initialData.startDate || '',
+        endDate: initialData.endDate || '',
+        isDateVisible: initialData.isDateVisible ?? true,
+        bullets: initialData.bullets || [{ text: '', isVisible: true }],
+        order: state.resumeData.projects.length,
       });
     },
     updateProject: (state, action) => {
@@ -295,6 +303,30 @@ const resumeBuilderSlice = createSlice({
       const index = state.resumeData.projects.findIndex(p => p.id === id);
       if (index !== -1) {
         state.resumeData.projects[index] = { ...state.resumeData.projects[index], ...updates };
+      }
+    },
+    addProjectBullet: (state, action) => {
+      const { projectId } = action.payload;
+      const index = state.resumeData.projects.findIndex(p => p.id === projectId);
+      if (index !== -1) {
+        state.resumeData.projects[index].bullets.push({ text: '', isVisible: true });
+      }
+    },
+    updateProjectBullet: (state, action) => {
+      const { projectId, bulletIndex, updates } = action.payload;
+      const index = state.resumeData.projects.findIndex(p => p.id === projectId);
+      if (index !== -1) {
+        const bullet = state.resumeData.projects[index].bullets[bulletIndex];
+        if (bullet) {
+          state.resumeData.projects[index].bullets[bulletIndex] = { ...bullet, ...updates };
+        }
+      }
+    },
+    removeProjectBullet: (state, action) => {
+      const { projectId, bulletIndex } = action.payload;
+      const index = state.resumeData.projects.findIndex(p => p.id === projectId);
+      if (index !== -1) {
+        state.resumeData.projects[index].bullets.splice(bulletIndex, 1);
       }
     },
     removeProject: (state, action) => {
@@ -418,6 +450,9 @@ export const {
   removeSkill,
   addProject,
   updateProject,
+  addProjectBullet,
+  updateProjectBullet,
+  removeProjectBullet,
   removeProject,
   setActiveTab,
   toggleSection,

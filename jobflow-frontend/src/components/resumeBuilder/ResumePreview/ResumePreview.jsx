@@ -218,23 +218,38 @@ const ResumePreview = () => {
         )}
 
         {/* Projects Header */}
-        {projects?.length > 0 && (
+        {projects?.length > 0 && projects.some(p => p.isVisible) && (
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>Projects</h2>
-            {projects.map(project => (
-              <div key={project.id} className={styles.item}>
-                <div className={styles.itemHeader}>
-                  <span className={styles.itemTitle}>
-                    {project.name} | {project.title} | {project.link?.replace(/^https?:\/\//, '')}
-                  </span>
+            {projects
+              .filter(p => p.isVisible)
+              .map(p => (
+                <div key={p.id} className={styles.item}>
+                  <div className={styles.itemHeader}>
+                    <div className={styles.itemMainInfo}>
+                      <span className={styles.itemTitle}>
+                        {p.isNameVisible && p.name}
+                        {p.isNameVisible && p.title && ` | ${p.title}`}
+                        {p.isUrlVisible && p.link && (
+                          <>
+                            {p.isNameVisible || p.title ? ' | ' : ''}
+                            <span className={styles.itemLink}>{p.link.replace(/^https?:\/\//, '')}</span>
+                          </>
+                        )}
+                      </span>
+                    </div>
+                    {p.isDateVisible && (p.startDate || p.endDate) && (
+                      <span className={styles.itemDate}>{p.startDate} {p.endDate && `— ${p.endDate}`}</span>
+                    )}
+                  </div>
+                  
+                  <div className={styles.itemDescription}>
+                    {p.bullets?.filter(b => b.isVisible && b.text).map((bullet, i) => (
+                      <p key={i} className={styles.bullet}>{bullet.text}</p>
+                    ))}
+                  </div>
                 </div>
-                <div className={styles.itemDescription}>
-                  {project.description && project.description.split('\n').map((line, i) => (
-                    <p key={i} className={styles.bullet}>{line}</p>
-                  ))}
-                </div>
-              </div>
-            ))}
+              ))}
           </section>
         )}
 

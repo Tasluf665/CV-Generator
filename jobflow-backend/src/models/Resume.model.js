@@ -110,14 +110,22 @@ const resumeSchema = new mongoose.Schema(
     ],
     projects: [
       {
+        isVisible: { type: Boolean, default: true },
         name: { type: String },
-
+        isNameVisible: { type: Boolean, default: true },
         description: String,
         techStack: [String],
         url: String,
+        isUrlVisible: { type: Boolean, default: true },
         startDate: String,
         endDate: String,
-        bullets: [String],
+        isDateVisible: { type: Boolean, default: true },
+        bullets: [
+          {
+            text: String,
+            isVisible: { type: Boolean, default: true },
+          }
+        ],
         order: Number,
       },
     ],

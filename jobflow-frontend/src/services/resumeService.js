@@ -69,10 +69,20 @@ const mapToBackend = (data) => {
       order: edu.order,
     })),
     projects: (data.projects || []).map(p => ({
+      isVisible: p.isVisible ?? true,
       name: p.name,
-      description: p.title || '', 
-      url: p.link || '', 
-      bullets: typeof p.description === 'string' ? p.description.split('\n') : p.bullets || [], 
+      isNameVisible: p.isNameVisible ?? true,
+      description: p.title || '',
+      url: p.link || '',
+      isUrlVisible: p.isUrlVisible ?? true,
+      startDate: p.startDate,
+      endDate: p.endDate,
+      isDateVisible: p.isDateVisible ?? true,
+      bullets: (p.bullets || []).map(b => ({
+        text: typeof b === 'string' ? b : b.text,
+        isVisible: b.isVisible ?? true
+      })),
+      order: p.order,
     })),
     skills: (data.skills || []).map(s => ({
       category: s.category,
@@ -159,10 +169,20 @@ const mapToFrontend = (data) => {
     })),
     projects: (rest.projects || []).map(p => ({
       id: p._id || Date.now() + Math.random(),
+      isVisible: p.isVisible ?? true,
       name: p.name || '',
-      title: p.description || '', 
-      link: p.url || '', 
-      description: (p.bullets || []).join('\n'), 
+      isNameVisible: p.isNameVisible ?? true,
+      title: p.description || '',
+      link: p.url || '',
+      isUrlVisible: p.isUrlVisible ?? true,
+      startDate: p.startDate || '',
+      endDate: p.endDate || '',
+      isDateVisible: p.isDateVisible ?? true,
+      bullets: (p.bullets || []).map(b => ({
+        text: b.text || '',
+        isVisible: b.isVisible ?? true
+      })),
+      order: p.order || 0,
     })),
     skills: (rest.skills || []).map(s => ({
       id: s._id || Date.now() + Math.random(),

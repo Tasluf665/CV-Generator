@@ -65,14 +65,20 @@ const skillSchema = Joi.object({
 });
 
 const projectSchema = Joi.object({
+  isVisible: Joi.boolean().optional(),
   name: Joi.string().allow('').optional(),
-
+  isNameVisible: Joi.boolean().optional(),
   description: Joi.string().allow('').optional(),
   techStack: Joi.array().items(Joi.string()).optional(),
   url: Joi.string().uri().allow('').optional(),
+  isUrlVisible: Joi.boolean().optional(),
   startDate: Joi.string().allow('').optional(),
   endDate: Joi.string().allow('').optional(),
-  bullets: Joi.array().items(Joi.string()).optional(),
+  isDateVisible: Joi.boolean().optional(),
+  bullets: Joi.array().items(Joi.object({
+    text: Joi.string().allow('').optional(),
+    isVisible: Joi.boolean().optional(),
+  })).optional(),
   order: Joi.number().optional(),
 });
 
