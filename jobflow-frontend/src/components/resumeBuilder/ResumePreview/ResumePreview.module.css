@@ -162,6 +162,13 @@
   gap: 4px;
 }
 
+.companyDescription, .roleDescription {
+  font-size: 13px;
+  font-style: italic;
+  color: #444;
+  margin: 2px 0;
+}
+
 .bullet {
   font-size: var(--font-size, 14px);
   line-height: calc(var(--list-line-height, 120) / 100);

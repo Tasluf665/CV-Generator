@@ -54,3 +54,19 @@
 .input::placeholder {
   color: var(--color-text-light);
 }
+
+.minimal {
+  border: 1px solid transparent;
+  background: transparent;
+  padding: 4px 8px;
+}
+
+.minimal:hover {
+  border-color: var(--color-border);
+  background: white;
+}
+
+.minimal:focus {
+  border-color: var(--color-primary);
+  background: white;
+}

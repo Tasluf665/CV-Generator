@@ -54,14 +54,26 @@ const resumeSchema = new mongoose.Schema(
     },
     workExperience: [
       {
+        isVisible: { type: Boolean, default: true },
         company: { type: String },
+        isCompanyVisible: { type: Boolean, default: true },
+        companyDescription: String,
         role: { type: String },
-
+        isRoleVisible: { type: Boolean, default: true },
+        positionDescription: String,
+        positionType: String,
         location: String,
+        isLocationVisible: { type: Boolean, default: true },
         startDate: String,
         endDate: String,
+        isDateVisible: { type: Boolean, default: true },
         isCurrent: { type: Boolean, default: false },
-        bullets: [String],
+        bullets: [
+          {
+            text: String,
+            isVisible: { type: Boolean, default: true },
+          }
+        ],
         order: Number,
       },
     ],

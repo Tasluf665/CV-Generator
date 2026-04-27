@@ -27,12 +27,25 @@ const mapToBackend = (data) => {
       visibleFields: contact?.visibleFields || [],
     },
     workExperience: (data.workExperience || []).map(job => ({
+      isVisible: job.isVisible ?? true,
       company: job.company,
+      isCompanyVisible: job.isCompanyVisible ?? true,
+      companyDescription: job.companyDescription,
       role: job.role,
+      isRoleVisible: job.isRoleVisible ?? true,
+      positionDescription: job.positionDescription,
+      positionType: job.positionType,
       location: job.location,
+      isLocationVisible: job.isLocationVisible ?? true,
       startDate: job.startDate,
       endDate: job.endDate,
-      bullets: typeof job.description === 'string' ? job.description.split('\n') : job.bullets || [],
+      isDateVisible: job.isDateVisible ?? true,
+      isCurrent: job.isCurrent ?? false,
+      bullets: (job.bullets || []).map(b => ({
+        text: typeof b === 'string' ? b : b.text,
+        isVisible: b.isVisible ?? true
+      })),
+      order: job.order,
     })),
     education: (data.education || []).map(edu => ({
       institution: edu.school,
@@ -88,12 +101,25 @@ const mapToFrontend = (data) => {
     },
     workExperience: (rest.workExperience || []).map(job => ({
       id: job._id || Date.now() + Math.random(),
+      isVisible: job.isVisible ?? true,
       company: job.company || '',
+      isCompanyVisible: job.isCompanyVisible ?? true,
+      companyDescription: job.companyDescription || '',
       role: job.role || '',
+      isRoleVisible: job.isRoleVisible ?? true,
+      positionDescription: job.positionDescription || '',
+      positionType: job.positionType || '',
       location: job.location || '',
+      isLocationVisible: job.isLocationVisible ?? true,
       startDate: job.startDate || '',
       endDate: job.endDate || '',
-      description: (job.bullets || []).join('\n'),
+      isDateVisible: job.isDateVisible ?? true,
+      isCurrent: job.isCurrent ?? false,
+      bullets: (job.bullets || []).map(b => ({
+        text: b.text || '',
+        isVisible: b.isVisible ?? true
+      })),
+      order: job.order || 0,
     })),
     education: (rest.education || []).map(edu => ({
       id: edu._id || Date.now() + Math.random(),

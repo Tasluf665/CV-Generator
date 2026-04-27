@@ -135,25 +135,42 @@ const ResumePreview = () => {
         {renderSection('header')}
         {renderSection('summary')}
         
-        {/* Work Experience Header */}
+        {/* Work Experience */}
         {workExperience?.length > 0 && (
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>Work Experience</h2>
-            {workExperience.map(job => (
-              <div key={job.id} className={styles.item}>
-                <div className={styles.itemHeader}>
-                  <span className={styles.itemTitle}>
-                    {job.role}, {job.company}, {job.location}
-                  </span>
-                  <span className={styles.itemDate}>{job.startDate} – {job.endDate}</span>
+            {workExperience
+              .filter(job => job.isVisible)
+              .map(job => (
+                <div key={job.id} className={styles.item}>
+                  <div className={styles.itemHeader}>
+                    <span className={styles.itemTitle}>
+                      {job.isRoleVisible && job.role}
+                      {job.isRoleVisible && job.isCompanyVisible && ', '}
+                      {job.isCompanyVisible && job.company}
+                      {((job.isRoleVisible || job.isCompanyVisible) && job.isLocationVisible && job.location) && `, ${job.location}`}
+                    </span>
+                    {job.isDateVisible && (
+                      <span className={styles.itemDate}>
+                        {job.startDate} {(job.startDate || job.endDate) && '–'} {job.isCurrent ? 'Present' : job.endDate}
+                      </span>
+                    )}
+                  </div>
+                  
+                  {job.isCompanyVisible && job.companyDescription && (
+                    <p className={styles.companyDescription}>{job.companyDescription}</p>
+                  )}
+                  {job.isRoleVisible && job.positionDescription && (
+                    <p className={styles.roleDescription}>{job.positionDescription}</p>
+                  )}
+
+                  <div className={styles.itemDescription}>
+                    {job.bullets?.filter(b => b.isVisible && b.text).map((bullet, i) => (
+                      <p key={i} className={styles.bullet}>{bullet.text}</p>
+                    ))}
+                  </div>
                 </div>
-                <div className={styles.itemDescription}>
-                  {job.description && job.description.split('\n').map((line, i) => (
-                    <p key={i} className={styles.bullet}>{line}</p>
-                  ))}
-                </div>
-              </div>
-            ))}
+              ))}
           </section>
         )}
 

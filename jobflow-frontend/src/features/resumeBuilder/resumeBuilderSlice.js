@@ -145,15 +145,27 @@ const resumeBuilderSlice = createSlice({
     updateSummaries: (state, action) => {
       state.resumeData.summaries = action.payload;
     },
-    addWorkExperience: (state) => {
-      const newId = Date.now(); // Use timestamp for unique temporary ID
+    addWorkExperience: (state, action) => {
+      const newId = Date.now();
+      const initialData = action.payload || {};
       state.resumeData.workExperience.push({
         id: newId,
-        company: '',
-        role: '',
-        startDate: '',
-        endDate: '',
-        description: '',
+        isVisible: initialData.isVisible ?? true,
+        company: initialData.company || '',
+        isCompanyVisible: initialData.isCompanyVisible ?? true,
+        companyDescription: initialData.companyDescription || '',
+        role: initialData.role || '',
+        isRoleVisible: initialData.isRoleVisible ?? true,
+        positionDescription: initialData.positionDescription || '',
+        positionType: initialData.positionType || '',
+        location: initialData.location || '',
+        isLocationVisible: initialData.isLocationVisible ?? true,
+        startDate: initialData.startDate || '',
+        endDate: initialData.endDate || '',
+        isDateVisible: initialData.isDateVisible ?? true,
+        isCurrent: initialData.isCurrent ?? false,
+        bullets: initialData.bullets || [{ text: '', isVisible: true }],
+        order: state.resumeData.workExperience.length,
       });
     },
     updateWorkExperience: (state, action) => {
@@ -161,6 +173,30 @@ const resumeBuilderSlice = createSlice({
       const index = state.resumeData.workExperience.findIndex(w => w.id === id);
       if (index !== -1) {
         state.resumeData.workExperience[index] = { ...state.resumeData.workExperience[index], ...updates };
+      }
+    },
+    addWorkBullet: (state, action) => {
+      const { jobId } = action.payload;
+      const jobIndex = state.resumeData.workExperience.findIndex(w => w.id === jobId);
+      if (jobIndex !== -1) {
+        state.resumeData.workExperience[jobIndex].bullets.push({ text: '', isVisible: true });
+      }
+    },
+    updateWorkBullet: (state, action) => {
+      const { jobId, bulletIndex, updates } = action.payload;
+      const jobIndex = state.resumeData.workExperience.findIndex(w => w.id === jobId);
+      if (jobIndex !== -1) {
+        const bullet = state.resumeData.workExperience[jobIndex].bullets[bulletIndex];
+        if (bullet) {
+          state.resumeData.workExperience[jobIndex].bullets[bulletIndex] = { ...bullet, ...updates };
+        }
+      }
+    },
+    removeWorkBullet: (state, action) => {
+      const { jobId, bulletIndex } = action.payload;
+      const jobIndex = state.resumeData.workExperience.findIndex(w => w.id === jobId);
+      if (jobIndex !== -1) {
+        state.resumeData.workExperience[jobIndex].bullets.splice(bulletIndex, 1);
       }
     },
     removeWorkExperience: (state, action) => {
@@ -331,6 +367,9 @@ export const {
   updateSummaries,
   addWorkExperience,
   updateWorkExperience,
+  addWorkBullet,
+  updateWorkBullet,
+  removeWorkBullet,
   removeWorkExperience,
   addEducation,
   updateEducation,

@@ -16,14 +16,24 @@ const contactSchema = Joi.object({
 });
 
 const workExperienceSchema = Joi.object({
+  isVisible: Joi.boolean().optional(),
   company: Joi.string().allow('').optional(),
+  isCompanyVisible: Joi.boolean().optional(),
+  companyDescription: Joi.string().allow('').optional(),
   role: Joi.string().allow('').optional(),
-
+  isRoleVisible: Joi.boolean().optional(),
+  positionDescription: Joi.string().allow('').optional(),
+  positionType: Joi.string().allow('').optional(),
   location: Joi.string().allow('').optional(),
+  isLocationVisible: Joi.boolean().optional(),
   startDate: Joi.string().allow('').optional(),
   endDate: Joi.string().allow('').optional(),
+  isDateVisible: Joi.boolean().optional(),
   isCurrent: Joi.boolean().optional(),
-  bullets: Joi.array().items(Joi.string()).optional(),
+  bullets: Joi.array().items(Joi.object({
+    text: Joi.string().allow('').optional(),
+    isVisible: Joi.boolean().optional(),
+  })).optional(),
   order: Joi.number().optional(),
 });
 
