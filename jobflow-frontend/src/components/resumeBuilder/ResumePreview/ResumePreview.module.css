@@ -167,9 +167,6 @@
 }
 
 .itemMainInfo {
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
   min-width: 0;
   flex: 1;
 }
@@ -253,6 +250,10 @@
     height: 1122px !important; 
     padding: 60px !important;
     overflow: visible !important;
+  }
+
+  .a4Page:last-child {
+    break-after: auto !important;
   }
 
   .hiddenMaster, :global(.is-exporting-pdf) {
