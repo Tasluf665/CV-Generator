@@ -104,6 +104,7 @@ const resumeSchema = new mongoose.Schema(
     ],
     skills: [
       {
+        isVisible: { type: Boolean, default: true },
         category: String,
         items: [String],
       },

@@ -2,7 +2,6 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import SectionCard from '../../../common/SectionCard/SectionCard';
 import Input from '../../../common/Input/Input';
-import Button from '../../../common/Button/Button';
 import { 
   selectSkills, 
   selectIsSectionExpanded 
@@ -13,6 +12,7 @@ import {
   removeSkill,
   toggleSection 
 } from '../../../../features/resumeBuilder/resumeBuilderSlice';
+import styles from './SkillsSection.module.css';
 
 const SkillsSection = () => {
   const dispatch = useDispatch();
@@ -21,6 +21,10 @@ const SkillsSection = () => {
 
   const handleUpdate = (id, updates) => {
     dispatch(updateSkill({ id, updates }));
+  };
+
+  const handleToggleVisibility = (id, currentValue) => {
+    dispatch(updateSkill({ id, updates: { isVisible: !currentValue } }));
   };
 
   const handleAdd = () => {
@@ -43,43 +47,56 @@ const SkillsSection = () => {
       icon={icon}
       isExpanded={isExpanded}
       onToggle={() => dispatch(toggleSection('skills'))}
+      onAdd={handleAdd}
     >
-      {skills.map((skill, index) => (
-        <div key={skill.id || index} style={{ borderBottom: index < skills.length - 1 ? '1px solid #d9e4e9' : 'none', paddingBottom: '16px', marginBottom: '16px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-            <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 600 }}>Skill Group #{index + 1}</h4>
-            <button 
-              onClick={() => handleRemove(skill.id)}
-              style={{ background: 'none', border: 'none', color: '#ba1a1a', cursor: 'pointer', fontSize: '12px' }}
-            >
-              Remove
-            </button>
+      <div className={styles.container}>
+        {skills.map((skill, index) => (
+          <div key={skill.id || index} className={styles.skillItem}>
+            <div className={styles.skillHeader}>
+              <div 
+                className={`${styles.checkbox} ${skill.isVisible !== false ? styles.checkboxSelected : ''}`}
+                onClick={() => handleToggleVisibility(skill.id, skill.isVisible !== false)}
+              >
+                {skill.isVisible !== false && (
+                  <svg className={styles.checkIcon} width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path d="M2 6L5 9L10 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                )}
+              </div>
+              <div className={styles.skillInfo}>
+                <div className={styles.skillTitle}>Skill Group #{index + 1}</div>
+                <button 
+                  className={styles.deleteBtn}
+                  onClick={() => handleRemove(skill.id)}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <Input
+              label="Category (e.g. Technical Skills)"
+              value={skill.category}
+              onChange={(e) => handleUpdate(skill.id, { category: e.target.value })}
+              placeholder="e.g. Programming Languages"
+            />
+
+            <Input
+              label="Skills (comma separated)"
+              value={skill.items}
+              onChange={(e) => handleUpdate(skill.id, { items: e.target.value })}
+              placeholder="e.g. React, Node.js, Python..."
+            />
           </div>
+        ))}
 
-          <Input
-            label="Category (e.g. Technical Skills)"
-            value={skill.category}
-            onChange={(e) => handleUpdate(skill.id, { category: e.target.value })}
-            placeholder="e.g. Programming Languages"
-            style={{ marginBottom: '16px' }}
-          />
-
-          <Input
-            label="Skills (comma separated)"
-            value={skill.items}
-            onChange={(e) => handleUpdate(skill.id, { items: e.target.value })}
-            placeholder="e.g. React, Node.js, Python..."
-          />
-        </div>
-      ))}
-
-      <Button 
-        variant="ghost" 
-        onClick={handleAdd}
-        style={{ color: 'var(--color-primary)', alignSelf: 'flex-start', paddingLeft: 0 }}
-      >
-        <span style={{ marginRight: '8px' }}>+</span> Add skill group
-      </Button>
+        <button className={styles.addSkillBtn} onClick={handleAdd}>
+          <span>+</span> Add skill group
+        </button>
+      </div>
     </SectionCard>
   );
 };

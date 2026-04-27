@@ -268,7 +268,7 @@ const ResumePreview = () => {
           <section key="skills" className={styles.section}>
             <h2 className={styles.sectionTitle}>Tech Skills</h2>
             <div className={styles.skillsList}>
-              {skills?.map((skill, index) => (
+              {skills?.filter(skill => skill.isVisible !== false).map((skill, index) => (
                 <p key={index} className={styles.skillItem}>
                   <span className={styles.skillCategory}>{skill.category}: </span>
                   {skill.items}
