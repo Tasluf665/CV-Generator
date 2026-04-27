@@ -141,6 +141,7 @@ export const updateDesign = Joi.object({
     education: sectionStyleSchema.optional(),
     projects: sectionStyleSchema.optional(),
     skills: sectionStyleSchema.optional(),
+    contact: sectionStyleSchema.optional(),
   }).optional(),
 });
 

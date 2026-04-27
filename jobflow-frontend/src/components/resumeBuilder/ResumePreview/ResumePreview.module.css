@@ -3,7 +3,7 @@
   flex-direction: column;
   gap: 32px;
   align-items: center;
-  padding-bottom: 60px;
+  padding-bottom: 40px;
 }
 
 .a4Page {
@@ -46,10 +46,10 @@
   top: 0;
   left: 0;
   width: 794px;
-  padding: var(--page-margin, 60px);
+  padding: var(--page-margin, 40px 60px);
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 16px;
   font-family: var(--font-family, 'Poppins', 'Inter', sans-serif);
   visibility: hidden;
   pointer-events: none;
@@ -59,8 +59,6 @@
 .header {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
   gap: 4px;
   margin-bottom: 8px;
 }
@@ -78,11 +76,8 @@
 
 .contactInfo {
   display: flex;
-  justify-content: center;
   flex-wrap: wrap;
   gap: 8px;
-  font-size: 13px;
-  color: #333;
 }
 
 .contactItem {
@@ -93,7 +88,6 @@
 .contactItem:not(:last-child)::after {
   content: "|";
   margin-left: 8px;
-  color: #333;
 }
 
 .section {

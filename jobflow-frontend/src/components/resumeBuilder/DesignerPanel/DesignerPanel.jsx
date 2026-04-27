@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { 
-  selectDesign 
+import {
+  selectDesign
 } from '../../../features/resumeBuilder/resumeBuilderSelectors';
-import { 
-  updateDesign 
+import {
+  updateDesign
 } from '../../../features/resumeBuilder/resumeBuilderSlice';
 import styles from './DesignerPanel.module.css';
 
@@ -15,7 +15,7 @@ const SectionAccordion = ({ title, isOpen, onToggle, children }) => {
         <span className={styles.accordionTitle}>{title}</span>
         <div className={`${styles.chevron} ${isOpen ? styles.open : ''}`}>
           <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
-            <path d="M1 1L6 6L11 1" stroke="#506169" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M1 1L6 6L11 1" stroke="#506169" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
       </div>
@@ -53,7 +53,7 @@ const DesignerPanel = () => {
   ];
 
   const accentColors = [
-    '#00b894', '#0984e3', '#6c5ce7', '#d63031', '#e84393', 
+    '#00b894', '#0984e3', '#6c5ce7', '#d63031', '#e84393',
     '#fdcb6e', '#2d3436', '#131d21', '#506169', '#bbcac3'
   ];
 
@@ -66,11 +66,11 @@ const DesignerPanel = () => {
             <h3 className={styles.sectionTitle}>Templates</h3>
             <div className={`${styles.chevron} ${isTemplatesOpen ? styles.open : ''}`}>
               <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
-                <path d="M1 1L6 6L11 1" stroke="#506169" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M1 1L6 6L11 1" stroke="#506169" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
           </div>
-          
+
           {isTemplatesOpen && (
             <div className={styles.templateList}>
               <div className={styles.templateCardBrowse}>
@@ -81,10 +81,10 @@ const DesignerPanel = () => {
                     <line x1="8" y1="12" x2="16" y2="12"></line>
                   </svg>
                 </div>
-                <span>Browse<br/>Templates</span>
+                <span>Browse<br />Templates</span>
               </div>
 
-              <div 
+              <div
                 className={`${styles.templateCard} ${design.template === 'modern' ? styles.activeTemplate : ''}`}
                 onClick={() => handleUpdate({ template: 'modern' })}
               >
@@ -98,13 +98,13 @@ const DesignerPanel = () => {
                 {design.template === 'modern' && (
                   <div className={styles.selectedBadge}>
                     <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                      <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </div>
                 )}
               </div>
 
-              <div 
+              <div
                 className={`${styles.templateCard} ${design.template === 'professional' ? styles.activeTemplate : ''}`}
                 onClick={() => handleUpdate({ template: 'professional' })}
               >
@@ -115,7 +115,7 @@ const DesignerPanel = () => {
                 {design.template === 'professional' && (
                   <div className={styles.selectedBadge}>
                     <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                      <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </div>
                 )}
@@ -130,7 +130,7 @@ const DesignerPanel = () => {
             <h3 className={styles.sectionTitle}>Global Styling</h3>
             <div className={`${styles.chevron} ${isStylingOpen ? styles.open : ''}`}>
               <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
-                <path d="M1 1L6 6L11 1" stroke="#506169" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M1 1L6 6L11 1" stroke="#506169" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
           </div>
@@ -141,8 +141,8 @@ const DesignerPanel = () => {
               <div className={styles.field}>
                 <label>Default Font</label>
                 <div className={styles.selectWrapper}>
-                  <select 
-                    value={design.font} 
+                  <select
+                    value={design.font}
                     onChange={(e) => handleUpdate({ font: e.target.value })}
                     style={{ fontFamily: design.font }}
                   >
@@ -160,7 +160,7 @@ const DesignerPanel = () => {
                 <label>Accent Color</label>
                 <div className={styles.colorGrid}>
                   {accentColors.map(color => (
-                    <button 
+                    <button
                       key={color}
                       className={`${styles.colorCircle} ${design.accentColor === color ? styles.activeColor : ''}`}
                       style={{ backgroundColor: color }}
@@ -177,9 +177,9 @@ const DesignerPanel = () => {
                 <div className={styles.field}>
                   <label>Page Margin</label>
                   <div className={styles.numericInput} style={{ width: '100%' }}>
-                    <input 
-                      type="number" 
-                      value={design.margin} 
+                    <input
+                      type="number"
+                      value={design.margin}
                       onChange={(e) => handleUpdate({ margin: parseInt(e.target.value) || 0 })}
                     />
                     <span>px</span>
@@ -188,9 +188,9 @@ const DesignerPanel = () => {
                 <div className={styles.field}>
                   <label>Base Font Size</label>
                   <div className={styles.numericInput} style={{ width: '100%' }}>
-                    <input 
-                      type="number" 
-                      value={design.fontSize} 
+                    <input
+                      type="number"
+                      value={design.fontSize}
                       onChange={(e) => handleUpdate({ fontSize: parseInt(e.target.value) || 12 })}
                     />
                     <span>px</span>
@@ -206,16 +206,17 @@ const DesignerPanel = () => {
           <div className={styles.sectionHeader}>
             <h3 className={styles.sectionTitle}>Section Styles</h3>
           </div>
-          
+
           {[
             { id: 'title', name: 'Title' },
+            { id: 'contact', name: 'Contact Information' },
             { id: 'summary', name: 'Summary' },
             { id: 'experience', name: 'Work Experience' },
             { id: 'education', name: 'Education' },
             { id: 'projects', name: 'Projects' },
             { id: 'skills', name: 'Skills' },
           ].map((sec) => (
-            <SectionAccordion 
+            <SectionAccordion
               key={sec.id}
               title={sec.name}
               isOpen={expandedSection === sec.id}
@@ -226,8 +227,8 @@ const DesignerPanel = () => {
                 <div className={styles.field}>
                   <label>Font Family</label>
                   <div className={styles.selectWrapper}>
-                    <select 
-                      value={design.sectionStyles?.[sec.id]?.fontFamily || design.font} 
+                    <select
+                      value={design.sectionStyles?.[sec.id]?.fontFamily || design.font}
                       onChange={(e) => handleSectionUpdate(sec.id, { fontFamily: e.target.value })}
                       style={{ fontFamily: design.sectionStyles?.[sec.id]?.fontFamily || design.font }}
                     >
@@ -245,9 +246,9 @@ const DesignerPanel = () => {
                   <div className={styles.field}>
                     <label>Font Size</label>
                     <div className={styles.numericInput}>
-                      <input 
-                        type="number" 
-                        value={design.sectionStyles?.[sec.id]?.fontSize || 14} 
+                      <input
+                        type="number"
+                        value={design.sectionStyles?.[sec.id]?.fontSize || 14}
                         onChange={(e) => handleSectionUpdate(sec.id, { fontSize: parseInt(e.target.value) || 12 })}
                       />
                       <span>px</span>
@@ -256,9 +257,9 @@ const DesignerPanel = () => {
                   <div className={styles.field}>
                     <label>Color</label>
                     <div className={styles.colorInputWrapper}>
-                      <input 
-                        type="color" 
-                        value={design.sectionStyles?.[sec.id]?.color || '#2d3436'} 
+                      <input
+                        type="color"
+                        value={design.sectionStyles?.[sec.id]?.color || '#2d3436'}
                         onChange={(e) => handleSectionUpdate(sec.id, { color: e.target.value })}
                         className={styles.colorPicker}
                       />
@@ -272,9 +273,9 @@ const DesignerPanel = () => {
                   <div className={styles.field}>
                     <label>Line Height</label>
                     <div className={styles.numericInput}>
-                      <input 
-                        type="number" 
-                        value={design.sectionStyles?.[sec.id]?.lineHeight || 140} 
+                      <input
+                        type="number"
+                        value={design.sectionStyles?.[sec.id]?.lineHeight || 140}
                         onChange={(e) => handleSectionUpdate(sec.id, { lineHeight: parseInt(e.target.value) || 100 })}
                       />
                       <span>%</span>
@@ -283,10 +284,10 @@ const DesignerPanel = () => {
                   <div className={styles.field}>
                     <label>Letter Spacing</label>
                     <div className={styles.numericInput}>
-                      <input 
-                        type="number" 
+                      <input
+                        type="number"
                         step="0.1"
-                        value={design.sectionStyles?.[sec.id]?.letterSpacing || 0} 
+                        value={design.sectionStyles?.[sec.id]?.letterSpacing || 0}
                         onChange={(e) => handleSectionUpdate(sec.id, { letterSpacing: parseFloat(e.target.value) || 0 })}
                       />
                       <span>px</span>
@@ -299,9 +300,9 @@ const DesignerPanel = () => {
                   <div className={styles.field}>
                     <label>Bottom Margin</label>
                     <div className={styles.numericInput}>
-                      <input 
-                        type="number" 
-                        value={design.sectionStyles?.[sec.id]?.margin || 10} 
+                      <input
+                        type="number"
+                        value={design.sectionStyles?.[sec.id]?.margin || 10}
                         onChange={(e) => handleSectionUpdate(sec.id, { margin: parseInt(e.target.value) || 0 })}
                       />
                       <span>px</span>

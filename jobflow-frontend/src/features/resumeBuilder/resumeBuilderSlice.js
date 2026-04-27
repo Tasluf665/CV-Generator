@@ -107,6 +107,7 @@ const initialResumeData = {
       education: { fontSize: 14, fontFamily: 'Inter', color: '#2d3436', margin: 15, lineHeight: 140, letterSpacing: 0, alignment: 'left' },
       projects: { fontSize: 14, fontFamily: 'Inter', color: '#2d3436', margin: 15, lineHeight: 140, letterSpacing: 0, alignment: 'left' },
       skills: { fontSize: 14, fontFamily: 'Inter', color: '#2d3436', margin: 10, lineHeight: 140, letterSpacing: 0, alignment: 'left' },
+      contact: { fontSize: 13, fontFamily: 'Inter', color: '#506169', margin: 10, lineHeight: 140, letterSpacing: 0, alignment: 'center' },
     }
   },
 };

@@ -19,8 +19,8 @@ const ResumePreview = () => {
   const measureRef = useRef(null);
 
   const PAGE_HEIGHT = 1122;
-  const PAGE_PADDING = 60;
-  const MAX_CONTENT_HEIGHT = PAGE_HEIGHT - (PAGE_PADDING * 2);
+  const currentPadding = design?.margin || 40;
+  const MAX_CONTENT_HEIGHT = PAGE_HEIGHT - (currentPadding * 2);
 
   useLayoutEffect(() => {
     if (measureRef.current) {
@@ -30,7 +30,8 @@ const ResumePreview = () => {
       let currentHeight = 0;
 
       children.forEach((child) => {
-        const childHeight = child.offsetHeight + 24; // Including gap (24px)
+        const gapHeight = currentPageItems.length === 0 ? 0 : 16; // Only add gap between items
+        const childHeight = child.offsetHeight + gapHeight;
         
         if (currentHeight + childHeight > MAX_CONTENT_HEIGHT && currentPageItems.length > 0) {
           newPages.push(currentPageItems);
@@ -63,7 +64,20 @@ const ResumePreview = () => {
                 <span className={styles.pronouns}> ({contact.pronouns})</span>
               )}
             </h1>
-            <div className={styles.contactInfo}>
+            <div 
+              className={styles.contactInfo}
+              style={{
+                fontFamily: 'var(--contact-font)',
+                fontSize: 'var(--contact-size)',
+                color: 'var(--contact-color)',
+                marginTop: 'var(--contact-margin)',
+                lineHeight: 'var(--contact-line-height)',
+                letterSpacing: 'var(--contact-letter-spacing)',
+                justifyContent: design?.sectionStyles?.contact?.alignment === 'center' ? 'center' : design?.sectionStyles?.contact?.alignment === 'right' ? 'flex-end' : 'flex-start',
+                textAlign: design?.sectionStyles?.contact?.alignment || 'center',
+                width: '100%',
+              }}
+            >
               {isVisible('address') && (contact?.address || contact?.city || contact?.state) && (
                 <span className={styles.contactItem}>
                   {[contact.address, contact.city, contact.state].filter(Boolean).join(', ')}
@@ -333,6 +347,15 @@ const ResumePreview = () => {
         '--skills-line-height': (design?.sectionStyles?.skills?.lineHeight || 140) / 100,
         '--skills-letter-spacing': `${design?.sectionStyles?.skills?.letterSpacing || 0}px`,
         '--skills-align': design?.sectionStyles?.skills?.alignment || 'left',
+
+        // Contact styles
+        '--contact-font': design?.sectionStyles?.contact?.fontFamily || design?.font || 'Inter',
+        '--contact-size': `${design?.sectionStyles?.contact?.fontSize || 13}px`,
+        '--contact-color': design?.sectionStyles?.contact?.color || '#506169',
+        '--contact-margin': `${design?.sectionStyles?.contact?.margin || 10}px`,
+        '--contact-line-height': (design?.sectionStyles?.contact?.lineHeight || 140) / 100,
+        '--contact-letter-spacing': `${design?.sectionStyles?.contact?.letterSpacing || 0}px`,
+        '--contact-align': design?.sectionStyles?.contact?.alignment || 'center',
       }}
     >
       {/* Hidden measure area */}

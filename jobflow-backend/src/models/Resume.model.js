@@ -248,6 +248,15 @@ const resumeSchema = new mongoose.Schema(
           letterSpacing: { type: Number, default: 0 },
           alignment: { type: String, enum: ['left', 'center', 'right'], default: 'left' },
         },
+        contact: {
+          fontSize: { type: Number, default: 13 },
+          fontFamily: { type: String, default: 'Poppins' },
+          color: { type: String, default: '#506169' },
+          margin: { type: Number, default: 10 },
+          lineHeight: { type: Number, default: 140 },
+          letterSpacing: { type: Number, default: 0 },
+          alignment: { type: String, enum: ['left', 'center', 'right'], default: 'center' },
+        },
       },
     },
     analysis: {
