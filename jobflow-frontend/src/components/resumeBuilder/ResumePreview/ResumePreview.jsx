@@ -175,22 +175,45 @@ const ResumePreview = () => {
         )}
 
         {/* Education Header */}
-        {education?.length > 0 && (
+        {education?.length > 0 && education.some(edu => edu.isVisible) && (
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>Education</h2>
-            {education.map(edu => (
-              <div key={edu.id} className={styles.item}>
-                <div className={styles.itemHeader}>
-                  <span className={styles.itemTitle}>{edu.degree} | {edu.school}</span>
-                  <span className={styles.itemDate}>{edu.startDate} {edu.endDate && `— ${edu.endDate}`}</span>
+            {education
+              .filter(edu => edu.isVisible)
+              .map(edu => (
+                <div key={edu.id} className={styles.item}>
+                  <div className={styles.itemHeader}>
+                    <div className={styles.itemMainInfo}>
+                      <span className={styles.itemTitle}>
+                        {edu.isDegreeVisible && edu.degree}
+                        {edu.isDegreeVisible && edu.isFieldVisible && edu.field && ` in ${edu.field}`}
+                        {edu.isInstitutionVisible && edu.school && (
+                          <>
+                            {edu.isDegreeVisible ? ' | ' : ''}
+                            {edu.school}
+                          </>
+                        )}
+                      </span>
+                      {edu.isLocationVisible && edu.location && (
+                        <span className={styles.itemLocation}>, {edu.location}</span>
+                      )}
+                    </div>
+                    {edu.isDateVisible && (
+                      <span className={styles.itemDate}>{edu.startDate} {edu.endDate && `— ${edu.endDate}`}</span>
+                    )}
+                  </div>
+                  
+                  {edu.isGpaVisible && edu.gpa && (
+                    <p className={styles.gpa}>GPA: {edu.gpa}</p>
+                  )}
+
+                  <div className={styles.itemDescription}>
+                    {edu.bullets?.filter(b => b.isVisible && b.text).map((bullet, i) => (
+                      <p key={i} className={styles.bullet}>{bullet.text}</p>
+                    ))}
+                  </div>
                 </div>
-                <div className={styles.itemDescription}>
-                  {edu.description && edu.description.split('\n').map((line, i) => (
-                    <p key={i} className={styles.bullet}>{line}</p>
-                  ))}
-                </div>
-              </div>
-            ))}
+              ))}
           </section>
         )}
 

@@ -202,23 +202,58 @@ const resumeBuilderSlice = createSlice({
     removeWorkExperience: (state, action) => {
       state.resumeData.workExperience = state.resumeData.workExperience.filter(w => w.id !== action.payload);
     },
-    addEducation: (state) => {
+    addEducation: (state, action) => {
       const newId = Date.now();
+      const initialData = action.payload || {};
       state.resumeData.education.push({
         id: newId,
-        school: '',
-        degree: '',
-        startDate: '',
-        endDate: '',
-        description: '',
+        isVisible: initialData.isVisible ?? true,
+        school: initialData.school || '',
+        isInstitutionVisible: initialData.isInstitutionVisible ?? true,
+        degree: initialData.degree || '',
+        isDegreeVisible: initialData.isDegreeVisible ?? true,
+        field: initialData.field || '',
+        isFieldVisible: initialData.isFieldVisible ?? true,
+        location: initialData.location || '',
+        isLocationVisible: initialData.isLocationVisible ?? true,
+        startDate: initialData.startDate || '',
+        endDate: initialData.endDate || '',
+        isDateVisible: initialData.isDateVisible ?? true,
+        gpa: initialData.gpa || '',
+        isGpaVisible: initialData.isGpaVisible ?? true,
+        bullets: initialData.bullets || [{ text: '', isVisible: true }],
+        order: state.resumeData.education.length,
       });
     },
-
     updateEducation: (state, action) => {
       const { id, updates } = action.payload;
       const index = state.resumeData.education.findIndex(e => e.id === id);
       if (index !== -1) {
         state.resumeData.education[index] = { ...state.resumeData.education[index], ...updates };
+      }
+    },
+    addEduBullet: (state, action) => {
+      const { eduId } = action.payload;
+      const eduIndex = state.resumeData.education.findIndex(e => e.id === eduId);
+      if (eduIndex !== -1) {
+        state.resumeData.education[eduIndex].bullets.push({ text: '', isVisible: true });
+      }
+    },
+    updateEduBullet: (state, action) => {
+      const { eduId, bulletIndex, updates } = action.payload;
+      const eduIndex = state.resumeData.education.findIndex(e => e.id === eduId);
+      if (eduIndex !== -1) {
+        const bullet = state.resumeData.education[eduIndex].bullets[bulletIndex];
+        if (bullet) {
+          state.resumeData.education[eduIndex].bullets[bulletIndex] = { ...bullet, ...updates };
+        }
+      }
+    },
+    removeEduBullet: (state, action) => {
+      const { eduId, bulletIndex } = action.payload;
+      const eduIndex = state.resumeData.education.findIndex(e => e.id === eduId);
+      if (eduIndex !== -1) {
+        state.resumeData.education[eduIndex].bullets.splice(bulletIndex, 1);
       }
     },
     removeEducation: (state, action) => {
@@ -373,6 +408,9 @@ export const {
   removeWorkExperience,
   addEducation,
   updateEducation,
+  addEduBullet,
+  updateEduBullet,
+  removeEduBullet,
   removeEducation,
   updateSkills,
   addSkill,

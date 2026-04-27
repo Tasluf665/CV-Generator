@@ -79,15 +79,26 @@ const resumeSchema = new mongoose.Schema(
     ],
     education: [
       {
+        isVisible: { type: Boolean, default: true },
         institution: { type: String },
-
+        isInstitutionVisible: { type: Boolean, default: true },
         degree: String,
+        isDegreeVisible: { type: Boolean, default: true },
         field: String,
+        isFieldVisible: { type: Boolean, default: true },
         location: String,
+        isLocationVisible: { type: Boolean, default: true },
         startDate: String,
         endDate: String,
+        isDateVisible: { type: Boolean, default: true },
         gpa: String,
-        bullets: [String],
+        isGpaVisible: { type: Boolean, default: true },
+        bullets: [
+          {
+            text: String,
+            isVisible: { type: Boolean, default: true },
+          }
+        ],
         order: Number,
       },
     ],

@@ -38,15 +38,24 @@ const workExperienceSchema = Joi.object({
 });
 
 const educationSchema = Joi.object({
+  isVisible: Joi.boolean().optional(),
   institution: Joi.string().allow('').optional(),
-
+  isInstitutionVisible: Joi.boolean().optional(),
   degree: Joi.string().allow('').optional(),
+  isDegreeVisible: Joi.boolean().optional(),
   field: Joi.string().allow('').optional(),
+  isFieldVisible: Joi.boolean().optional(),
   location: Joi.string().allow('').optional(),
+  isLocationVisible: Joi.boolean().optional(),
   startDate: Joi.string().allow('').optional(),
   endDate: Joi.string().allow('').optional(),
+  isDateVisible: Joi.boolean().optional(),
   gpa: Joi.string().allow('').optional(),
-  bullets: Joi.array().items(Joi.string()).optional(),
+  isGpaVisible: Joi.boolean().optional(),
+  bullets: Joi.array().items(Joi.object({
+    text: Joi.string().allow('').optional(),
+    isVisible: Joi.boolean().optional(),
+  })).optional(),
   order: Joi.number().optional(),
 });
 

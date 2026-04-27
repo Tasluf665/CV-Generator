@@ -162,6 +162,24 @@
   gap: 4px;
 }
 
+.itemMainInfo {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.itemLocation {
+  font-size: 13px;
+  color: #444;
+}
+
+.gpa {
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+  margin: 0;
+}
+
 .companyDescription, .roleDescription {
   font-size: 13px;
   font-style: italic;

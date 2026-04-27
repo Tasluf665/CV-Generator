@@ -48,11 +48,25 @@ const mapToBackend = (data) => {
       order: job.order,
     })),
     education: (data.education || []).map(edu => ({
+      isVisible: edu.isVisible ?? true,
       institution: edu.school,
+      isInstitutionVisible: edu.isInstitutionVisible ?? true,
       degree: edu.degree,
+      isDegreeVisible: edu.isDegreeVisible ?? true,
+      field: edu.field,
+      isFieldVisible: edu.isFieldVisible ?? true,
+      location: edu.location,
+      isLocationVisible: edu.isLocationVisible ?? true,
       startDate: edu.startDate,
       endDate: edu.endDate,
-      bullets: typeof edu.description === 'string' ? edu.description.split('\n') : edu.bullets || [],
+      isDateVisible: edu.isDateVisible ?? true,
+      gpa: edu.gpa,
+      isGpaVisible: edu.isGpaVisible ?? true,
+      bullets: (edu.bullets || []).map(b => ({
+        text: typeof b === 'string' ? b : b.text,
+        isVisible: b.isVisible ?? true
+      })),
+      order: edu.order,
     })),
     projects: (data.projects || []).map(p => ({
       name: p.name,
@@ -123,11 +137,25 @@ const mapToFrontend = (data) => {
     })),
     education: (rest.education || []).map(edu => ({
       id: edu._id || Date.now() + Math.random(),
+      isVisible: edu.isVisible ?? true,
       school: edu.institution || '',
+      isInstitutionVisible: edu.isInstitutionVisible ?? true,
       degree: edu.degree || '',
+      isDegreeVisible: edu.isDegreeVisible ?? true,
+      field: edu.field || '',
+      isFieldVisible: edu.isFieldVisible ?? true,
+      location: edu.location || '',
+      isLocationVisible: edu.isLocationVisible ?? true,
       startDate: edu.startDate || '',
       endDate: edu.endDate || '',
-      description: (edu.bullets || []).join('\n'),
+      isDateVisible: edu.isDateVisible ?? true,
+      gpa: edu.gpa || '',
+      isGpaVisible: edu.isGpaVisible ?? true,
+      bullets: (edu.bullets || []).map(b => ({
+        text: b.text || '',
+        isVisible: b.isVisible ?? true
+      })),
+      order: edu.order || 0,
     })),
     projects: (rest.projects || []).map(p => ({
       id: p._id || Date.now() + Math.random(),
