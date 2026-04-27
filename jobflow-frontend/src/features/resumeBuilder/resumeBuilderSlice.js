@@ -86,6 +86,7 @@ const initialResumeData = {
     visibleFields: ['firstName', 'lastName', 'email', 'phone', 'linkedin', 'twitter', 'address', 'city', 'state', 'website'],
   },
   summary: '',
+  summaries: [],
   workExperience: [],
   education: [],
   skills: [],
@@ -140,6 +141,9 @@ const resumeBuilderSlice = createSlice({
     },
     updateSummary: (state, action) => {
       state.resumeData.summary = action.payload;
+    },
+    updateSummaries: (state, action) => {
+      state.resumeData.summaries = action.payload;
     },
     addWorkExperience: (state) => {
       const newId = Date.now(); // Use timestamp for unique temporary ID
@@ -324,6 +328,7 @@ export const {
   updateTargetTitles,
   setTargetJobTitle,
   updateSummary,
+  updateSummaries,
   addWorkExperience,
   updateWorkExperience,
   removeWorkExperience,

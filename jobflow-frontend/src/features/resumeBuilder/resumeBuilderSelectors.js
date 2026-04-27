@@ -5,6 +5,7 @@ export const selectContactInfo = (state) => state.resumeBuilder.resumeData.conta
 export const selectTargetTitles = (state) => state.resumeBuilder.resumeData.targetTitles;
 export const selectTargetJobTitle = (state) => state.resumeBuilder.resumeData.targetJobTitle;
 export const selectSummary = (state) => state.resumeBuilder.resumeData.summary;
+export const selectSummaries = (state) => state.resumeBuilder.resumeData.summaries;
 export const selectWorkExperience = (state) => state.resumeBuilder.resumeData.workExperience;
 export const selectEducation = (state) => state.resumeBuilder.resumeData.education;
 export const selectSkills = (state) => state.resumeBuilder.resumeData.skills;

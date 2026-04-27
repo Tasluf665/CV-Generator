@@ -10,6 +10,8 @@ const mapToBackend = (data) => {
     ...rest,
     targetJobTitle: data.targetJobTitle || '',
     targetTitles: data.targetTitles || [],
+    summaries: data.summaries || [],
+    summary: data.summary || '',
     contact: {
       firstName: contact?.firstName || '',
       lastName: contact?.lastName || '',
@@ -66,6 +68,8 @@ const mapToFrontend = (data) => {
     ...rest,
     targetJobTitle: data.targetJobTitle || '',
     targetTitles: data.targetTitles || [],
+    summaries: data.summaries || [],
+    summary: data.summary || '',
     contact: {
       firstName: contact?.firstName || '',
       lastName: contact?.lastName || '',

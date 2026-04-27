@@ -48,6 +48,10 @@ const resumeSchema = new mongoose.Schema(
     summary: {
       type: String,
     },
+    summaries: {
+      type: [String],
+      default: [],
+    },
     workExperience: [
       {
         company: { type: String },
