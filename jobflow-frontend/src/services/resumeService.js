@@ -4,75 +4,79 @@ import api from './api';
  * Maps frontend resume data to backend schema format
  */
 const mapToBackend = (data) => {
-  const { contact, title, ...rest } = data;
+  const { contact, ...rest } = data;
   
-  // Split fullName into firstName and lastName
-  const [firstName = '', ...lastNames] = (contact?.fullName || '').split(' ');
-  const lastName = lastNames.join(' ');
-
   return {
     ...rest,
-    title: title || 'Untitled Resume',
     contact: {
-      firstName,
-      lastName,
-      email: contact?.email,
-      phone: contact?.phone,
-      location: contact?.location,
-      linkedinUrl: contact?.linkedin,
-      portfolioUrl: contact?.website,
+      firstName: contact?.firstName || '',
+      lastName: contact?.lastName || '',
+      pronouns: contact?.pronouns || '',
+      email: contact?.email || '',
+      phone: contact?.phone || '',
+      linkedin: contact?.linkedin || '',
+      twitter: contact?.twitter || '',
+      address: contact?.address || '',
+      city: contact?.city || '',
+      state: contact?.state || '',
+      website: contact?.website || '',
+      visibleFields: contact?.visibleFields || [],
     },
-    targetJobTitle: contact?.title, // Move title from contact to targetJobTitle
     workExperience: (data.workExperience || []).map(job => ({
       company: job.company,
       role: job.role,
       location: job.location,
       startDate: job.startDate,
       endDate: job.endDate,
-      bullets: job.description ? job.description.split('\n') : [],
+      bullets: typeof job.description === 'string' ? job.description.split('\n') : job.bullets || [],
     })),
     education: (data.education || []).map(edu => ({
       institution: edu.school,
       degree: edu.degree,
       startDate: edu.startDate,
       endDate: edu.endDate,
-      bullets: edu.description ? edu.description.split('\n') : [],
+      bullets: typeof edu.description === 'string' ? edu.description.split('\n') : edu.bullets || [],
     })),
-
-
     projects: (data.projects || []).map(p => ({
       name: p.name,
-      description: p.title, // Map frontend "Title" to backend "description"
-      url: p.link, // Map frontend "Link" to backend "url"
-      bullets: p.description ? p.description.split('\n') : [], // Map frontend "Description" to backend "bullets"
+      description: p.title || '', 
+      url: p.link || '', 
+      bullets: typeof p.description === 'string' ? p.description.split('\n') : p.bullets || [], 
     })),
     skills: (data.skills || []).map(s => ({
       category: s.category,
-      items: typeof s.items === 'string' ? s.items.split(',').map(item => item.trim()).filter(Boolean) : s.items,
+      items: typeof s.items === 'string' ? s.items.split(',').map(item => item.trim()).filter(Boolean) : s.items || [],
     })),
-
   };
 };
 
+
+const DEFAULT_VISIBLE_FIELDS = ['firstName', 'lastName', 'email', 'phone', 'linkedin', 'twitter', 'address', 'city', 'state', 'website'];
 
 /**
  * Maps backend resume data to frontend format
  */
 const mapToFrontend = (data) => {
   if (!data) return null;
-  const { contact, targetJobTitle, title, ...rest } = data;
+  const { contact, ...rest } = data;
   
   return {
     ...rest,
-    title: title || 'Untitled Resume',
     contact: {
-      fullName: `${contact?.firstName || ''} ${contact?.lastName || ''}`.trim(),
-      title: targetJobTitle || '',
+      firstName: contact?.firstName || '',
+      lastName: contact?.lastName || '',
+      pronouns: contact?.pronouns || '',
       email: contact?.email || '',
       phone: contact?.phone || '',
-      location: contact?.location || '',
-      linkedin: contact?.linkedinUrl || '',
-      website: contact?.portfolioUrl || '',
+      linkedin: contact?.linkedin || '',
+      twitter: contact?.twitter || '',
+      address: contact?.address || '',
+      city: contact?.city || '',
+      state: contact?.state || '',
+      website: contact?.website || '',
+      visibleFields: (contact?.visibleFields !== undefined && contact?.visibleFields !== null)
+        ? contact.visibleFields 
+        : DEFAULT_VISIBLE_FIELDS,
     },
     workExperience: (rest.workExperience || []).map(job => ({
       id: job._id || Date.now() + Math.random(),
@@ -91,21 +95,18 @@ const mapToFrontend = (data) => {
       endDate: edu.endDate || '',
       description: (edu.bullets || []).join('\n'),
     })),
-
-
     projects: (rest.projects || []).map(p => ({
       id: p._id || Date.now() + Math.random(),
       name: p.name || '',
-      title: p.description || '', // Map backend "description" to frontend "Title"
-      link: p.url || '', // Map backend "url" to frontend "Link"
-      description: (p.bullets || []).join('\n'), // Map backend "bullets" to frontend "Description"
+      title: p.description || '', 
+      link: p.url || '', 
+      description: (p.bullets || []).join('\n'), 
     })),
     skills: (rest.skills || []).map(s => ({
       id: s._id || Date.now() + Math.random(),
       category: s.category || '',
       items: (s.items || []).join(', '),
     })),
-
   };
 };
 

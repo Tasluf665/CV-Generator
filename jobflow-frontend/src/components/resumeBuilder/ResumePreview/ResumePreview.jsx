@@ -11,6 +11,7 @@ const ResumePreview = () => {
   const resumeData = useSelector(selectResumeData);
   const design = useSelector(selectDesign);
   const { contact, summary, workExperience, education, skills, projects } = resumeData;
+  const isVisible = (field) => (contact?.visibleFields || []).includes(field);
 
 
   const [pages, setPages] = useState([]);
@@ -54,19 +55,35 @@ const ResumePreview = () => {
       case 'header':
         return (
           <header key="header" className={styles.header}>
-            <h1 className={styles.name}>{contact?.fullName || 'YOUR NAME'}</h1>
+            <h1 className={styles.name}>
+              {contact?.firstName || contact?.lastName 
+                ? `${isVisible('firstName') ? contact.firstName || '' : ''} ${isVisible('lastName') ? contact.lastName || '' : ''}`.trim().toUpperCase() 
+                : 'YOUR NAME'}
+              {isVisible('pronouns') && contact?.pronouns && (
+                <span className={styles.pronouns}> ({contact.pronouns})</span>
+              )}
+            </h1>
             <div className={styles.contactInfo}>
-              {contact?.location && <span className={styles.contactItem}>{contact.location}</span>}
-              {contact?.email && <span className={styles.contactItem}>{contact.email}</span>}
-              {contact?.phone && <span className={styles.contactItem}>{contact.phone}</span>}
-              {contact?.linkedin && (
+              {isVisible('address') && (contact?.address || contact?.city || contact?.state) && (
                 <span className={styles.contactItem}>
-                  {contact.linkedin.replace(/^https?:\/\/(www\.)?linkedin\.com\/in\//, '')}
+                  {[contact.address, contact.city, contact.state].filter(Boolean).join(', ')}
                 </span>
               )}
-              {contact?.website && (
+              {isVisible('email') && contact?.email && <span className={styles.contactItem}>{contact.email}</span>}
+              {isVisible('phone') && contact?.phone && <span className={styles.contactItem}>{contact.phone}</span>}
+              {isVisible('linkedin') && contact?.linkedin && (
                 <span className={styles.contactItem}>
-                  {contact.website.replace(/^https?:\/\/(www\.)?github\.com\//, '')}
+                  {contact.linkedin.replace(/^https?:\/\/(www\.)?/, '')}
+                </span>
+              )}
+              {isVisible('website') && contact?.website && (
+                <span className={styles.contactItem}>
+                  {contact.website.replace(/^https?:\/\/(www\.)?/, '')}
+                </span>
+              )}
+              {isVisible('twitter') && contact?.twitter && (
+                <span className={styles.contactItem}>
+                  @{contact.twitter.replace(/^https?:\/\/(www\.)?(twitter\.com\/|x\.com\/)/, '')}
                 </span>
               )}
             </div>

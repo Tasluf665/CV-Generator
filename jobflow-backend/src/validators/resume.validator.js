@@ -3,12 +3,16 @@ import Joi from 'joi';
 const contactSchema = Joi.object({
   firstName: Joi.string().allow('').optional(),
   lastName: Joi.string().allow('').optional(),
+  pronouns: Joi.string().allow('').optional(),
   email: Joi.string().email().allow('').optional(),
   phone: Joi.string().allow('').optional(),
-  location: Joi.string().allow('').optional(),
-  linkedinUrl: Joi.string().uri().allow('').optional(),
-  githubUrl: Joi.string().uri().allow('').optional(),
-  portfolioUrl: Joi.string().uri().allow('').optional(),
+  linkedin: Joi.string().allow('').optional(),
+  twitter: Joi.string().allow('').optional(),
+  address: Joi.string().allow('').optional(),
+  city: Joi.string().allow('').optional(),
+  state: Joi.string().allow('').optional(),
+  website: Joi.string().allow('').optional(),
+  visibleFields: Joi.array().items(Joi.string()).optional(),
 });
 
 const workExperienceSchema = Joi.object({
