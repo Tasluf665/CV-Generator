@@ -8,6 +8,9 @@ import Button from '../../components/common/Button/Button';
 import ContentEditor from '../../components/resumeBuilder/ContentEditor/ContentEditor';
 import DesignerPanel from '../../components/resumeBuilder/DesignerPanel/DesignerPanel';
 import ResumePreview from '../../components/resumeBuilder/ResumePreview/ResumePreview';
+import JobMatcherSidebar from '../../components/resumeBuilder/JobMatcherPanel/JobMatcherSidebar';
+import JobMatcherPlaceholder from '../../components/resumeBuilder/JobMatcherPanel/JobMatcherPlaceholder';
+import JobMatcherResults from '../../components/resumeBuilder/JobMatcherPanel/JobMatcherResults';
 import {
   selectActiveTab,
   selectContactInfo,
@@ -18,7 +21,8 @@ import {
   selectLastSaved,
   selectCurrentResumeId,
   selectResumeError,
-  selectZoomLevel
+  selectZoomLevel,
+  selectSelectedJobId
 } from '../../features/resumeBuilder/resumeBuilderSelectors';
 import {
   setActiveTab,
@@ -47,6 +51,7 @@ const ResumeEditorPage = () => {
   const currentResumeId = useSelector(selectCurrentResumeId);
   const error = useSelector(selectResumeError);
   const zoomLevel = useSelector(selectZoomLevel);
+  const selectedJobId = useSelector(selectSelectedJobId);
 
   const [sidebarWidth, setSidebarWidth] = useState(380);
   const isResizing = useRef(false);
@@ -242,7 +247,9 @@ const ResumeEditorPage = () => {
         <aside className={styles.sidebar} style={{ width: `${sidebarWidth}px` }}>
           {activeTab === 'content' && <ContentEditor />}
           {activeTab === 'designer' && <DesignerPanel />}
-          {activeTab !== 'content' && activeTab !== 'designer' && (
+          {activeTab === 'matcher' && !selectedJobId && <JobMatcherSidebar />}
+          {activeTab === 'matcher' && selectedJobId && <ContentEditor />}
+          {activeTab !== 'content' && activeTab !== 'designer' && activeTab !== 'matcher' && (
             <div className={styles.placeholder}>
               <h2>{tabs.find(t => t.id === activeTab)?.label} coming soon!</h2>
             </div>
@@ -250,32 +257,44 @@ const ResumeEditorPage = () => {
         </aside>
         <div className={styles.resizer} onMouseDown={handleMouseDown} />
         <div className={styles.previewContainer}>
-          <section className={styles.previewArea}>
-            <div
-              id="resume-preview-content"
-              className={styles.previewWrapper}
-              style={{ transform: `scale(${zoomLevel / 100})`, transformOrigin: 'top center' }}
-            >
-              <ResumePreview />
-            </div>
-          </section>
+          {activeTab !== 'matcher' ? (
+            <>
+              <section className={styles.previewArea}>
+                <div
+                  id="resume-preview-content"
+                  className={styles.previewWrapper}
+                  style={{ transform: `scale(${zoomLevel / 100})`, transformOrigin: 'top center' }}
+                >
+                  <ResumePreview />
+                </div>
+              </section>
 
-          <div className={styles.zoomControls}>
-            <button className={styles.zoomBtn} onClick={handleZoomOut}>
-              <svg width="12" height="2" viewBox="0 0 12 2" fill="none"><path d="M0 1H12" stroke="#131D21" strokeWidth="2" /></svg>
-            </button>
-            <span className={styles.zoomText}>{zoomLevel}%</span>
-            <button className={styles.zoomBtn} onClick={handleZoomIn}>
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 0V12M0 6H12" stroke="#131D21" strokeWidth="2" /></svg>
-            </button>
-            <div className={styles.divider} />
-            <button className={styles.zoomBtn} onClick={handleResetZoom}>
-              <svg width="16" height="14" viewBox="0 0 16 14" fill="none">
-                <rect x="0.5" y="0.5" width="15" height="13" rx="1.5" stroke="#131D21" />
-                <path d="M4 4H12V10H4V4Z" fill="#131D21" />
-              </svg>
-            </button>
-          </div>
+              <div className={styles.zoomControls}>
+                <button className={styles.zoomBtn} onClick={handleZoomOut}>
+                  <svg width="12" height="2" viewBox="0 0 12 2" fill="none"><path d="M0 1H12" stroke="#131D21" strokeWidth="2" /></svg>
+                </button>
+                <span className={styles.zoomText}>{zoomLevel}%</span>
+                <button className={styles.zoomBtn} onClick={handleZoomIn}>
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 0V12M0 6H12" stroke="#131D21" strokeWidth="2" /></svg>
+                </button>
+                <div className={styles.divider} />
+                <button className={styles.zoomBtn} onClick={handleResetZoom}>
+                  <svg width="16" height="14" viewBox="0 0 16 14" fill="none">
+                    <rect x="0.5" y="0.5" width="15" height="13" rx="1.5" stroke="#131D21" />
+                    <path d="M4 4H12V10H4V4Z" fill="#131D21" />
+                  </svg>
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              {!selectedJobId ? (
+                <JobMatcherPlaceholder />
+              ) : (
+                <JobMatcherResults />
+              )}
+            </>
+          )}
         </div>
 
       </main>

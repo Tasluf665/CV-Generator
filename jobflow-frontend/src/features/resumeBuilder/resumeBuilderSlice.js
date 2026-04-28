@@ -67,10 +67,45 @@ export const saveResume = createAsyncThunk(
   }
 );
 
+export const matchResumeWithJob = createAsyncThunk(
+  'resumeBuilder/matchJob',
+  async ({ id, jobId }, { rejectWithValue }) => {
+    try {
+      const response = await resumeService.matchResume(id, jobId);
+      if (response.success) {
+        return response.data;
+      }
+      return rejectWithValue(response.message);
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
+export const generateResumeKeywords = createAsyncThunk(
+  'resumeBuilder/generateKeywords',
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await resumeService.generateKeywords(id);
+      if (response.success) {
+        return response.data.extractedKeywords;
+      }
+      return rejectWithValue(response.message);
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
 const initialResumeData = {
   title: 'Untitled Resume',
   targetJobTitle: '',
   targetTitles: [],
+  extractedKeywords: {
+    'Hard Skills': [],
+    'Soft Skills': [],
+    'Others': []
+  },
   contact: {
     firstName: '',
     lastName: '',
@@ -125,7 +160,11 @@ const resumeBuilderSlice = createSlice({
       activeTab: 'content',
       expandedSections: ['contact', 'work'],
       zoomLevel: 100,
+      selectedJobId: null,
     },
+    matchResults: null,
+    matchLoading: false,
+    generateKeywordsLoading: false,
     loading: false,
     saving: false,
     error: null,
@@ -359,11 +398,16 @@ const resumeBuilderSlice = createSlice({
     setZoomLevel: (state, action) => {
       state.ui.zoomLevel = action.payload;
     },
+    setSelectedJobId: (state, action) => {
+      state.ui.selectedJobId = action.payload;
+    },
     resetResumeState: (state) => {
       state.resumeData = initialResumeData;
       state.currentResumeId = null;
       state.error = null;
       state.lastSaved = null;
+      state.ui.selectedJobId = null;
+      state.matchResults = null;
     }
   },
   extraReducers: (builder) => {
@@ -428,6 +472,32 @@ const resumeBuilderSlice = createSlice({
       .addCase(deleteResume.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      // Matching Job
+      .addCase(matchResumeWithJob.pending, (state) => {
+        state.matchLoading = true;
+        state.error = null;
+      })
+      .addCase(matchResumeWithJob.fulfilled, (state, action) => {
+        state.matchLoading = false;
+        state.matchResults = action.payload.matchResults;
+      })
+      .addCase(matchResumeWithJob.rejected, (state, action) => {
+        state.matchLoading = false;
+        state.error = action.payload;
+      })
+      // Generating Keywords
+      .addCase(generateResumeKeywords.pending, (state) => {
+        state.generateKeywordsLoading = true;
+        state.error = null;
+      })
+      .addCase(generateResumeKeywords.fulfilled, (state, action) => {
+        state.generateKeywordsLoading = false;
+        state.resumeData.extractedKeywords = action.payload;
+      })
+      .addCase(generateResumeKeywords.rejected, (state, action) => {
+        state.generateKeywordsLoading = false;
+        state.error = action.payload;
       });
   },
 });
@@ -466,6 +536,7 @@ export const {
   setActiveTab,
   toggleSection,
   setZoomLevel,
+  setSelectedJobId,
   resetResumeState,
   updateDesign,
 } = resumeBuilderSlice.actions;

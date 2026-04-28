@@ -37,6 +37,11 @@ export const matchResume = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse(200, { matchResults }, 'Job match analysis complete.'));
 });
 
+export const generateResumeKeywords = asyncHandler(async (req, res) => {
+  const extractedKeywords = await resumeService.generateKeywords(req.user._id, req.params.id);
+  res.status(200).json(new ApiResponse(200, { extractedKeywords }, 'Resume keywords generated successfully.'));
+});
+
 export const updateDesign = asyncHandler(async (req, res) => {
   const resume = await resumeService.updateDesign(req.user._id, req.params.id, req.body);
   res.status(200).json(new ApiResponse(200, { resume }, 'Resume design updated.'));

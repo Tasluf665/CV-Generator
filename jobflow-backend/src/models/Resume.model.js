@@ -273,6 +273,14 @@ const resumeSchema = new mongoose.Schema(
       ],
       analyzedAt: Date,
     },
+    extractedKeywords: {
+      type: mongoose.Schema.Types.Mixed,
+      default: {
+        'Hard Skills': [],
+        'Soft Skills': [],
+        'Others': []
+      }
+    },
     matchResults: [
       {
         jobId: { type: mongoose.Schema.Types.ObjectId, ref: 'Job' },

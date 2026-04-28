@@ -103,6 +103,11 @@ const mapToFrontend = (data) => {
   
   return {
     ...rest,
+    extractedKeywords: data.extractedKeywords || {
+      'Hard Skills': [],
+      'Soft Skills': [],
+      'Others': []
+    },
     targetJobTitle: data.targetJobTitle || '',
     targetTitles: data.targetTitles || [],
     summaries: data.summaries || [],
@@ -256,6 +261,16 @@ const resumeService = {
 
   deleteResume: async (id) => {
     const response = await api.delete(`/resumes/${id}`);
+    return response.data;
+  },
+
+  matchResume: async (id, jobId) => {
+    const response = await api.post(`/resumes/${id}/match`, { jobId });
+    return response.data;
+  },
+
+  generateKeywords: async (id) => {
+    const response = await api.post(`/resumes/${id}/keywords`);
     return response.data;
   },
 };

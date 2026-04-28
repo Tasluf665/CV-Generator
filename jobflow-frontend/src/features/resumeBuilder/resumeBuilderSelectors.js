@@ -25,3 +25,10 @@ export const selectLastSaved = (state) => state.resumeBuilder.lastSaved;
 
 export const selectIsSectionExpanded = (state, section) => 
   state.resumeBuilder.ui.expandedSections.includes(section);
+
+export const selectSelectedJobId = (state) => state.resumeBuilder.ui.selectedJobId;
+export const selectMatchResults = (state) => state.resumeBuilder.matchResults;
+export const selectMatchLoading = (state) => state.resumeBuilder.matchLoading;
+
+export const selectResumeKeywords = (state) => state.resumeBuilder.resumeData.extractedKeywords;
+export const selectGenerateKeywordsLoading = (state) => state.resumeBuilder.generateKeywordsLoading;

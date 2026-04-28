@@ -29,18 +29,18 @@ export const buildCoverLetterPrompt = (resumeData, jobDescription, tone, length)
 };
 
 /**
- * Builds the prompt for matching a resume with a job description
+ * Builds the prompt for matching a resume with a job description using extracted keywords
  */
-export const buildJobMatchPrompt = (resumeData, jobData) => {
-  const resumeText = JSON.stringify(resumeData, null, 2);
-  const jobText = JSON.stringify(jobData, null, 2);
+export const buildJobMatchPrompt = (resumeKeywords, jobKeywords) => {
+  const resumeText = JSON.stringify(resumeKeywords, null, 2);
+  const jobText = JSON.stringify(jobKeywords, null, 2);
 
-  return `Compare this resume with this job description.
+  return `Compare the extracted keywords from a candidate's resume with the required keywords from a job description.
       
-Job Description:
+Job Keywords:
 ${jobText}
 
-Resume:
+Resume Keywords:
 ${resumeText}
 
 Return a JSON object with this structure:
@@ -144,6 +144,36 @@ Extract the most relevant ATS keywords from the job description and categorize t
     ]
   }
 }
+  `;
+};
+
+/**
+ * Builds the system prompt for ATS keyword generation from a resume
+ */
+export const getResumeKeywordGeneratorSystemPrompt = () => {
+  return `
+You are an ATS keyword generator for a Job Tracking Dashboard. Your task is to analyze the provided resume data and return a single, strictly formatted JSON object — no markdown, no explanation, no extra text outside the JSON.
+---
+## OUTPUT SCHEMA
+Return ONLY this JSON structure:
+{
+  "extractedKeywords": {
+    "Hard Skills": ["<string>", "..."],
+    "Soft Skills": ["<string>", "..."],
+    "Others": ["<string>", "..."]
+  }
+}
+---
+## FIELD INSTRUCTIONS
+
+### extractedKeywords
+Extract the most relevant ATS keywords from the resume and categorize them into "Hard Skills", "Soft Skills", and "Others".
+- "Hard Skills": Technical skills, tools, programming languages, methodologies, and specific domain expertise.
+- "Soft Skills": Interpersonal skills, traits, and attributes like communication, leadership, etc.
+- "Others": Any other relevant keywords like certifications, languages spoken, job titles, etc.
+- Prefer exact terminology used in the resume.
+- Deduplicate near-identical terms.
+- Keep each keyword concise and useful for resume optimization.
   `;
 };
 

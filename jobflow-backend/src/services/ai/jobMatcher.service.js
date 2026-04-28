@@ -1,38 +1,48 @@
-import { openRouterClient } from '../../config/openrouter.js';
-import { buildJobMatchPrompt } from '../../utils/promptBuilder.js';
-
 /**
- * Matches a resume against a job description using AI.
- * @param {Object} resumeData - The resume data
- * @param {Object} jobData - The job data (including JD)
+ * Matches a resume against a job description using direct keyword comparison.
+ * @param {Object} resumeKeywords - The extracted resume keywords
+ * @param {Object} jobKeywords - The extracted job keywords
  * @returns {Promise<Object>} - The match results
  */
-export const matchResumeWithJob = async (resumeData, jobData) => {
-  const messages = [
-    {
-      role: 'system',
-      content: `You are an expert Talent Acquisition Manager. 
-Your goal is to compare a candidate's resume against a specific job description and determine how well they match.
-Identify keyword gaps, matched skills, and provide actionable suggestions to improve the match.
-You must return your response in valid JSON format.`,
-    },
-    {
-      role: 'user',
-      content: buildJobMatchPrompt(resumeData, jobData),
-    },
+export const matchResumeWithJob = async (resumeKeywords, jobKeywords) => {
+  const allJobKeywords = [
+    ...(jobKeywords['Hard Skills'] || []),
+    ...(jobKeywords['Soft Skills'] || []),
+    ...(jobKeywords['Others'] || []),
   ];
 
-  const response = await openRouterClient.chat(messages, { json: true });
+  const allResumeKeywords = [
+    ...(resumeKeywords['Hard Skills'] || []),
+    ...(resumeKeywords['Soft Skills'] || []),
+    ...(resumeKeywords['Others'] || []),
+  ].map(k => k.toLowerCase());
 
-  try {
-    const result = JSON.parse(response.choices[0].message.content);
-    return result;
-  } catch (error) {
-    const text = response.choices[0].message.content;
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
-      return JSON.parse(jsonMatch[0]);
+  const matchedKeywords = [];
+  const missingKeywords = [];
+
+  for (const jobKeyword of allJobKeywords) {
+    const lowerJobKeyword = jobKeyword.toLowerCase();
+
+    // A match occurs only if there is an exact case-insensitive match
+    const isMatched = allResumeKeywords.some(resumeKw =>
+      resumeKw === lowerJobKeyword
+    );
+
+    if (isMatched) {
+      matchedKeywords.push(jobKeyword);
+    } else {
+      missingKeywords.push(jobKeyword);
     }
-    throw new Error('Failed to parse AI job match response');
   }
+
+  const matchScore = allJobKeywords.length > 0
+    ? Math.round((matchedKeywords.length / allJobKeywords.length) * 100)
+    : 0;
+
+  return {
+    matchScore,
+    matchedKeywords,
+    missingKeywords,
+    suggestions: []
+  };
 };
