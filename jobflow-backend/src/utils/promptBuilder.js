@@ -108,17 +108,22 @@ You are an ATS keyword generator for a Job Tracking Dashboard. Your task is to a
 ## OUTPUT SCHEMA
 Return ONLY this JSON structure:
 {
-  "extractedKeywords": ["<string>", "..."]
+  "extractedKeywords": {
+    "Hard Skills": ["<string>", "..."],
+    "Soft Skills": ["<string>", "..."],
+    "Others": ["<string>", "..."]
+  }
 }
 ---
 ## FIELD INSTRUCTIONS
 
 ### extractedKeywords
-Extract the most relevant ATS keywords from the job description, including role titles, tools, technologies, methodologies, domain terms, and core skills.
+Extract the most relevant ATS keywords from the job description and categorize them into "Hard Skills", "Soft Skills", and "Others".
+- "Hard Skills": Technical skills, tools, programming languages, methodologies, and specific domain expertise.
+- "Soft Skills": Interpersonal skills, traits, and attributes like communication, leadership, etc.
+- "Others": Any other relevant keywords like certifications, languages spoken, job titles, etc.
 - Prefer exact terminology used in the posting.
-- Include both hard skills and high-signal domain phrases.
 - Deduplicate near-identical terms.
-- Return around 8–30 keywords when available.
 - Keep each keyword concise and useful for resume optimization.
 
 ---
@@ -127,9 +132,17 @@ Extract the most relevant ATS keywords from the job description, including role 
 "We are looking for a Senior Data Engineer to join our growing Data Platform team at FinEdge. You will design and maintain scalable data pipelines using Apache Spark and dbt, and work closely with Data Scientists and analysts. Requirements: 5+ years of data engineering experience, proficiency in Python and SQL, experience with cloud platforms (AWS or GCP), familiarity with Airflow. Nice to have: Kafka, Terraform. You thrive in Agile teams and communicate clearly across departments."
 ### Expected Output:
 {
-  "extractedKeywords": [
-    "Senior Data Engineer", "Data Platform", "data engineering", "data pipelines", "Apache Spark", "dbt", "Python", "SQL", "AWS", "GCP", "Apache Airflow", "Kafka", "Terraform", "Agile", "Data Scientist"
-  ]
+  "extractedKeywords": {
+    "Hard Skills": [
+      "Apache Spark", "dbt", "Python", "SQL", "AWS", "GCP", "Apache Airflow", "Kafka", "Terraform", "data engineering", "data pipelines"
+    ],
+    "Soft Skills": [
+      "Agile", "communication clearly"
+    ],
+    "Others": [
+      "Senior Data Engineer", "Data Platform", "Data Scientist"
+    ]
+  }
 }
   `;
 };

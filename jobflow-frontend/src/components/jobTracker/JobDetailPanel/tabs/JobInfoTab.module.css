@@ -325,6 +325,28 @@
   margin: 0 0 var(--spacing-md) 0;
 }
 
+.keywordsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.keywordGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  width: 100%;
+}
+
+.keywordGroupTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-main);
+  margin: 0;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
 .tagCloud {
   display: flex;
   flex-wrap: wrap;

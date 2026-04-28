@@ -37,7 +37,11 @@ const jobSchema = new mongoose.Schema(
       summary: String,
       requirements: [String],
       responsibilities: [String],
-      extractedKeywords: [String],
+      extractedKeywords: {
+        'Hard Skills': [String],
+        'Soft Skills': [String],
+        'Others': [String]
+      },
       salaryRange: {
         min: Number,
         max: Number,

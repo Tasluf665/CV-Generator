@@ -151,7 +151,11 @@ export const parseAndSaveJob = async (
       summary: parsedData.summary,
       requirements: parsedData.requirements,
       responsibilities: parsedData.responsibilities,
-      extractedKeywords: [],
+      extractedKeywords: {
+        'Hard Skills': [],
+        'Soft Skills': [],
+        'Others': []
+      },
     },
   });
 
@@ -283,7 +287,9 @@ export const reparseJob = async (userId, jobId) => {
     summary: parsedData.summary,
     requirements: parsedData.requirements,
     responsibilities: parsedData.responsibilities,
-    extractedKeywords: Array.isArray(job.parsedData?.extractedKeywords) ? job.parsedData.extractedKeywords : [],
+    extractedKeywords: job.parsedData?.extractedKeywords?.['Hard Skills'] !== undefined 
+      ? job.parsedData.extractedKeywords 
+      : { 'Hard Skills': [], 'Soft Skills': [], 'Others': [] },
   };
 
   await job.save();
@@ -299,7 +305,11 @@ export const generateKeywordsForJob = async (userId, jobId) => {
   if (!job.parsedData) throw new ApiError(400, 'No parsed job data found to generate keywords');
 
   const extractedKeywords = await jobParserService.generateJobKeywords(job.parsedData);
-  const normalizedKeywords = normalizeKeywords(extractedKeywords);
+  const normalizedKeywords = {
+    'Hard Skills': normalizeKeywords(extractedKeywords['Hard Skills']),
+    'Soft Skills': normalizeKeywords(extractedKeywords['Soft Skills']),
+    'Others': normalizeKeywords(extractedKeywords['Others']),
+  };
 
   const updatedJob = await Job.findOneAndUpdate(
     { _id: jobId, userId },

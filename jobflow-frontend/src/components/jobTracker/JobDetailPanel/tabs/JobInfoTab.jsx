@@ -44,7 +44,13 @@ const JobInfoTab = ({ job, onOpenNotesTab }) => {
   if (!job) return null;
 
   const { dateSaved, deadline, parsedData, rawJobDescription } = job;
-  const { summary, requirements, responsibilities, extractedKeywords = [] } = parsedData || {};
+  const { summary, requirements, responsibilities, extractedKeywords = {} } = parsedData || {};
+
+  const hasKeywords = extractedKeywords && (
+    (extractedKeywords['Hard Skills'] && extractedKeywords['Hard Skills'].length > 0) ||
+    (extractedKeywords['Soft Skills'] && extractedKeywords['Soft Skills'].length > 0) ||
+    (extractedKeywords['Others'] && extractedKeywords['Others'].length > 0)
+  );
 
   const currentStatusIndex = APPLICATION_STAGES.findIndex((stage) => stage.id === job.status);
 
@@ -321,18 +327,51 @@ const JobInfoTab = ({ job, onOpenNotesTab }) => {
               onClick={handleGenerateKeywords}
               disabled={isGeneratingKeywords}
             >
-              {isGeneratingKeywords ? 'Generating...' : extractedKeywords.length > 0 ? 'Regenerate Keywords' : 'Generate Keywords'}
+              {isGeneratingKeywords ? 'Generating...' : hasKeywords ? 'Regenerate Keywords' : 'Generate Keywords'}
             </Button>
           }
         >
           <p className={styles.aiInfo}>Highlighting crucial skills to include in your resume for this specific role.</p>
-          <div className={styles.tagCloud}>
-            {extractedKeywords.length > 0 ? (
-              extractedKeywords.map((tag) => (
-                <Badge key={tag} status="success" className={styles.keywordTag}>
-                  {tag} <span className={styles.check}>✓</span>
-                </Badge>
-              ))
+          <div className={styles.keywordsContainer}>
+            {hasKeywords ? (
+              <>
+                {extractedKeywords['Hard Skills'] && extractedKeywords['Hard Skills'].length > 0 && (
+                  <div className={styles.keywordGroup}>
+                    <h5 className={styles.keywordGroupTitle}>Hard Skills</h5>
+                    <div className={styles.tagCloud}>
+                      {extractedKeywords['Hard Skills'].map((tag) => (
+                        <Badge key={tag} status="success" className={styles.keywordTag}>
+                          {tag} <span className={styles.check}>✓</span>
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {extractedKeywords['Soft Skills'] && extractedKeywords['Soft Skills'].length > 0 && (
+                  <div className={styles.keywordGroup}>
+                    <h5 className={styles.keywordGroupTitle}>Soft Skills</h5>
+                    <div className={styles.tagCloud}>
+                      {extractedKeywords['Soft Skills'].map((tag) => (
+                        <Badge key={tag} status="info" className={styles.keywordTag}>
+                          {tag} <span className={styles.check}>✓</span>
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {extractedKeywords['Others'] && extractedKeywords['Others'].length > 0 && (
+                  <div className={styles.keywordGroup}>
+                    <h5 className={styles.keywordGroupTitle}>Others</h5>
+                    <div className={styles.tagCloud}>
+                      {extractedKeywords['Others'].map((tag) => (
+                        <Badge key={tag} status="neutral" className={styles.keywordTag}>
+                          {tag} <span className={styles.check}>✓</span>
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
             ) : (
               <p>No keywords generated yet.</p>
             )}

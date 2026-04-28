@@ -94,7 +94,12 @@ export const generateJobKeywords = async ({ summary, requirements, responsibilit
 
     try {
       const parsed = JSON.parse(content);
-      return Array.isArray(parsed?.extractedKeywords) ? parsed.extractedKeywords : [];
+      const keywordsObj = parsed?.extractedKeywords || {};
+      return {
+        'Hard Skills': Array.isArray(keywordsObj['Hard Skills']) ? keywordsObj['Hard Skills'] : [],
+        'Soft Skills': Array.isArray(keywordsObj['Soft Skills']) ? keywordsObj['Soft Skills'] : [],
+        'Others': Array.isArray(keywordsObj['Others']) ? keywordsObj['Others'] : [],
+      };
     } catch (parseError) {
       console.error('AI Keyword JSON Parse Error:', content);
       throw new ApiError(500, 'AI returned invalid JSON format while generating keywords.');
