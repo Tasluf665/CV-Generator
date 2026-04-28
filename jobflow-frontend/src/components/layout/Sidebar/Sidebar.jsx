@@ -18,8 +18,8 @@ const Sidebar = () => {
     { name: 'Settings', path: '/settings', icon: '⚙️' },
   ];
 
-  const onLogout = () => {
-    dispatch(logout());
+  const onLogout = async () => {
+    await dispatch(logout());
     dispatch(reset());
     navigate(ROUTE_PATHS.LOGIN);
   };

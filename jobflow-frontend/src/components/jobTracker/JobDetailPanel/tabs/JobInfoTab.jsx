@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import styles from './JobInfoTab.module.css';
-import SectionCard from '../../../common/SectionCard/SectionCard';
+import JobDetailPanel_SectionCard from '../common/JobDetailPanel_SectionCard';
 import Badge from '../../../common/Badge/Badge';
 import Button from '../../../common/Button/Button';
 import { formatJobDescription } from '../../../../utils/formatJobDescription';
@@ -144,7 +144,7 @@ const JobInfoTab = ({ job, onOpenNotesTab }) => {
   return (
     <div className={styles.container}>
       <div className={styles.leftColumn}>
-        <SectionCard
+        <JobDetailPanel_SectionCard
           title="Dates"
           icon="📅"
           headerActions={
@@ -172,9 +172,9 @@ const JobInfoTab = ({ job, onOpenNotesTab }) => {
               </div>
             </div>
           </div>
-        </SectionCard>
+        </JobDetailPanel_SectionCard>
 
-        <SectionCard
+        <JobDetailPanel_SectionCard
           title="Job Description"
           icon="📄"
         >
@@ -223,11 +223,11 @@ const JobInfoTab = ({ job, onOpenNotesTab }) => {
               )}
             </div>
           </div>
-        </SectionCard>
+        </JobDetailPanel_SectionCard>
       </div>
 
       <div className={styles.rightColumn}>
-        <SectionCard title="Application Status" icon="🎯">
+        <JobDetailPanel_SectionCard title="Application Status" icon="🎯">
           <div className={styles.statusTimelineWrap}>
             <select
               className={styles.statusSelect}
@@ -308,9 +308,9 @@ const JobInfoTab = ({ job, onOpenNotesTab }) => {
               })}
             </div>
           </div>
-        </SectionCard>
+        </JobDetailPanel_SectionCard>
 
-        <SectionCard
+        <JobDetailPanel_SectionCard
           title="AI Extracted Keywords"
           icon="💡"
           variant="ai"
@@ -337,9 +337,9 @@ const JobInfoTab = ({ job, onOpenNotesTab }) => {
               <p>No keywords generated yet.</p>
             )}
           </div>
-        </SectionCard>
+        </JobDetailPanel_SectionCard>
 
-        <SectionCard
+        <JobDetailPanel_SectionCard
           title="Insights & Notes"
           icon="📓"
         >
@@ -354,7 +354,7 @@ const JobInfoTab = ({ job, onOpenNotesTab }) => {
               <Button variant="secondary" size="sm" block onClick={onOpenNotesTab}>Add Note</Button>
             </div>
           )}
-        </SectionCard>
+        </JobDetailPanel_SectionCard>
       </div>
     </div>
   );

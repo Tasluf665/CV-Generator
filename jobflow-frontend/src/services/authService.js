@@ -15,10 +15,14 @@ const login = async (credentials) => {
 };
 
 const logout = async () => {
-  const response = await api.post('/auth/logout');
   localStorage.removeItem('accessToken');
   localStorage.removeItem('user');
-  return response.data;
+  try {
+    const response = await api.post('/auth/logout');
+    return response.data;
+  } catch (error) {
+    console.error('Logout API error:', error);
+  }
 };
 
 const forgotPassword = async (email) => {
