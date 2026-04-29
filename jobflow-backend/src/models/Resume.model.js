@@ -106,7 +106,12 @@ const resumeSchema = new mongoose.Schema(
       {
         isVisible: { type: Boolean, default: true },
         category: String,
-        items: [String],
+        items: [
+          {
+            text: String,
+            isVisible: { type: Boolean, default: true },
+          }
+        ],
       },
     ],
     projects: [

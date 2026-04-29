@@ -10,7 +10,10 @@ import {
   addSkill,
   updateSkill,
   removeSkill,
-  toggleSection 
+  toggleSection,
+  addSkillItem,
+  updateSkillItem,
+  removeSkillItem
 } from '../../../../features/resumeBuilder/resumeBuilderSlice';
 import styles from './SkillsSection.module.css';
 
@@ -25,6 +28,18 @@ const SkillsSection = () => {
 
   const handleToggleVisibility = (id, currentValue) => {
     dispatch(updateSkill({ id, updates: { isVisible: !currentValue } }));
+  };
+
+  const handleToggleItemVisibility = (skillId, itemId, currentValue) => {
+    dispatch(updateSkillItem({ skillId, itemId, updates: { isVisible: !currentValue } }));
+  };
+
+  const handleAddItem = (skillId, text) => {
+    dispatch(addSkillItem({ skillId, text }));
+  };
+
+  const handleRemoveItem = (skillId, itemId) => {
+    dispatch(removeSkillItem({ skillId, itemId }));
   };
 
   const handleAdd = () => {
@@ -84,12 +99,48 @@ const SkillsSection = () => {
               placeholder="e.g. Programming Languages"
             />
 
-            <Input
-              label="Skills (comma separated)"
-              value={skill.items}
-              onChange={(e) => handleUpdate(skill.id, { items: e.target.value })}
-              placeholder="e.g. React, Node.js, Python..."
-            />
+            <div className={styles.skillList}>
+              {skill.items && skill.items.map((item) => (
+                <div 
+                  key={item.id} 
+                  className={`${styles.skillPill} ${item.isVisible === false ? styles.skillPillHidden : ''}`}
+                >
+                  <div 
+                    className={`${styles.pillCheckbox} ${item.isVisible !== false ? styles.pillCheckboxSelected : ''}`}
+                    onClick={() => handleToggleItemVisibility(skill.id, item.id, item.isVisible !== false)}
+                  >
+                    {item.isVisible !== false && (
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path d="M2 6L5 9L10 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    )}
+                  </div>
+                  <span className={styles.pillText}>{item.text}</span>
+                  <button 
+                    className={styles.pillDeleteBtn}
+                    onClick={() => handleRemoveItem(skill.id, item.id)}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <div className={styles.addSkillWrapper}>
+              <Input
+                placeholder="Type a skill and press Enter to add..."
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && e.target.value.trim()) {
+                    e.preventDefault();
+                    handleAddItem(skill.id, e.target.value.trim());
+                    e.target.value = '';
+                  }
+                }}
+              />
+            </div>
           </div>
         ))}
 

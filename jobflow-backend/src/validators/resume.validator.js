@@ -62,7 +62,15 @@ const educationSchema = Joi.object({
 const skillSchema = Joi.object({
   isVisible: Joi.boolean().optional(),
   category: Joi.string().allow('').optional(),
-  items: Joi.array().items(Joi.string()).optional(),
+  items: Joi.array().items(
+    Joi.alternatives().try(
+      Joi.string(),
+      Joi.object({
+        text: Joi.string().allow('').optional(),
+        isVisible: Joi.boolean().optional(),
+      })
+    )
+  ).optional(),
 });
 
 const projectSchema = Joi.object({

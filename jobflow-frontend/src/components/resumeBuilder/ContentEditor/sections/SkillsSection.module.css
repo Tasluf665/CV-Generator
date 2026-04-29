@@ -94,3 +94,82 @@
 .addSkillBtn:hover {
   background: #f0fdfa;
 }
+
+.skillList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.skillPill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background-color: white;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.skillPillHidden {
+  opacity: 0.6;
+  background-color: #f8fafc;
+}
+
+.skillPill:hover {
+  border-color: #94a3b8;
+}
+
+.pillCheckbox {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid #94a3b8;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: white;
+}
+
+.pillCheckboxSelected {
+  background: #0d9488;
+  border-color: #0d9488;
+  color: white;
+}
+
+.pillText {
+  font-size: 13px;
+  font-weight: 500;
+  color: #334155;
+  white-space: nowrap;
+}
+
+.skillPillHidden .pillText {
+  color: #94a3b8;
+  text-decoration: line-through;
+}
+
+.pillDeleteBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-left: 2px;
+  cursor: pointer;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.pillDeleteBtn:hover {
+  color: #ef4444;
+}
+
+.addSkillWrapper {
+  margin-top: 4px;
+}

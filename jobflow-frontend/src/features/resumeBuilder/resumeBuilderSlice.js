@@ -329,7 +329,7 @@ const resumeBuilderSlice = createSlice({
       state.resumeData.skills.push({
         id: Date.now(),
         category: '',
-        items: '',
+        items: [],
       });
     },
     updateSkill: (state, action) => {
@@ -341,6 +341,37 @@ const resumeBuilderSlice = createSlice({
     },
     removeSkill: (state, action) => {
       state.resumeData.skills = state.resumeData.skills.filter(s => s.id !== action.payload);
+    },
+    addSkillItem: (state, action) => {
+      const { skillId, text } = action.payload;
+      const skillIndex = state.resumeData.skills.findIndex(s => s.id === skillId);
+      if (skillIndex !== -1) {
+        state.resumeData.skills[skillIndex].items.push({
+          id: Date.now(),
+          text,
+          isVisible: true
+        });
+      }
+    },
+    updateSkillItem: (state, action) => {
+      const { skillId, itemId, updates } = action.payload;
+      const skillIndex = state.resumeData.skills.findIndex(s => s.id === skillId);
+      if (skillIndex !== -1) {
+        const itemIndex = state.resumeData.skills[skillIndex].items.findIndex(i => i.id === itemId);
+        if (itemIndex !== -1) {
+          state.resumeData.skills[skillIndex].items[itemIndex] = {
+            ...state.resumeData.skills[skillIndex].items[itemIndex],
+            ...updates
+          };
+        }
+      }
+    },
+    removeSkillItem: (state, action) => {
+      const { skillId, itemId } = action.payload;
+      const skillIndex = state.resumeData.skills.findIndex(s => s.id === skillId);
+      if (skillIndex !== -1) {
+        state.resumeData.skills[skillIndex].items = state.resumeData.skills[skillIndex].items.filter(i => i.id !== itemId);
+      }
     },
 
     addProject: (state, action) => {
@@ -555,6 +586,9 @@ export const {
   addSkill,
   updateSkill,
   removeSkill,
+  addSkillItem,
+  updateSkillItem,
+  removeSkillItem,
   addProject,
   updateProject,
   addProjectBullet,

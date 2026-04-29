@@ -268,12 +268,18 @@ const ResumePreview = () => {
           <section key="skills" className={styles.section}>
             <h2 className={styles.sectionTitle}>Tech Skills</h2>
             <div className={styles.skillsList}>
-              {skills?.filter(skill => skill.isVisible !== false).map((skill, index) => (
-                <p key={index} className={styles.skillItem}>
-                  <span className={styles.skillCategory}>{skill.category}: </span>
-                  {skill.items}
-                </p>
-              ))}
+              {skills?.filter(skill => skill.isVisible !== false).map((skill, index) => {
+                const visibleItems = Array.isArray(skill.items) 
+                  ? skill.items.filter(item => item.isVisible !== false).map(item => item.text).join(', ')
+                  : skill.items;
+
+                return (
+                  <p key={index} className={styles.skillItem}>
+                    <span className={styles.skillCategory}>{skill.category}: </span>
+                    {visibleItems}
+                  </p>
+                );
+              })}
             </div>
           </section>
         );

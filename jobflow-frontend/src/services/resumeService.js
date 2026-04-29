@@ -85,8 +85,16 @@ const mapToBackend = (data) => {
       order: p.order,
     })),
     skills: (data.skills || []).map(s => ({
+      isVisible: s.isVisible ?? true,
       category: s.category,
-      items: typeof s.items === 'string' ? s.items.split(',').map(item => item.trim()).filter(Boolean) : s.items || [],
+      items: Array.isArray(s.items) 
+        ? s.items.map(i => ({
+            text: typeof i === 'string' ? i : i.text,
+            isVisible: typeof i === 'string' ? true : (i.isVisible ?? true)
+          }))
+        : typeof s.items === 'string' 
+          ? s.items.split(',').map(i => ({ text: i.trim(), isVisible: true })).filter(i => i.text)
+          : [],
     })),
   };
 };
@@ -191,8 +199,21 @@ const mapToFrontend = (data) => {
     })),
     skills: (rest.skills || []).map(s => ({
       id: s._id || Date.now() + Math.random(),
+      isVisible: s.isVisible ?? true,
       category: s.category || '',
-      items: (s.items || []).join(', '),
+      items: Array.isArray(s.items)
+        ? s.items.map((i, index) => ({
+            id: i._id || Date.now() + Math.random() + index,
+            text: typeof i === 'string' ? i : i.text,
+            isVisible: typeof i === 'string' ? true : (i.isVisible ?? true)
+          }))
+        : typeof s.items === 'string'
+          ? s.items.split(',').map((i, index) => ({ 
+              id: Date.now() + Math.random() + index,
+              text: i.trim(), 
+              isVisible: true 
+            })).filter(i => i.text)
+          : [],
     })),
   };
 };
