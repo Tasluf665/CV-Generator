@@ -83,10 +83,22 @@
   color: var(--color-text-muted);
 }
 
-.deleteBtnTop {
+.actionButtonsTop {
   position: absolute;
   top: 12px;
   right: 12px;
+  display: flex;
+  gap: 8px;
+  z-index: 5;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.card:hover .actionButtonsTop {
+  opacity: 1;
+}
+
+.iconBtnTop {
   width: 32px;
   height: 32px;
   display: flex;
@@ -95,22 +107,24 @@
   background-color: var(--color-bg-white);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  color: var(--color-status-rejected);
+  color: var(--color-text-main);
   cursor: pointer;
-  z-index: 5;
   transition: all 0.2s;
-  opacity: 0.6;
 }
 
-.card:hover .deleteBtnTop {
-  opacity: 1;
-  background-color: var(--color-status-rejected-bg);
-  border-color: var(--color-status-rejected);
-  box-shadow: var(--shadow-sm);
+.iconBtnTop:hover {
+  transform: scale(1.1);
+  background-color: var(--color-bg-secondary);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.deleteBtnTop {
+  color: var(--color-text-muted);
 }
 
 .deleteBtnTop:hover {
-  transform: scale(1.1);
-  background-color: var(--color-status-rejected) !important;
-  color: var(--color-bg-white) !important;
+  background-color: var(--color-status-rejected-bg) !important;
+  border-color: var(--color-status-rejected) !important;
+  color: var(--color-status-rejected) !important;
 }

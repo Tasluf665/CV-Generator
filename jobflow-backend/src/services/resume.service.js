@@ -45,6 +45,21 @@ export const deleteResume = async (userId, resumeId) => {
   return resume;
 };
 
+export const duplicateResume = async (userId, resumeId) => {
+  const resumeToDuplicate = await getResumeById(userId, resumeId);
+  const resumeData = resumeToDuplicate.toObject();
+  
+  delete resumeData._id;
+  delete resumeData.__v;
+  delete resumeData.createdAt;
+  delete resumeData.updatedAt;
+  
+  resumeData.title = `${resumeData.title} (Copy)`;
+  
+  const duplicatedResume = await Resume.create(resumeData);
+  return duplicatedResume;
+};
+
 export const updateDesign = async (userId, resumeId, designData) => {
   const resume = await Resume.findOneAndUpdate(
     { _id: resumeId, userId },

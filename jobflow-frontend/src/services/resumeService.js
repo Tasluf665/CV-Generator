@@ -264,6 +264,17 @@ const resumeService = {
     return response.data;
   },
 
+  duplicateResume: async (id) => {
+    const response = await api.post(`/resumes/${id}/duplicate`);
+    if (response.data.success) {
+      return {
+        ...response.data,
+        data: mapToFrontend(response.data.data.resume)
+      };
+    }
+    return response.data;
+  },
+
   matchResume: async (id, jobId) => {
     const response = await api.post(`/resumes/${id}/match`, { jobId });
     return response.data;

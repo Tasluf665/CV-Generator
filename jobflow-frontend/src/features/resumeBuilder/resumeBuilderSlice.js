@@ -31,6 +31,21 @@ export const deleteResume = createAsyncThunk(
   }
 );
 
+export const duplicateResume = createAsyncThunk(
+  'resumeBuilder/duplicate',
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await resumeService.duplicateResume(id);
+      if (response.success) {
+        return response.data;
+      }
+      return rejectWithValue(response.message);
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
 export const fetchResumeById = createAsyncThunk(
   'resumeBuilder/fetchById',
   async (id, { rejectWithValue }) => {
@@ -470,6 +485,19 @@ const resumeBuilderSlice = createSlice({
         }
       })
       .addCase(deleteResume.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Duplicating
+      .addCase(duplicateResume.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(duplicateResume.fulfilled, (state, action) => {
+        state.loading = false;
+        state.resumes.unshift(action.payload);
+      })
+      .addCase(duplicateResume.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

@@ -27,6 +27,11 @@ export const deleteResume = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse(200, null, 'Resume deleted successfully.'));
 });
 
+export const duplicateResume = asyncHandler(async (req, res) => {
+  const resume = await resumeService.duplicateResume(req.user._id, req.params.id);
+  res.status(201).json(new ApiResponse(201, { resume }, 'Resume duplicated successfully.'));
+});
+
 export const analyzeResume = asyncHandler(async (req, res) => {
   const analysis = await resumeService.analyzeResume(req.user._id, req.params.id);
   res.status(200).json(new ApiResponse(200, { analysis }, 'Resume analysis complete.'));

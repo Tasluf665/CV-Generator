@@ -15,6 +15,7 @@ router.post('/', validate(resumeValidator.createResume), resumeController.create
 router.get('/:id', resumeController.getResumeById);
 router.patch('/:id', validate(resumeValidator.updateResume), resumeController.updateResume);
 router.delete('/:id', resumeController.deleteResume);
+router.post('/:id/duplicate', resumeController.duplicateResume);
 
 router.post('/:id/analyze', resumeController.analyzeResume);
 router.post('/:id/match', validate(resumeValidator.matchResume), resumeController.matchResume);

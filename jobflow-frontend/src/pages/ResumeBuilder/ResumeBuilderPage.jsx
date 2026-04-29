@@ -7,7 +7,7 @@ import ResumeCard from '../../components/resumeBuilder/ResumeCard/ResumeCard';
 import Input from '../../components/common/Input/Input';
 import Button from '../../components/common/Button/Button';
 import { ROUTE_PATHS } from '../../routes/routePaths';
-import { fetchAllResumes, deleteResume } from '../../features/resumeBuilder/resumeBuilderSlice';
+import { fetchAllResumes, deleteResume, duplicateResume } from '../../features/resumeBuilder/resumeBuilderSlice';
 import { selectResumes, selectIsLoading } from '../../features/resumeBuilder/resumeBuilderSelectors';
 import styles from './ResumeBuilderPage.module.css';
 
@@ -29,6 +29,10 @@ const ResumeBuilderPage = () => {
 
   const handleDeleteResume = (id) => {
     dispatch(deleteResume(id));
+  };
+
+  const handleDuplicateResume = (id) => {
+    dispatch(duplicateResume(id));
   };
 
 
@@ -172,6 +176,7 @@ const ResumeBuilderPage = () => {
                   lastModified={formatDate(resume.updatedAt)}
                   onClick={() => navigate(ROUTE_PATHS.RESUME_EDITOR.replace(':id', resume._id))}
                   onDelete={() => handleDeleteResume(resume._id)}
+                  onDuplicate={() => handleDuplicateResume(resume._id)}
                 />
 
               ))
