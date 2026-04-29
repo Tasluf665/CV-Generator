@@ -10,7 +10,8 @@ const app = express();
 
 // Enable CORS
 app.use(cors({
-  origin: '*',
+  origin: true,
+  credentials: true,
 }));
 
 // Body parser
@@ -21,7 +22,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Set security headers
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: false,
+}));
 
 // Logging
 if (process.env.NODE_ENV === 'development') {
