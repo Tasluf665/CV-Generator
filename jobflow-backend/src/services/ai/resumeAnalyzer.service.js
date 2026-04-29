@@ -73,3 +73,42 @@ export const generateResumeKeywords = async (resumeData) => {
     throw new Error('AI returned invalid JSON format while generating resume keywords.');
   }
 };
+
+/**
+ * Generates a bullet point for a specific position and keyword.
+ */
+export const generateBulletPoint = async (keyword, sectionType, positionData) => {
+  const context = positionData 
+    ? `Role: ${positionData.role || positionData.degree || positionData.name}\nCompany/Institution: ${positionData.company || positionData.school || ''}\nDescription: ${positionData.description || positionData.positionDescription || ''}`
+    : 'General Resume Context';
+
+  const messages = [
+    {
+      role: 'system',
+      content: `You are an expert Resume Writer and Career Coach. 
+Your task is to write a single, highly professional, impact-oriented resume bullet point.
+The user will provide a specific skill/keyword they want to demonstrate, and context about the role they were in.
+Write ONE bullet point (starting with a strong action verb, focusing on achievements/metrics if possible, and naturally incorporating the keyword).
+Do NOT include any introduction, formatting, or bullet symbol (no '-' or '*'). Just the text.`,
+    },
+    {
+      role: 'user',
+      content: `Keyword to incorporate: "${keyword}"\nSection Type: ${sectionType}\n\nContext about the position:\n${context}\n\nPlease generate the single bullet point.`,
+    },
+  ];
+
+  const response = await openRouterClient.chat(messages, { json: false });
+  
+  try {
+    let bullet = response.choices[0]?.message?.content?.trim();
+    if (!bullet) throw new Error('Empty response from AI bullet generator.');
+    
+    // Remove any leading bullet points/dashes the AI might have accidentally added
+    bullet = bullet.replace(/^[-*•]\s*/, '');
+    
+    return bullet;
+  } catch (error) {
+    console.error('AI Bullet Generation Error:', error);
+    throw new Error('Failed to generate bullet point.');
+  }
+};

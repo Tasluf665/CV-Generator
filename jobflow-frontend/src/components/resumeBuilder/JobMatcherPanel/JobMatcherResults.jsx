@@ -1,8 +1,17 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectMatchResults, selectSelectedJobId, selectCurrentResumeId, selectResumeKeywords } from '../../../features/resumeBuilder/resumeBuilderSelectors';
-import { setSelectedJobId, matchResumeWithJob, generateResumeKeywords } from '../../../features/resumeBuilder/resumeBuilderSlice';
+
+import { 
+  setSelectedJobId, 
+  matchResumeWithJob, 
+  generateResumeKeywords, 
+  toggleKeywordMatchStatus, 
+  addSkillItem, 
+  addSkill 
+} from '../../../features/resumeBuilder/resumeBuilderSlice';
 import { generateKeywords as generateJobKeywords } from '../../../features/jobTracker/jobSlice';
+import JobMatcherBulletModal from './JobMatcherBulletModal';
 import styles from './JobMatcherPanel.module.css';
 
 const JobMatcherResults = () => {
@@ -11,6 +20,7 @@ const JobMatcherResults = () => {
   const selectedJobId = useSelector(selectSelectedJobId);
   const resumeId = useSelector(selectCurrentResumeId);
   const resumeKeywords = useSelector(selectResumeKeywords);
+  const resumeData = useSelector((state) => state.resumeBuilder.resumeData);
   const jobs = useSelector((state) => state.jobs.items);
   
   const selectedJob = jobs.find(job => (job._id || job.id) === selectedJobId);
@@ -18,6 +28,10 @@ const JobMatcherResults = () => {
   
   const [orchestrationLoading, setOrchestrationLoading] = useState(false);
   const [loadingStep, setLoadingStep] = useState('');
+  
+  // Bullet modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedKeywordForBullet, setSelectedKeywordForBullet] = useState('');
 
   useEffect(() => {
     if (!selectedJob || !resumeId) return;
@@ -82,6 +96,47 @@ const JobMatcherResults = () => {
     return 'neutral';
   };
 
+  const handleToggleStatus = (skill) => {
+    dispatch(toggleKeywordMatchStatus(skill));
+  };
+
+  const handleAddToSkills = (skill, e) => {
+    e.stopPropagation();
+    
+    // Find a good category to add it to, preferably "Hard Skills" or first available, or create one
+    let targetSkillId = null;
+    
+    if (resumeData.skills && resumeData.skills.length > 0) {
+      const hardSkillsCat = resumeData.skills.find(s => s.category?.toLowerCase().includes('hard'));
+      if (hardSkillsCat) {
+        targetSkillId = hardSkillsCat.id;
+      } else {
+        targetSkillId = resumeData.skills[0].id;
+      }
+    }
+    
+    if (targetSkillId) {
+      dispatch(addSkillItem({ skillId: targetSkillId, text: skill }));
+    } else {
+      // Need to create a skill category first
+      dispatch(addSkill());
+      // We can't immediately get the new ID easily without a separate effect or custom thunk, 
+      // but in most cases users have at least one skill category.
+      // If we wanted to be perfectly robust, we'd handle the ID generation more carefully.
+      setTimeout(() => {
+        // Just a simple hack: assume the new category was added to the end
+        const state = window.store?.getState(); // not clean, let's avoid
+      }, 0);
+      alert('Created a new Skill section. Please click "Add to Skills" again.');
+    }
+  };
+
+  const handleWriteBullet = (skill, e) => {
+    e.stopPropagation();
+    setSelectedKeywordForBullet(skill);
+    setIsModalOpen(true);
+  };
+
   return (
     <div className={styles.resultsContainer}>
       <div className={styles.resultsHeader}>
@@ -130,15 +185,28 @@ const JobMatcherResults = () => {
                         {skills.map((skill, index) => {
                           const status = getJobSkillStatus(skill);
                           return (
-                            <span key={index} className={`${styles.skillBadge} ${styles[status]}`}>
-                              {status === 'matched' && (
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                              )}
-                              {status === 'missing' && (
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                              )}
-                              {skill}
-                            </span>
+                            <div key={index} className={styles.skillBadgeWrapper}>
+                              <div className={styles.badgeTooltip}>
+                                <button className={styles.tooltipBtn} onClick={(e) => handleWriteBullet(skill, e)} title="Write Bullet">
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                                </button>
+                                <button className={styles.tooltipBtn} onClick={(e) => handleAddToSkills(skill, e)} title="Add to Skills">
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                </button>
+                              </div>
+                              <span 
+                                className={`${styles.skillBadge} ${styles[status]}`}
+                                onClick={() => handleToggleStatus(skill)}
+                              >
+                                {status === 'matched' && (
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                )}
+                                {status === 'missing' && (
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                )}
+                                {skill}
+                              </span>
+                            </div>
                           );
                         })}
                       </div>
@@ -192,6 +260,12 @@ const JobMatcherResults = () => {
           <p className={styles.neutralText}>Match results unavailable.</p>
         </div>
       )}
+
+      <JobMatcherBulletModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        keyword={selectedKeywordForBullet}
+      />
     </div>
   );
 };

@@ -158,3 +158,10 @@ export const matchResume = async (userId, resumeId, jobId) => {
   return matchEntry;
 };
 
+export const generateBullet = async (userId, resumeId, { keyword, positionId, sectionType, positionData }) => {
+  const resume = await getResumeById(userId, resumeId);
+  
+  // positionData can be passed from the frontend to give the AI context about the job.
+  const bulletText = await resumeAnalyzer.generateBulletPoint(keyword, sectionType, positionData);
+  return bulletText;
+};

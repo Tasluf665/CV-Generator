@@ -1,0 +1,195 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.modalHeader h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.closeButton:hover {
+  background-color: #f5f5f5;
+}
+
+.modalBody {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.keywordHint {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+  color: #555;
+  background: #f0fdf4;
+  padding: 12px;
+  border-radius: 6px;
+  border-left: 4px solid #22c55e;
+}
+
+.errorMessage {
+  background: #fef2f2;
+  color: #ef4444;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+}
+
+.positionGroup {
+  margin-bottom: 24px;
+}
+
+.positionGroup h4 {
+  margin: 0 0 12px 0;
+  font-size: 0.95rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.positionItem {
+  display: flex;
+  align-items: flex-start;
+  padding: 12px;
+  border: 1px solid #eaeaea;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.positionItem:hover {
+  border-color: #cbd5e1;
+  background-color: #f8fafc;
+}
+
+.positionItem input[type="radio"] {
+  margin-top: 4px;
+  margin-right: 12px;
+}
+
+.positionInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.positionRole {
+  font-weight: 500;
+  color: #333;
+}
+
+.positionCompany {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 2px;
+}
+
+.noPositions {
+  color: #888;
+  font-style: italic;
+  text-align: center;
+  padding: 20px;
+}
+
+.modalFooter {
+  padding: 16px 20px;
+  border-top: 1px solid #eaeaea;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.cancelBtn, .continueBtn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cancelBtn {
+  background: white;
+  border: 1px solid #ddd;
+  color: #555;
+}
+
+.cancelBtn:hover:not(:disabled) {
+  background: #f5f5f5;
+}
+
+.continueBtn {
+  background: #2563eb;
+  border: 1px solid #2563eb;
+  color: white;
+}
+
+.continueBtn:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.continueBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

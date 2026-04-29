@@ -344,6 +344,63 @@
   gap: 8px;
 }
 
+.skillBadgeWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.badgeTooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #2d3436;
+  border-radius: 6px;
+  padding: 4px 8px;
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Tooltip arrow */
+.badgeTooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #2d3436 transparent transparent transparent;
+}
+
+.skillBadgeWrapper:hover .badgeTooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
+.tooltipBtn {
+  background: none;
+  border: none;
+  color: #fff;
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.tooltipBtn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
 .skillBadge {
   display: inline-flex;
   align-items: center;
@@ -354,6 +411,12 @@
   font-weight: 500;
   font-size: 13px;
   white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.skillBadge:hover {
+  filter: brightness(0.95);
 }
 
 .matched {

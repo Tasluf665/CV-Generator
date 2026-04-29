@@ -159,3 +159,9 @@ export const updateSections = Joi.object({
   hiddenSections: Joi.array().items(Joi.string()).optional(),
 });
 
+export const generateBullet = Joi.object({
+  keyword: Joi.string().required(),
+  positionId: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+  sectionType: Joi.string().valid('workExperience', 'education', 'projects').required(),
+  positionData: Joi.object().optional(),
+});

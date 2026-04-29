@@ -57,3 +57,7 @@ export const updateSections = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse(200, { resume }, 'Resume sections updated.'));
 });
 
+export const generateBullet = asyncHandler(async (req, res) => {
+  const bulletText = await resumeService.generateBullet(req.user._id, req.params.id, req.body);
+  res.status(200).json(new ApiResponse(200, { bulletText }, 'Bullet generated successfully.'));
+});

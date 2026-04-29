@@ -112,6 +112,21 @@ export const generateResumeKeywords = createAsyncThunk(
   }
 );
 
+export const generateBulletWithKeyword = createAsyncThunk(
+  'resumeBuilder/generateBullet',
+  async ({ id, keyword, positionId, sectionType, positionData }, { rejectWithValue }) => {
+    try {
+      const response = await resumeService.generateBullet(id, { keyword, positionId, sectionType, positionData });
+      if (response.success) {
+        return { bulletText: response.data.bulletText, positionId, sectionType };
+      }
+      return rejectWithValue(response.message);
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
 const initialResumeData = {
   title: 'Untitled Resume',
   targetJobTitle: '',
@@ -454,6 +469,28 @@ const resumeBuilderSlice = createSlice({
       state.lastSaved = null;
       state.ui.selectedJobId = null;
       state.matchResults = null;
+    },
+    toggleKeywordMatchStatus: (state, action) => {
+      const keyword = action.payload;
+      if (!state.matchResults) return;
+      
+      const lowerKeyword = keyword.toLowerCase();
+      const isMatched = state.matchResults.matchedKeywords?.some(k => k.toLowerCase() === lowerKeyword);
+      const isMissing = state.matchResults.missingKeywords?.some(k => k.toLowerCase() === lowerKeyword);
+      
+      if (isMatched) {
+        // Move to missing
+        state.matchResults.matchedKeywords = state.matchResults.matchedKeywords.filter(k => k.toLowerCase() !== lowerKeyword);
+        if (!state.matchResults.missingKeywords) state.matchResults.missingKeywords = [];
+        state.matchResults.missingKeywords.push(keyword);
+      } else {
+        // Move to matched
+        if (isMissing) {
+          state.matchResults.missingKeywords = state.matchResults.missingKeywords.filter(k => k.toLowerCase() !== lowerKeyword);
+        }
+        if (!state.matchResults.matchedKeywords) state.matchResults.matchedKeywords = [];
+        state.matchResults.matchedKeywords.push(keyword);
+      }
     }
   },
   extraReducers: (builder) => {
@@ -600,6 +637,7 @@ export const {
   setZoomLevel,
   setSelectedJobId,
   resetResumeState,
+  toggleKeywordMatchStatus,
   updateDesign,
 } = resumeBuilderSlice.actions;
 

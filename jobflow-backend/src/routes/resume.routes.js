@@ -20,6 +20,7 @@ router.post('/:id/duplicate', resumeController.duplicateResume);
 router.post('/:id/analyze', resumeController.analyzeResume);
 router.post('/:id/match', validate(resumeValidator.matchResume), resumeController.matchResume);
 router.post('/:id/keywords', resumeController.generateResumeKeywords);
+router.post('/:id/generate-bullet', validate(resumeValidator.generateBullet), resumeController.generateBullet);
 
 router.patch('/:id/design', validate(resumeValidator.updateDesign), resumeController.updateDesign);
 router.patch('/:id/sections', validate(resumeValidator.updateSections), resumeController.updateSections);

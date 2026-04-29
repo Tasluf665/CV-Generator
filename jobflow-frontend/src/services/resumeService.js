@@ -305,6 +305,11 @@ const resumeService = {
     const response = await api.post(`/resumes/${id}/keywords`);
     return response.data;
   },
+
+  generateBullet: async (id, data) => {
+    const response = await api.post(`/resumes/${id}/generate-bullet`, data);
+    return response.data;
+  },
 };
 
 export default resumeService;
