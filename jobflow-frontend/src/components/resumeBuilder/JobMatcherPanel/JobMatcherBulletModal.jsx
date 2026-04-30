@@ -1,17 +1,61 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { generateBullet, addWorkBullet, addEduBullet, addProjectBullet } from '../../../features/resumeBuilder/resumeBuilderSlice';
+import { 
+  generateBullet, 
+  addWorkBullet, 
+  addEduBullet, 
+  addProjectBullet,
+  addSkillItem,
+  addSkill,
+  toggleKeywordMatchStatus,
+  updateKeywordStatus,
+} from '../../../features/resumeBuilder/resumeBuilderSlice';
+import { selectSelectedJobId, selectCurrentResumeId } from '../../../features/resumeBuilder/resumeBuilderSelectors';
 import styles from './JobMatcherBulletModal.module.css';
 
 const JobMatcherBulletModal = ({ isOpen, onClose, keyword }) => {
   const dispatch = useDispatch();
   const resumeData = useSelector((state) => state.resumeBuilder.resumeData);
-  const currentResumeId = useSelector((state) => state.resumeBuilder.currentResumeId);
+  const currentResumeId = useSelector(selectCurrentResumeId);
+  const selectedJobId = useSelector(selectSelectedJobId);
   const [selectedPosition, setSelectedPosition] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState(null);
 
   if (!isOpen) return null;
+
+  // Identical to handleAddToSkills in JobMatcherResults — adds keyword to Hard Skills + persists to DB
+  const addKeywordToSkillsSection = () => {
+    // Don't add if already present
+    const isAlreadyInSkills = resumeData.skills?.some(cat =>
+      cat.items?.some(item => item.text.toLowerCase() === keyword.toLowerCase())
+    );
+    if (isAlreadyInSkills) {
+      // Still make sure it is shown as matched
+      dispatch(toggleKeywordMatchStatus(keyword));
+      dispatch(updateKeywordStatus({ id: currentResumeId, jobId: selectedJobId, keyword, status: 'matched' }));
+      return;
+    }
+
+    // Prefer "Hard Skills" / "Technical Skills" category; fall back to first
+    let targetSkillId = null;
+    if (resumeData.skills && resumeData.skills.length > 0) {
+      const hardSkillsCat = resumeData.skills.find(s => {
+        const catName = s.category?.toLowerCase() || '';
+        return catName.includes('hard') || catName.includes('technical') || catName.includes('programming');
+      });
+      targetSkillId = hardSkillsCat ? hardSkillsCat.id : resumeData.skills[0].id;
+    }
+
+    if (targetSkillId) {
+      dispatch(addSkillItem({ skillId: targetSkillId, text: keyword }));
+      dispatch(toggleKeywordMatchStatus(keyword));
+      dispatch(updateKeywordStatus({ id: currentResumeId, jobId: selectedJobId, keyword, status: 'matched' }));
+    } else {
+      // No skills section yet — create one; the user can re-open the modal to add to it
+      dispatch(addSkill());
+    }
+  };
 
   const handleGenerate = async () => {
     if (!selectedPosition) return;
@@ -33,10 +77,8 @@ const JobMatcherBulletModal = ({ isOpen, onClose, keyword }) => {
       // Add the generated bullet to the specific section
       if (selectedPosition.type === 'workExperience') {
         dispatch(addWorkBullet({ jobId: selectedPosition.id }));
-        // Update the last bullet (the one we just added) with the text
         const updatedWork = resumeData.workExperience.find(w => w.id === selectedPosition.id);
         const newIndex = updatedWork ? updatedWork.bullets.length : 0;
-        // The reducer adds it synchronously, so the index is the current length
         dispatch({
           type: 'resumeBuilder/updateWorkBullet',
           payload: { jobId: selectedPosition.id, bulletIndex: newIndex, updates: { text: newBulletText } }
@@ -59,6 +101,9 @@ const JobMatcherBulletModal = ({ isOpen, onClose, keyword }) => {
         });
       }
 
+      // ✅ NEW: Also add the keyword to the Hard Skills section and persist to DB
+      addKeywordToSkillsSection();
+
       onClose();
     } catch (err) {
       setError(err || 'Failed to generate bullet point. Please try again.');
@@ -66,6 +111,7 @@ const JobMatcherBulletModal = ({ isOpen, onClose, keyword }) => {
       setIsGenerating(false);
     }
   };
+
 
   return (
     <div className={styles.modalOverlay}>
