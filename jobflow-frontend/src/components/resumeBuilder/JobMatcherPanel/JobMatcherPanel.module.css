@@ -437,6 +437,13 @@
   border: 1px solid #E2E8F0;
 }
 
+.hidden {
+  background-color: #FFFBEB;
+  color: #92400E;
+  border: 1px solid #FDE68A;
+  opacity: 0.85;
+}
+
 .suggestionsSection {
   background-color: #FFFBEB;
   border: 1px solid #FEF3C7;

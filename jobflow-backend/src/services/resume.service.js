@@ -137,7 +137,15 @@ export const matchResume = async (userId, resumeId, jobId) => {
     resume.extractedKeywords = await generateKeywords(userId, resumeId);
   }
   
-  const matchResult = await jobMatcher.matchResumeWithJob(resume.extractedKeywords, job.parsedData.extractedKeywords);
+  // Carry over any existing hidden keywords from a prior match result
+  const existingMatch = resume.matchResults?.find(r => String(r.jobId) === String(jobId));
+  const hiddenKeywordsList = existingMatch?.hiddenKeywords || [];
+
+  const matchResult = await jobMatcher.matchResumeWithJob(
+    resume.extractedKeywords,
+    job.parsedData.extractedKeywords,
+    hiddenKeywordsList
+  );
   
   const matchEntry = {
     jobId,
@@ -145,12 +153,16 @@ export const matchResume = async (userId, resumeId, jobId) => {
     analyzedAt: new Date()
   };
   
+  // Replace any previous result for this job
+  await Resume.findOneAndUpdate(
+    { _id: resumeId, userId },
+    { $pull: { matchResults: { jobId } } }
+  );
+
   const updatedResume = await Resume.findOneAndUpdate(
     { _id: resumeId, userId },
     { 
-      $push: { 
-        matchResults: matchEntry
-      } 
+      $push: { matchResults: matchEntry } 
     },
     { new: true }
   );
@@ -181,15 +193,15 @@ export const updateKeywordStatus = async (userId, resumeId, { jobId, keyword, st
     resume.extractedKeywords = { 'Hard Skills': [], 'Soft Skills': [], 'Others': [] };
   }
 
-  if (status === 'matched') {
-    // Add to resume if not present
+  if (status === 'matched' || status === 'hidden') {
+    // Ensure keyword exists in extractedKeywords (required for both matched & hidden)
     const alreadyInResume = Object.values(resume.extractedKeywords).flat().some(k => k && k.toLowerCase() === lowerKeyword);
     if (!alreadyInResume) {
       if (!Array.isArray(resume.extractedKeywords['Hard Skills'])) resume.extractedKeywords['Hard Skills'] = [];
       resume.extractedKeywords['Hard Skills'].push(keyword);
     }
   } else {
-    // Remove from resume
+    // status === 'missing': Remove from resume extractedKeywords entirely
     Object.keys(resume.extractedKeywords).forEach(cat => {
       if (Array.isArray(resume.extractedKeywords[cat])) {
         resume.extractedKeywords[cat] = resume.extractedKeywords[cat].filter(k => k.toLowerCase() !== lowerKeyword);
@@ -197,34 +209,52 @@ export const updateKeywordStatus = async (userId, resumeId, { jobId, keyword, st
     });
   }
 
-  // 2. Update Job Keywords (Ensure it's in the job's extracted keywords so it can be matched)
+  // 2. Update Job Keywords (ensure it exists in job for future matching)
   if (!job.parsedData) job.parsedData = {};
   if (!job.parsedData.extractedKeywords) {
     job.parsedData.extractedKeywords = { 'Hard Skills': [], 'Soft Skills': [], 'Others': [] };
   }
-
   const alreadyInJob = Object.values(job.parsedData.extractedKeywords).flat().some(k => k && k.toLowerCase() === lowerKeyword);
   if (!alreadyInJob) {
     if (!Array.isArray(job.parsedData.extractedKeywords['Hard Skills'])) job.parsedData.extractedKeywords['Hard Skills'] = [];
     job.parsedData.extractedKeywords['Hard Skills'].push(keyword);
   }
 
-  // 3. Recalculate match for this job
-  const matchResult = await jobMatcher.matchResumeWithJob(resume.extractedKeywords, job.parsedData.extractedKeywords);
+  // 3. Build the updated hidden list for this job
+  const existingMatch = resume.matchResults?.find(r => String(r.jobId) === String(jobId));
+  let currentHidden = (existingMatch?.hiddenKeywords || []).map(k => k.toLowerCase());
+
+  if (status === 'hidden') {
+    if (!currentHidden.includes(lowerKeyword)) currentHidden.push(lowerKeyword);
+  } else {
+    // Any other status removes from hidden
+    currentHidden = currentHidden.filter(k => k !== lowerKeyword);
+  }
+
+  // Restore original casing where possible, otherwise keep lowercase
+  const hiddenKeywordsList = currentHidden.map(k => {
+    const orig = Object.values(resume.extractedKeywords).flat().find(kw => kw && kw.toLowerCase() === k);
+    return orig || k;
+  });
+
+  // 4. Recalculate match
+  const matchResult = await jobMatcher.matchResumeWithJob(
+    resume.extractedKeywords,
+    job.parsedData.extractedKeywords,
+    hiddenKeywordsList
+  );
   
   const matchEntry = {
     jobId,
     ...matchResult,
+    hiddenKeywords: hiddenKeywordsList,
     analyzedAt: new Date()
   };
 
-  // 4. Update Resume in DB (Match Results and Keywords)
-  // Remove existing match result for this job if it exists, then push new one
+  // 5. Update Resume in DB (replace match result + update keywords)
   await Resume.findOneAndUpdate(
     { _id: resumeId, userId },
-    { 
-      $pull: { matchResults: { jobId: jobId } }
-    }
+    { $pull: { matchResults: { jobId: jobId } } }
   );
 
   const updatedResume = await Resume.findOneAndUpdate(
@@ -236,7 +266,7 @@ export const updateKeywordStatus = async (userId, resumeId, { jobId, keyword, st
     { new: true }
   );
 
-  // 5. Update Job in DB
+  // 6. Update Job in DB
   await Job.findOneAndUpdate(
     { _id: jobId, userId },
     { $set: { 'parsedData.extractedKeywords': job.parsedData.extractedKeywords } }

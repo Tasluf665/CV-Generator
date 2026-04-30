@@ -4,7 +4,9 @@ import SectionCard from '../../../common/SectionCard/SectionCard';
 import Input from '../../../common/Input/Input';
 import { 
   selectSkills, 
-  selectIsSectionExpanded 
+  selectIsSectionExpanded,
+  selectSelectedJobId,
+  selectCurrentResumeId,
 } from '../../../../features/resumeBuilder/resumeBuilderSelectors';
 import { 
   addSkill,
@@ -13,7 +15,8 @@ import {
   toggleSection,
   addSkillItem,
   updateSkillItem,
-  removeSkillItem
+  removeSkillItem,
+  updateKeywordStatus,
 } from '../../../../features/resumeBuilder/resumeBuilderSlice';
 import styles from './SkillsSection.module.css';
 
@@ -21,6 +24,8 @@ const SkillsSection = () => {
   const dispatch = useDispatch();
   const skills = useSelector(selectSkills);
   const isExpanded = useSelector((state) => selectIsSectionExpanded(state, 'skills'));
+  const selectedJobId = useSelector(selectSelectedJobId);
+  const resumeId = useSelector(selectCurrentResumeId);
 
   const handleUpdate = (id, updates) => {
     dispatch(updateSkill({ id, updates }));
@@ -31,7 +36,20 @@ const SkillsSection = () => {
   };
 
   const handleToggleItemVisibility = (skillId, itemId, currentValue) => {
-    dispatch(updateSkillItem({ skillId, itemId, updates: { isVisible: !currentValue } }));
+    // currentValue is true when visible (checked), false when hidden (unchecked)
+    const newIsVisible = !currentValue;
+    dispatch(updateSkillItem({ skillId, itemId, updates: { isVisible: newIsVisible } }));
+
+    // Sync with Job Matcher if a job is selected
+    if (selectedJobId && resumeId) {
+      // Find the keyword text for this item
+      const skill = skills.find(s => s.id === skillId);
+      const item = skill?.items?.find(i => i.id === itemId);
+      if (item) {
+        const newStatus = newIsVisible ? 'matched' : 'hidden';
+        dispatch(updateKeywordStatus({ id: resumeId, jobId: selectedJobId, keyword: item.text, status: newStatus }));
+      }
+    }
   };
 
   const handleAddItem = (skillId, text) => {

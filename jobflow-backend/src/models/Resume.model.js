@@ -292,6 +292,7 @@ const resumeSchema = new mongoose.Schema(
         matchScore: Number,
         matchedKeywords: [String],
         missingKeywords: [String],
+        hiddenKeywords: [String],
         suggestions: [String],
         analyzedAt: { type: Date, default: Date.now },
       },
