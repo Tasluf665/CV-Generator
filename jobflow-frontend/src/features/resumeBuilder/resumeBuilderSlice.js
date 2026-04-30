@@ -86,7 +86,7 @@ export const matchResumeWithJob = createAsyncThunk(
   'resumeBuilder/matchJob',
   async ({ id, jobId }, { rejectWithValue }) => {
     try {
-      const response = await resumeService.matchResume(id, jobId);
+      const response = await resumeService.matchResume(id, { jobId });
       if (response.success) {
         return response.data;
       }
@@ -112,7 +112,7 @@ export const generateResumeKeywords = createAsyncThunk(
   }
 );
 
-export const generateBulletWithKeyword = createAsyncThunk(
+export const generateBullet = createAsyncThunk(
   'resumeBuilder/generateBullet',
   async ({ id, keyword, positionId, sectionType, positionData }, { rejectWithValue }) => {
     try {
@@ -123,6 +123,21 @@ export const generateBulletWithKeyword = createAsyncThunk(
       return rejectWithValue(response.message);
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
+export const updateKeywordStatus = createAsyncThunk(
+  'resumeBuilder/updateKeywordStatus',
+  async ({ id, jobId, keyword, status }, { rejectWithValue }) => {
+    try {
+      const response = await resumeService.updateKeywordStatus(id, { jobId, keyword, status });
+      if (response.success) {
+        return response.data;
+      }
+      return rejectWithValue(response.message);
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to update keyword status');
     }
   }
 );
@@ -186,11 +201,10 @@ const resumeBuilderSlice = createSlice({
     resumes: [],
     resumeData: initialResumeData,
     ui: {
-
       activeTab: 'content',
       expandedSections: ['contact', 'work'],
       zoomLevel: 100,
-      selectedJobId: null,
+      selectedJobId: localStorage.getItem('selectedJobId'),
     },
     matchResults: null,
     matchLoading: false,
@@ -461,6 +475,11 @@ const resumeBuilderSlice = createSlice({
     },
     setSelectedJobId: (state, action) => {
       state.ui.selectedJobId = action.payload;
+      if (action.payload) {
+        localStorage.setItem('selectedJobId', action.payload);
+      } else {
+        localStorage.removeItem('selectedJobId');
+      }
     },
     resetResumeState: (state) => {
       state.resumeData = initialResumeData;
@@ -483,6 +502,17 @@ const resumeBuilderSlice = createSlice({
         state.matchResults.matchedKeywords = state.matchResults.matchedKeywords.filter(k => k.toLowerCase() !== lowerKeyword);
         if (!state.matchResults.missingKeywords) state.matchResults.missingKeywords = [];
         state.matchResults.missingKeywords.push(keyword);
+
+        // Remove from extractedKeywords to persist the "missing" state
+        if (state.resumeData.extractedKeywords) {
+          Object.keys(state.resumeData.extractedKeywords).forEach(cat => {
+            if (Array.isArray(state.resumeData.extractedKeywords[cat])) {
+              state.resumeData.extractedKeywords[cat] = state.resumeData.extractedKeywords[cat].filter(
+                k => k.toLowerCase() !== lowerKeyword
+              );
+            }
+          });
+        }
       } else {
         // Move to matched
         if (isMissing) {
@@ -490,6 +520,29 @@ const resumeBuilderSlice = createSlice({
         }
         if (!state.matchResults.matchedKeywords) state.matchResults.matchedKeywords = [];
         state.matchResults.matchedKeywords.push(keyword);
+
+        // Add to extractedKeywords to persist the "matched" state
+        if (!state.resumeData.extractedKeywords) {
+          state.resumeData.extractedKeywords = { 'Hard Skills': [], 'Soft Skills': [], 'Others': [] };
+        }
+        
+        // Check if already in extractedKeywords
+        const alreadyInKeywords = Object.values(state.resumeData.extractedKeywords).flat().some(
+          k => k && k.toLowerCase() === lowerKeyword
+        );
+
+        if (!alreadyInKeywords) {
+          if (!Array.isArray(state.resumeData.extractedKeywords['Hard Skills'])) {
+            state.resumeData.extractedKeywords['Hard Skills'] = [];
+          }
+          state.resumeData.extractedKeywords['Hard Skills'].push(keyword);
+        }
+      }
+
+      // Recalculate score
+      const totalCount = (state.matchResults.matchedKeywords?.length || 0) + (state.matchResults.missingKeywords?.length || 0);
+      if (totalCount > 0) {
+        state.matchResults.matchScore = Math.round(((state.matchResults.matchedKeywords?.length || 0) / totalCount) * 100);
       }
     }
   },
@@ -594,6 +647,15 @@ const resumeBuilderSlice = createSlice({
       .addCase(generateResumeKeywords.rejected, (state, action) => {
         state.generateKeywordsLoading = false;
         state.error = action.payload;
+      })
+      // updateKeywordStatus
+      .addCase(updateKeywordStatus.fulfilled, (state, action) => {
+        if (action.payload.matchResults) {
+          state.matchResults = action.payload.matchResults;
+        }
+        if (action.payload.extractedKeywords) {
+          state.resumeData.extractedKeywords = action.payload.extractedKeywords;
+        }
       });
   },
 });

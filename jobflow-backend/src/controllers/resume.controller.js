@@ -61,3 +61,8 @@ export const generateBullet = asyncHandler(async (req, res) => {
   const bulletText = await resumeService.generateBullet(req.user._id, req.params.id, req.body);
   res.status(200).json(new ApiResponse(200, { bulletText }, 'Bullet generated successfully.'));
 });
+
+export const updateKeywordStatus = asyncHandler(async (req, res) => {
+  const result = await resumeService.updateKeywordStatus(req.user._id, req.params.id, req.body);
+  res.status(200).json(new ApiResponse(200, result, 'Keyword status updated successfully.'));
+});

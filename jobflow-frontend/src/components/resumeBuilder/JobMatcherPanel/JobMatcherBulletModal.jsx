@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { generateBulletWithKeyword, addWorkBullet, addEduBullet, addProjectBullet } from '../../../features/resumeBuilder/resumeBuilderSlice';
+import { generateBullet, addWorkBullet, addEduBullet, addProjectBullet } from '../../../features/resumeBuilder/resumeBuilderSlice';
 import styles from './JobMatcherBulletModal.module.css';
 
 const JobMatcherBulletModal = ({ isOpen, onClose, keyword }) => {
@@ -20,7 +20,7 @@ const JobMatcherBulletModal = ({ isOpen, onClose, keyword }) => {
     
     try {
       const positionData = selectedPosition.data;
-      const response = await dispatch(generateBulletWithKeyword({
+      const response = await dispatch(generateBullet({
         id: currentResumeId,
         keyword,
         positionId: selectedPosition.id,

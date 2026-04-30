@@ -165,3 +165,85 @@ export const generateBullet = async (userId, resumeId, { keyword, positionId, se
   const bulletText = await resumeAnalyzer.generateBulletPoint(keyword, sectionType, positionData);
   return bulletText;
 };
+
+export const updateKeywordStatus = async (userId, resumeId, { jobId, keyword, status }) => {
+  const resume = await getResumeById(userId, resumeId);
+  const job = await Job.findOne({ _id: jobId, userId });
+
+  if (!job) {
+    throw new ApiError(404, 'Job not found.');
+  }
+
+  const lowerKeyword = keyword.toLowerCase();
+
+  // 1. Update Resume Keywords
+  if (!resume.extractedKeywords) {
+    resume.extractedKeywords = { 'Hard Skills': [], 'Soft Skills': [], 'Others': [] };
+  }
+
+  if (status === 'matched') {
+    // Add to resume if not present
+    const alreadyInResume = Object.values(resume.extractedKeywords).flat().some(k => k && k.toLowerCase() === lowerKeyword);
+    if (!alreadyInResume) {
+      if (!Array.isArray(resume.extractedKeywords['Hard Skills'])) resume.extractedKeywords['Hard Skills'] = [];
+      resume.extractedKeywords['Hard Skills'].push(keyword);
+    }
+  } else {
+    // Remove from resume
+    Object.keys(resume.extractedKeywords).forEach(cat => {
+      if (Array.isArray(resume.extractedKeywords[cat])) {
+        resume.extractedKeywords[cat] = resume.extractedKeywords[cat].filter(k => k.toLowerCase() !== lowerKeyword);
+      }
+    });
+  }
+
+  // 2. Update Job Keywords (Ensure it's in the job's extracted keywords so it can be matched)
+  if (!job.parsedData) job.parsedData = {};
+  if (!job.parsedData.extractedKeywords) {
+    job.parsedData.extractedKeywords = { 'Hard Skills': [], 'Soft Skills': [], 'Others': [] };
+  }
+
+  const alreadyInJob = Object.values(job.parsedData.extractedKeywords).flat().some(k => k && k.toLowerCase() === lowerKeyword);
+  if (!alreadyInJob) {
+    if (!Array.isArray(job.parsedData.extractedKeywords['Hard Skills'])) job.parsedData.extractedKeywords['Hard Skills'] = [];
+    job.parsedData.extractedKeywords['Hard Skills'].push(keyword);
+  }
+
+  // 3. Recalculate match for this job
+  const matchResult = await jobMatcher.matchResumeWithJob(resume.extractedKeywords, job.parsedData.extractedKeywords);
+  
+  const matchEntry = {
+    jobId,
+    ...matchResult,
+    analyzedAt: new Date()
+  };
+
+  // 4. Update Resume in DB (Match Results and Keywords)
+  // Remove existing match result for this job if it exists, then push new one
+  await Resume.findOneAndUpdate(
+    { _id: resumeId, userId },
+    { 
+      $pull: { matchResults: { jobId: jobId } }
+    }
+  );
+
+  const updatedResume = await Resume.findOneAndUpdate(
+    { _id: resumeId, userId },
+    { 
+      $set: { extractedKeywords: resume.extractedKeywords },
+      $push: { matchResults: matchEntry }
+    },
+    { new: true }
+  );
+
+  // 5. Update Job in DB
+  await Job.findOneAndUpdate(
+    { _id: jobId, userId },
+    { $set: { 'parsedData.extractedKeywords': job.parsedData.extractedKeywords } }
+  );
+
+  return {
+    matchResults: matchEntry,
+    extractedKeywords: updatedResume.extractedKeywords
+  };
+};

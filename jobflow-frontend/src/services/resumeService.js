@@ -296,8 +296,8 @@ const resumeService = {
     return response.data;
   },
 
-  matchResume: async (id, jobId) => {
-    const response = await api.post(`/resumes/${id}/match`, { jobId });
+  matchResume: async (id, data) => {
+    const response = await api.post(`/resumes/${id}/match`, data);
     return response.data;
   },
 
@@ -308,6 +308,11 @@ const resumeService = {
 
   generateBullet: async (id, data) => {
     const response = await api.post(`/resumes/${id}/generate-bullet`, data);
+    return response.data;
+  },
+
+  updateKeywordStatus: async (id, data) => {
+    const response = await api.patch(`/resumes/${id}/keyword-status`, data);
     return response.data;
   },
 };

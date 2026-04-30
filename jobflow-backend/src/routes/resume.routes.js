@@ -24,5 +24,6 @@ router.post('/:id/generate-bullet', validate(resumeValidator.generateBullet), re
 
 router.patch('/:id/design', validate(resumeValidator.updateDesign), resumeController.updateDesign);
 router.patch('/:id/sections', validate(resumeValidator.updateSections), resumeController.updateSections);
+router.patch('/:id/keyword-status', resumeController.updateKeywordStatus);
 
 export default router;

@@ -8,7 +8,8 @@ import {
   generateResumeKeywords, 
   toggleKeywordMatchStatus, 
   addSkillItem, 
-  addSkill 
+  addSkill,
+  updateKeywordStatus
 } from '../../../features/resumeBuilder/resumeBuilderSlice';
 import { generateKeywords as generateJobKeywords } from '../../../features/jobTracker/jobSlice';
 import JobMatcherBulletModal from './JobMatcherBulletModal';
@@ -96,38 +97,60 @@ const JobMatcherResults = () => {
     return 'neutral';
   };
 
-  const handleToggleStatus = (skill) => {
-    dispatch(toggleKeywordMatchStatus(skill));
+  const handleToggleStatus = (keyword, currentStatus) => {
+    const newStatus = currentStatus === 'matched' ? 'missing' : 'matched';
+    // Update local state immediately
+    dispatch(toggleKeywordMatchStatus(keyword));
+    // Persist to DB
+    dispatch(updateKeywordStatus({ id: resumeId, jobId: selectedJobId, keyword, status: newStatus }));
   };
 
   const handleAddToSkills = (skill, e) => {
     e.stopPropagation();
     
-    // Find a good category to add it to, preferably "Hard Skills" or first available, or create one
+    // Check if skill is already in resumeData.skills to avoid duplicates
+    const isAlreadyInSkills = resumeData.skills?.some(cat => 
+      cat.items?.some(item => item.text.toLowerCase() === skill.toLowerCase())
+    );
+
+    if (isAlreadyInSkills) {
+      // Even if already in skills, ensure it's marked as matched in Job Matcher
+      const status = getJobSkillStatus(skill);
+      if (status !== 'matched') {
+        dispatch(toggleKeywordMatchStatus(skill));
+        dispatch(updateKeywordStatus({ id: resumeId, jobId: selectedJobId, keyword: skill, status: 'matched' }));
+      }
+      return;
+    }
+
+    // Find a good category to add it to
     let targetSkillId = null;
     
     if (resumeData.skills && resumeData.skills.length > 0) {
-      const hardSkillsCat = resumeData.skills.find(s => s.category?.toLowerCase().includes('hard'));
+      // Try to find "Hard Skills", "Technical Skills", or just "Skills"
+      const hardSkillsCat = resumeData.skills.find(s => {
+        const catName = s.category?.toLowerCase() || '';
+        return catName.includes('hard') || catName.includes('technical') || catName.includes('programming');
+      });
+
       if (hardSkillsCat) {
         targetSkillId = hardSkillsCat.id;
       } else {
+        // Fallback to first available category
         targetSkillId = resumeData.skills[0].id;
       }
     }
     
     if (targetSkillId) {
       dispatch(addSkillItem({ skillId: targetSkillId, text: skill }));
+      // Update local match state immediately
+      dispatch(toggleKeywordMatchStatus(skill));
+      // Also update match status to turn it Green immediately in DB
+      dispatch(updateKeywordStatus({ id: resumeId, jobId: selectedJobId, keyword: skill, status: 'matched' }));
     } else {
       // Need to create a skill category first
       dispatch(addSkill());
-      // We can't immediately get the new ID easily without a separate effect or custom thunk, 
-      // but in most cases users have at least one skill category.
-      // If we wanted to be perfectly robust, we'd handle the ID generation more carefully.
-      setTimeout(() => {
-        // Just a simple hack: assume the new category was added to the end
-        const state = window.store?.getState(); // not clean, let's avoid
-      }, 0);
-      alert('Created a new Skill section. Please click "Add to Skills" again.');
+      alert('Created a new Skill section. Please click "+" again to add this skill.');
     }
   };
 
@@ -196,7 +219,7 @@ const JobMatcherResults = () => {
                               </div>
                               <span 
                                 className={`${styles.skillBadge} ${styles[status]}`}
-                                onClick={() => handleToggleStatus(skill)}
+                                onClick={() => handleToggleStatus(skill, status)}
                               >
                                 {status === 'matched' && (
                                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
