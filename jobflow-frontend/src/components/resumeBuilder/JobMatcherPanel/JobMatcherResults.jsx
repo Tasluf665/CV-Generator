@@ -29,6 +29,7 @@ const JobMatcherResults = () => {
   
   const [orchestrationLoading, setOrchestrationLoading] = useState(false);
   const [loadingStep, setLoadingStep] = useState('');
+  const [isRegenerating, setIsRegenerating] = useState(false);
   
   // Bullet modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -164,6 +165,23 @@ const JobMatcherResults = () => {
     setIsModalOpen(true);
   };
 
+  const handleRegenerateKeywords = async () => {
+    if (isRegenerating || !resumeId || !selectedJobId) return;
+    setIsRegenerating(true);
+    try {
+      // Force re-extract keywords from the current resume content
+      await dispatch(generateResumeKeywords(resumeId)).unwrap();
+      // Re-run the match with the freshly extracted keywords
+      await dispatch(matchResumeWithJob({ id: resumeId, jobId: selectedJobId })).unwrap();
+      // Reset the initiated guard so the useEffect doesn't skip on any future job change
+      initiatedRef.current = selectedJobId;
+    } catch (e) {
+      console.error('Failed to regenerate keywords:', e);
+    } finally {
+      setIsRegenerating(false);
+    }
+  };
+
   return (
     <div className={styles.resultsContainer}>
       <div className={styles.resultsHeader}>
@@ -247,7 +265,25 @@ const JobMatcherResults = () => {
             </div>
 
             <div className={styles.keywordsColumn}>
-              <h3 className={styles.columnTitle}>Your Resume</h3>
+              <div className={styles.columnTitleRow}>
+                <h3 className={styles.columnTitle}>Your Resume</h3>
+                <button
+                  className={styles.regenerateBtn}
+                  onClick={handleRegenerateKeywords}
+                  disabled={isRegenerating || orchestrationLoading}
+                  title="Re-scan your resume content and re-run the match"
+                >
+                  <svg
+                    width="13" height="13" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                    className={isRegenerating ? styles.spinningIcon : ''}
+                  >
+                    <polyline points="23 4 23 10 17 10"></polyline>
+                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                  </svg>
+                  {isRegenerating ? 'Regenerating…' : 'Regenerate Keywords'}
+                </button>
+              </div>
               <div className={styles.skillsSection}>
                 {Object.entries(resumeKeywords || {}).map(([category, skills]) => {
                   if (!skills || skills.length === 0) return null;

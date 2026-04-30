@@ -322,6 +322,51 @@
   border-bottom: 2px solid #EAEAEA;
 }
 
+.columnTitleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #EAEAEA;
+}
+
+.columnTitleRow .columnTitle {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.regenerateBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background-color: #F8FAFC;
+  border: 1px solid #D2D6DC;
+  border-radius: 6px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.regenerateBtn:hover:not(:disabled) {
+  background-color: #EEF2FF;
+  border-color: #6366F1;
+  color: #4338CA;
+}
+
+.regenerateBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.spinningIcon {
+  animation: spin 0.8s linear infinite;
+}
+
 .skillCategory {
   display: flex;
   flex-direction: column;
