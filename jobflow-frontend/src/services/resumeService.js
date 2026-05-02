@@ -107,6 +107,7 @@ const mapToBackend = (data) => {
         date: item.date || '',
         isDateVisible: item.isDateVisible ?? true,
         isSubtitleVisible: item.isSubtitleVisible ?? true,
+        description: item.description || '',
         bullets: (item.bullets || []).map(b => ({
           text: b.text || '',
           isVisible: b.isVisible ?? true
@@ -145,6 +146,7 @@ const mapToFrontend = (data) => {
         date: item.date || '',
         isDateVisible: item.isDateVisible ?? true,
         isSubtitleVisible: item.isSubtitleVisible ?? true,
+        description: item.description || '',
         bullets: (item.bullets || []).map(b => ({
           text: b.text || '',
           isVisible: b.isVisible ?? true

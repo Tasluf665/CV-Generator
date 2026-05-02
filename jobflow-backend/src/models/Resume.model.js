@@ -158,6 +158,7 @@ const resumeSchema = new mongoose.Schema(
                 isVisible: { type: Boolean, default: true },
               }
             ],
+            description: String,
             isVisible: { type: Boolean, default: true },
             order: Number,
           }

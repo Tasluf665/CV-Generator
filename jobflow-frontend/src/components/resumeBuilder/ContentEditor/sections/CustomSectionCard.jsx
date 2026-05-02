@@ -4,8 +4,8 @@ import SectionCard from '../../../common/SectionCard/SectionCard';
 import Input from '../../../common/Input/Input';
 import TextArea from '../../../common/TextArea/TextArea';
 import Button from '../../../common/Button/Button';
-import { 
-  updateCustomSection, 
+import {
+  updateCustomSection,
   removeCustomSection,
   addCustomSectionItem,
   updateCustomSectionItem,
@@ -28,6 +28,7 @@ const CustomSectionCard = ({ section }) => {
     title: '',
     subtitle: '',
     date: '',
+    description: '',
   });
 
   const handleAddClick = () => {
@@ -35,6 +36,7 @@ const CustomSectionCard = ({ section }) => {
       title: '',
       subtitle: '',
       date: '',
+      description: '',
     });
     setViewMode('add');
     setIsSectionExpanded(true);
@@ -46,6 +48,7 @@ const CustomSectionCard = ({ section }) => {
       title: item.title,
       subtitle: item.subtitle,
       date: item.date,
+      description: item.description || '',
     });
     setViewMode('edit');
   };
@@ -70,7 +73,7 @@ const CustomSectionCard = ({ section }) => {
       title={
         isEditingTitle ? (
           <div className={styles.titleEditContainer} onClick={(e) => e.stopPropagation()}>
-            <input 
+            <input
               className={styles.titleInput}
               value={tempTitle}
               onChange={(e) => setTempTitle(e.target.value)}
@@ -88,13 +91,13 @@ const CustomSectionCard = ({ section }) => {
       onToggle={() => setIsSectionExpanded(!isSectionExpanded)}
       onAdd={handleAddClick}
       rightAction={
-        <button 
+        <button
           className={styles.deleteSectionBtn}
           title="Delete Section"
-          onClick={(e) => { 
-            e.stopPropagation(); 
+          onClick={(e) => {
+            e.stopPropagation();
             if (window.confirm(`Are you sure you want to delete the "${section.title}" section? This will remove all items inside it.`)) {
-              dispatch(removeCustomSection(section.id)); 
+              dispatch(removeCustomSection(section.id));
             }
           }}
         >
@@ -110,17 +113,17 @@ const CustomSectionCard = ({ section }) => {
           {section.items.map((item) => (
             <div key={item.id} className={styles.jobItem}>
               <div className={styles.jobHeader}>
-                <div 
+                <div
                   className={`${styles.checkbox} ${item.isVisible ? styles.checkboxSelected : ''}`}
-                  onClick={() => dispatch(updateCustomSectionItem({ 
-                    sectionId: section.id, 
-                    itemId: item.id, 
-                    updates: { isVisible: !item.isVisible } 
+                  onClick={() => dispatch(updateCustomSectionItem({
+                    sectionId: section.id,
+                    itemId: item.id,
+                    updates: { isVisible: !item.isVisible }
                   }))}
                 >
                   {item.isVisible && (
                     <svg className={styles.checkIcon} width="12" height="12" viewBox="0 0 12 12" fill="none">
-                      <path d="M2 6L5 9L10 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M2 6L5 9L10 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   )}
                 </div>
@@ -128,8 +131,13 @@ const CustomSectionCard = ({ section }) => {
                   <div className={styles.companyName}>{item.title || 'No Title'}</div>
                   <div className={styles.jobRole}>{item.subtitle}</div>
                   <div className={styles.jobDates}>{item.date}</div>
+                  {item.description && (
+                    <div className={styles.itemDescription} style={{ marginTop: '4px', fontSize: '13px', color: '#636e72', whiteSpace: 'pre-wrap' }}>
+                      {item.description}
+                    </div>
+                  )}
                 </div>
-                <button 
+                <button
                   className={styles.deleteBtn}
                   title="Delete Item"
                   onClick={(e) => { e.stopPropagation(); dispatch(removeCustomSectionItem({ sectionId: section.id, itemId: item.id })); }}
@@ -145,35 +153,35 @@ const CustomSectionCard = ({ section }) => {
               <div className={styles.bulletList}>
                 {item.bullets?.map((bullet, bIndex) => (
                   <div key={bIndex} className={styles.bulletItem}>
-                    <div 
+                    <div
                       className={`${styles.checkbox} ${bullet.isVisible ? styles.checkboxSelected : ''}`}
-                      onClick={() => dispatch(updateCustomSectionBullet({ 
-                        sectionId: section.id, 
-                        itemId: item.id, 
-                        bulletIndex: bIndex, 
-                        updates: { isVisible: !bullet.isVisible } 
+                      onClick={() => dispatch(updateCustomSectionBullet({
+                        sectionId: section.id,
+                        itemId: item.id,
+                        bulletIndex: bIndex,
+                        updates: { isVisible: !bullet.isVisible }
                       }))}
                     >
                       {bullet.isVisible && (
                         <svg className={styles.checkIcon} width="10" height="10" viewBox="0 0 12 12" fill="none">
-                          <path d="M2 6L5 9L10 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          <path d="M2 6L5 9L10 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                       )}
                     </div>
                     <div className={styles.bulletText}>
-                      <Input 
+                      <Input
                         variant="minimal"
                         value={bullet.text}
-                        onChange={(e) => dispatch(updateCustomSectionBullet({ 
-                          sectionId: section.id, 
-                          itemId: item.id, 
-                          bulletIndex: bIndex, 
-                          updates: { text: e.target.value } 
+                        onChange={(e) => dispatch(updateCustomSectionBullet({
+                          sectionId: section.id,
+                          itemId: item.id,
+                          bulletIndex: bIndex,
+                          updates: { text: e.target.value }
                         }))}
                         placeholder="Add details..."
                       />
                     </div>
-                    <button 
+                    <button
                       className={styles.deleteBtn}
                       onClick={() => dispatch(removeCustomSectionBullet({ sectionId: section.id, itemId: item.id, bulletIndex: bIndex }))}
                     >
@@ -211,13 +219,23 @@ const CustomSectionCard = ({ section }) => {
                 placeholder="e.g. Issuing Organization"
               />
             </div>
-            
+
             <div className={styles.formGrid}>
               <Input
                 label="Date"
                 value={formData.date}
                 onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                 placeholder="Month YYYY"
+              />
+            </div>
+
+            <div className={styles.formRow} style={{ marginTop: '1rem' }}>
+              <TextArea
+                label="Description (Plain Text)"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                placeholder="Add plain text content here..."
+                rows={4}
               />
             </div>
           </div>

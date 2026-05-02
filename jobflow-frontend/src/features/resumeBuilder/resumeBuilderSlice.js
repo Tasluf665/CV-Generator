@@ -553,6 +553,7 @@ const resumeBuilderSlice = createSlice({
           isDateVisible: true,
           subtitle: initialData?.subtitle || '',
           isSubtitleVisible: true,
+          description: initialData?.description || '',
           bullets: initialData?.bullets || [{ text: '', isVisible: true }],
           isVisible: true,
           order: state.resumeData.customSections[sectionIndex].items.length,

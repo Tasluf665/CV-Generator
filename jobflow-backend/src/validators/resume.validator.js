@@ -102,6 +102,7 @@ const customSectionSchema = Joi.object({
     isDateVisible: Joi.boolean().optional(),
     subtitle: Joi.string().allow('').optional(),
     isSubtitleVisible: Joi.boolean().optional(),
+    description: Joi.string().allow('').optional(),
     bullets: Joi.array().items(Joi.object({
       text: Joi.string().allow('').optional(),
       isVisible: Joi.boolean().optional(),

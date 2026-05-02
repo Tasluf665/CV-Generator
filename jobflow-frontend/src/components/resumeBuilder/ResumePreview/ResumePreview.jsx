@@ -317,6 +317,11 @@ const ResumePreview = () => {
                   )}
                 </div>
                 <div className={styles.itemDescription}>
+                  {item.description && (
+                    <div style={{ whiteSpace: 'pre-wrap', marginBottom: item.bullets?.some(b => b.isVisible && b.text) ? '4px' : '0' }}>
+                      {item.description}
+                    </div>
+                  )}
                   {item.bullets?.filter(b => b.isVisible && b.text).map((bullet, i) => (
                     <p key={i} className={styles.bullet}>{bullet.text}</p>
                   ))}
