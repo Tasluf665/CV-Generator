@@ -286,9 +286,22 @@ const ResumePreview = () => {
       case 'customSection':
         const section = data;
         if (!section || !section.isVisible) return null;
+        const sStyle = design?.sectionStyles?.[section.id];
         return (
-          <section key={section.id} className={styles.section}>
-            <h2 className={styles.sectionTitle}>{section.title}</h2>
+          <section
+            key={section.id}
+            className={styles.section}
+            style={{
+              fontFamily: sStyle?.fontFamily || 'var(--font-family)',
+              fontSize: sStyle ? `${sStyle.fontSize}px` : 'var(--font-size)',
+              color: sStyle?.color || 'inherit',
+              marginBottom: sStyle ? `${sStyle.margin}px` : 'var(--title-margin)',
+              lineHeight: sStyle ? (sStyle.lineHeight / 100) : '1',
+              letterSpacing: sStyle ? `${sStyle.letterSpacing}px` : 'var(--title-letter-spacing)',
+              textAlign: sStyle?.alignment || 'left',
+            }}
+          >
+            <h2 className={styles.sectionTitle} style={{ textAlign: sStyle?.alignment || 'left' }}>{section.title}</h2>
             {section.items?.filter(item => item.isVisible).map(item => (
               <div key={item.id} className={styles.item}>
                 <div className={styles.itemHeader}>
@@ -324,7 +337,7 @@ const ResumePreview = () => {
       style={{
         '--font-family': design?.font || 'Inter',
         '--accent-color': design?.accentColor || '#00b894',
-        '--line-height': design?.lineHeight || 140,
+        '--line-height': design?.lineHeight || 130,
         '--list-line-height': design?.listLineHeight || 120,
         '--font-size': `${design?.fontSize || 14}px`,
         '--page-margin': `${design?.margin || 48}px`,

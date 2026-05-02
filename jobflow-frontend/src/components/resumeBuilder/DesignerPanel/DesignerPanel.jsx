@@ -295,6 +295,7 @@ const DesignerPanel = () => {
             { id: 'education', name: 'Education' },
             { id: 'projects', name: 'Projects' },
             { id: 'skills', name: 'Skills' },
+            ...(customSections || []).map(s => ({ id: s.id, name: s.title }))
           ].map((sec) => (
             <SectionAccordion
               key={sec.id}

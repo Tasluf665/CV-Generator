@@ -96,6 +96,28 @@ const mapToBackend = (data) => {
           ? s.items.split(',').map(i => ({ text: i.trim(), isVisible: true })).filter(i => i.text)
           : [],
     })),
+    customSections: (data.customSections || []).map(s => ({
+      id: s.id,
+      title: s.title,
+      isVisible: s.isVisible ?? true,
+      items: (s.items || []).map(item => ({
+        id: item.id,
+        title: item.title || '',
+        subtitle: item.subtitle || '',
+        date: item.date || '',
+        isDateVisible: item.isDateVisible ?? true,
+        isSubtitleVisible: item.isSubtitleVisible ?? true,
+        bullets: (item.bullets || []).map(b => ({
+          text: b.text || '',
+          isVisible: b.isVisible ?? true
+        })),
+        isVisible: item.isVisible ?? true,
+        order: item.order || 0
+      })),
+      order: s.order || 0
+    })),
+    design: data.design || {},
+    sectionOrder: data.sectionOrder || []
   };
 };
 
@@ -107,10 +129,31 @@ const DEFAULT_VISIBLE_FIELDS = ['firstName', 'lastName', 'email', 'phone', 'link
  */
 const mapToFrontend = (data) => {
   if (!data) return null;
-  const { contact, ...rest } = data;
+  const { contact, design, customSections, ...rest } = data;
 
   return {
     ...rest,
+    design: design || {},
+    customSections: (customSections || []).map(s => ({
+      id: s.id || s._id,
+      title: s.title || '',
+      isVisible: s.isVisible ?? true,
+      items: (s.items || []).map(item => ({
+        id: item.id || item._id,
+        title: item.title || '',
+        subtitle: item.subtitle || '',
+        date: item.date || '',
+        isDateVisible: item.isDateVisible ?? true,
+        isSubtitleVisible: item.isSubtitleVisible ?? true,
+        bullets: (item.bullets || []).map(b => ({
+          text: b.text || '',
+          isVisible: b.isVisible ?? true
+        })),
+        isVisible: item.isVisible ?? true,
+        order: item.order || 0
+      })),
+      order: s.order || 0
+    })),
     extractedKeywords: data.extractedKeywords || {
       'Hard Skills': [],
       'Soft Skills': [],

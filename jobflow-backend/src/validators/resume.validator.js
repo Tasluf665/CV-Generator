@@ -169,15 +169,7 @@ export const updateDesign = Joi.object({
   fontSize: Joi.number().optional(),
   margin: Joi.number().optional(),
   dateFormat: Joi.string().allow('').optional(),
-  sectionStyles: Joi.object({
-    title: sectionStyleSchema.optional(),
-    summary: sectionStyleSchema.optional(),
-    experience: sectionStyleSchema.optional(),
-    education: sectionStyleSchema.optional(),
-    projects: sectionStyleSchema.optional(),
-    skills: sectionStyleSchema.optional(),
-    contact: sectionStyleSchema.optional(),
-  }).optional(),
+  sectionStyles: Joi.object().pattern(Joi.string(), sectionStyleSchema).optional(),
 });
 
 export const updateSections = Joi.object({

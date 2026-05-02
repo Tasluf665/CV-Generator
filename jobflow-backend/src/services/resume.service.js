@@ -61,9 +61,16 @@ export const duplicateResume = async (userId, resumeId) => {
 };
 
 export const updateDesign = async (userId, resumeId, designData) => {
+  const updateObj = {};
+  if (designData) {
+    Object.keys(designData).forEach(key => {
+      updateObj[`design.${key}`] = designData[key];
+    });
+  }
+
   const resume = await Resume.findOneAndUpdate(
     { _id: resumeId, userId },
-    { $set: { design: designData } },
+    { $set: updateObj },
     { new: true, runValidators: true }
   );
   if (!resume) {
