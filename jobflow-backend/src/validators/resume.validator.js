@@ -142,6 +142,7 @@ export const updateResume = Joi.object({
   skills: Joi.array().items(skillSchema).optional(),
   projects: Joi.array().items(projectSchema).optional(),
   customSections: Joi.array().items(customSectionSchema).optional(),
+  sectionOrder: Joi.array().items(Joi.string()).optional(),
   design: Joi.object().optional(),
 });
 

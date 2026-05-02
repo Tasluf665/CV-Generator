@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  selectDesign
+  selectDesign,
+  selectSectionOrder,
+  selectCustomSections
 } from '../../../features/resumeBuilder/resumeBuilderSelectors';
 import {
-  updateDesign
+  updateDesign,
+  moveSection
 } from '../../../features/resumeBuilder/resumeBuilderSlice';
 import styles from './DesignerPanel.module.css';
 
@@ -27,7 +30,11 @@ const SectionAccordion = ({ title, isOpen, onToggle, children }) => {
 const DesignerPanel = () => {
   const dispatch = useDispatch();
   const design = useSelector(selectDesign);
+  const sectionOrder = useSelector(selectSectionOrder) || ['summary', 'workExperience', 'education', 'skills', 'projects'];
+  const customSections = useSelector(selectCustomSections);
+  
   const [isTemplatesOpen, setIsTemplatesOpen] = useState(true);
+  const [isArrangementOpen, setIsArrangementOpen] = useState(true);
   const [isStylingOpen, setIsStylingOpen] = useState(true);
   const [expandedSection, setExpandedSection] = useState(null);
 
@@ -39,6 +46,23 @@ const DesignerPanel = () => {
     const sectionStyles = { ...design.sectionStyles };
     sectionStyles[sectionId] = { ...sectionStyles[sectionId], ...updates };
     dispatch(updateDesign({ sectionStyles }));
+  };
+
+  const handleMove = (index, direction) => {
+    dispatch(moveSection({ index, direction }));
+  };
+
+  const getSectionLabel = (id) => {
+    switch (id) {
+      case 'summary': return 'Summary';
+      case 'workExperience': return 'Work Experience';
+      case 'education': return 'Education';
+      case 'skills': return 'Skills';
+      case 'projects': return 'Projects';
+      default:
+        const custom = customSections?.find(s => s.id === id);
+        return custom ? custom.title : id;
+    }
   };
 
   const fonts = [
@@ -120,6 +144,62 @@ const DesignerPanel = () => {
                   </div>
                 )}
               </div>
+            </div>
+          )}
+        </div>
+
+        {/* Section Arrangement */}
+        <div className={styles.section}>
+          <div className={styles.accordionHeader} onClick={() => setIsArrangementOpen(!isArrangementOpen)}>
+            <h3 className={styles.sectionTitle}>Section Arrangement</h3>
+            <div className={`${styles.chevron} ${isArrangementOpen ? styles.open : ''}`}>
+              <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
+                <path d="M1 1L6 6L11 1" stroke="#506169" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+          </div>
+
+          {isArrangementOpen && (
+            <div className={styles.arrangementList}>
+              {sectionOrder.map((sectionId, index) => (
+                <div key={sectionId} className={styles.orderItem}>
+                  <div className={styles.orderItemContent}>
+                    <div className={styles.dragHandle}>
+                      <svg width="12" height="18" viewBox="0 0 12 18" fill="none">
+                        <circle cx="4" cy="4" r="1.5" fill="#94a3b8"/>
+                        <circle cx="8" cy="4" r="1.5" fill="#94a3b8"/>
+                        <circle cx="4" cy="9" r="1.5" fill="#94a3b8"/>
+                        <circle cx="8" cy="9" r="1.5" fill="#94a3b8"/>
+                        <circle cx="4" cy="14" r="1.5" fill="#94a3b8"/>
+                        <circle cx="8" cy="14" r="1.5" fill="#94a3b8"/>
+                      </svg>
+                    </div>
+                    <span className={styles.sectionLabel}>{getSectionLabel(sectionId)}</span>
+                  </div>
+                  <div className={styles.orderActions}>
+                    <button 
+                      className={styles.orderBtn}
+                      disabled={index === 0}
+                      onClick={() => handleMove(index, 'up')}
+                      title="Move Up"
+                    >
+                      <svg width="12" height="7" viewBox="0 0 12 7" fill="none">
+                        <path d="M1 6L6 1L11 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </button>
+                    <button 
+                      className={styles.orderBtn}
+                      disabled={index === sectionOrder.length - 1}
+                      onClick={() => handleMove(index, 'down')}
+                      title="Move Down"
+                    >
+                      <svg width="12" height="7" viewBox="0 0 12 7" fill="none">
+                        <path d="M1 1L6 6L11 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>

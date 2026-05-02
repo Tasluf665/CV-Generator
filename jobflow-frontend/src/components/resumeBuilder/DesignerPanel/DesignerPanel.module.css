@@ -410,6 +410,81 @@
   gap: 16px;
 }
 
+.arrangementList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.orderItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.orderItem:hover {
+  border-color: #cbd5e1;
+  background: #f1f5f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.orderItemContent {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dragHandle {
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  color: #94a3b8;
+}
+
+.sectionLabel {
+  font-size: 14px;
+  font-weight: 500;
+  color: #334155;
+}
+
+.orderActions {
+  display: flex;
+  gap: 4px;
+}
+
+.orderBtn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 0;
+}
+
+.orderBtn:hover:not(:disabled) {
+  border-color: #00b894;
+  color: #00b894;
+  background: #f0fdf4;
+}
+
+.orderBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  background: #f1f5f9;
+}
+
 .comingSoon {
   padding: 20px;
   text-align: center;

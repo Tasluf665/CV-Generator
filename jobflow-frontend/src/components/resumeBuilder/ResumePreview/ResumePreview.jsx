@@ -396,12 +396,13 @@ const ResumePreview = () => {
       {/* Hidden measure area */}
       <div className={styles.hiddenMaster} ref={measureRef} data-html2pdf-ignore="true">
         {renderSection('header')}
-        {renderSection('summary')}
-        {renderSection('workExperience')}
-        {renderSection('education')}
-        {renderSection('projects')}
-        {renderSection('skills')}
-        {customSections?.map(section => renderSection('customSection', section))}
+        {(resumeData.sectionOrder || ['summary', 'workExperience', 'education', 'skills', 'projects']).map(sectionId => {
+          if (sectionId.startsWith('custom_')) {
+            const customSection = customSections?.find(s => s.id === sectionId);
+            return renderSection('customSection', customSection);
+          }
+          return renderSection(sectionId);
+        })}
       </div>
 
       {/* Actual Pages */}
@@ -416,12 +417,13 @@ const ResumePreview = () => {
       ) : (
         <div className={styles.a4Page}>
           {renderSection('header')}
-          {renderSection('summary')}
-          {renderSection('workExperience')}
-          {renderSection('education')}
-          {renderSection('projects')}
-          {renderSection('skills')}
-          {customSections?.map(section => renderSection('customSection', section))}
+          {(resumeData.sectionOrder || ['summary', 'workExperience', 'education', 'skills', 'projects']).map(sectionId => {
+            if (sectionId.startsWith('custom_')) {
+              const customSection = customSections?.find(s => s.id === sectionId);
+              return renderSection('customSection', customSection);
+            }
+            return renderSection(sectionId);
+          })}
         </div>
       )}
     </div>

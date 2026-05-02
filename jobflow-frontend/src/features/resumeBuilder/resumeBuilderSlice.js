@@ -237,6 +237,7 @@ const initialResumeData = {
       contact: { fontSize: 13, fontFamily: 'Inter', color: '#506169', margin: 10, lineHeight: 140, letterSpacing: 0, alignment: 'center' },
     }
   },
+  sectionOrder: ['summary', 'workExperience', 'education', 'skills', 'projects'],
 };
 
 
@@ -522,6 +523,11 @@ const resumeBuilderSlice = createSlice({
         items: [],
         order: state.resumeData.customSections.length,
       });
+      // Add to section order if not present
+      if (!state.resumeData.sectionOrder) {
+        state.resumeData.sectionOrder = ['summary', 'workExperience', 'education', 'skills', 'projects'];
+      }
+      state.resumeData.sectionOrder.push(newId);
     },
     updateCustomSection: (state, action) => {
       const { id, updates } = action.payload;
@@ -532,6 +538,9 @@ const resumeBuilderSlice = createSlice({
     },
     removeCustomSection: (state, action) => {
       state.resumeData.customSections = state.resumeData.customSections.filter(s => s.id !== action.payload);
+      if (state.resumeData.sectionOrder) {
+        state.resumeData.sectionOrder = state.resumeData.sectionOrder.filter(id => id !== action.payload);
+      }
     },
     addCustomSectionItem: (state, action) => {
       const { sectionId, initialData } = action.payload;
@@ -602,6 +611,19 @@ const resumeBuilderSlice = createSlice({
         if (itemIndex !== -1) {
           state.resumeData.customSections[sectionIndex].items[itemIndex].bullets.splice(bulletIndex, 1);
         }
+      }
+    },
+    updateSectionOrder: (state, action) => {
+      state.resumeData.sectionOrder = action.payload;
+    },
+    moveSection: (state, action) => {
+      const { index, direction } = action.payload;
+      const newOrder = [...state.resumeData.sectionOrder];
+      const newIndex = direction === 'up' ? index - 1 : index + 1;
+      
+      if (newIndex >= 0 && newIndex < newOrder.length) {
+        [newOrder[index], newOrder[newIndex]] = [newOrder[newIndex], newOrder[index]];
+        state.resumeData.sectionOrder = newOrder;
       }
     },
     updateDesign: (state, action) => {
@@ -936,6 +958,8 @@ export const {
   addCustomSectionBullet,
   updateCustomSectionBullet,
   removeCustomSectionBullet,
+  updateSectionOrder,
+  moveSection,
 } = resumeBuilderSlice.actions;
 
 export default resumeBuilderSlice.reducer;
