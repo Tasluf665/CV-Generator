@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   selectCLContent,
@@ -13,6 +13,9 @@ const CoverLetterPreview = () => {
   const jobs = useSelector((state) => state.jobs.items);
   const selectedJobId = useSelector(selectCLSelectedJobId);
 
+  const [pages, setPages] = useState([]);
+  const measureRef = useRef(null);
+
   const contact = resumeData?.contact || {};
   const fullName = [
     contact.firstName,
@@ -21,24 +24,59 @@ const CoverLetterPreview = () => {
 
   const selectedJob = jobs?.find((j) => (j._id || j.id) === selectedJobId);
 
-  // Format today's date
-  const today = new Date().toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
+  // Split letter into lines to preserve EXACT formatting
+  const lines = content ? content.split(/\r?\n/) : [];
 
-  // Split letter into paragraphs for nice rendering
-  const paragraphs = content
-    ? content.split(/\n\n+/).filter((p) => p.trim())
-    : [];
+  const PAGE_HEIGHT = 1122;
+  const PADDING_TOP = 72;
+  const PADDING_BOTTOM = 80;
+  const MAX_CONTENT_HEIGHT = PAGE_HEIGHT - PADDING_TOP - PADDING_BOTTOM;
+
+  useLayoutEffect(() => {
+    if (measureRef.current && content) {
+      const children = Array.from(measureRef.current.children);
+      const newPages = [];
+      let currentPageItems = [];
+      let currentHeight = 0;
+
+      // Header is always on the first page
+      const header = children.find(child => child.tagName === 'HEADER');
+      const headerHeight = header ? header.offsetHeight + 28 : 0; // margin-bottom: 28px
+
+      const bodyItems = children.filter(child => child.tagName === 'P');
+
+      currentHeight = headerHeight;
+      currentPageItems = header ? [header.cloneNode(true)] : [];
+
+      bodyItems.forEach((child) => {
+        const childHeight = child.offsetHeight; // margin is 0 now
+
+        if (currentHeight + childHeight > MAX_CONTENT_HEIGHT && currentPageItems.length > 0) {
+          newPages.push(currentPageItems);
+          currentPageItems = [child.cloneNode(true)];
+          currentHeight = childHeight;
+        } else {
+          currentPageItems.push(child.cloneNode(true));
+          currentHeight += childHeight;
+        }
+      });
+
+      if (currentPageItems.length > 0) {
+        newPages.push(currentPageItems);
+      }
+
+      setPages(newPages);
+    } else {
+      setPages([]);
+    }
+  }, [content, resumeData, lines.length]);
 
   return (
     <div className={styles.pageWrapper}>
-      <div className={styles.a4Page}>
-        {content ? (
+      {/* Hidden measure area */}
+      <div className={styles.hiddenMaster} ref={measureRef}>
+        {content && (
           <>
-            {/* Header */}
             <header className={styles.letterHeader}>
               <h1 className={styles.name}>{fullName}</h1>
               <div className={styles.contactLine}>
@@ -51,26 +89,70 @@ const CoverLetterPreview = () => {
                   contact.linkedin,
                 ]
                   .filter(Boolean)
-                  .map((item, i) => (
+                  .map((item, i, arr) => (
                     <React.Fragment key={i}>
-                      {i > 0 && <span className={styles.sep}>·</span>}
                       <span className={styles.contactItem}>{item}</span>
+                      {i < arr.length - 1 && <span className={styles.sep}> | </span>}
                     </React.Fragment>
                   ))}
               </div>
               <div className={styles.divider} />
             </header>
-
-            {/* Body */}
-            <div className={styles.body}>
-              {paragraphs.map((para, i) => (
-                <p key={i} className={styles.paragraph}>
-                  {para.trim()}
-                </p>
-              ))}
-            </div>
+            {lines.map((line, i) => (
+              <p key={i} className={styles.paragraph}>
+                {line || '\u00A0'}
+              </p>
+            ))}
           </>
-        ) : (
+        )}
+      </div>
+
+      {/* Actual Rendering */}
+      {content ? (
+        <div className={styles.pagedContainer}>
+          {pages.length > 0 ? (
+            pages.map((pageItems, pageIdx) => (
+              <div key={pageIdx} className={`${styles.a4Page} cl-a4-page`}>
+                {pageItems.map((item, itemIdx) => (
+                  <div key={itemIdx} dangerouslySetInnerHTML={{ __html: item.outerHTML }} />
+                ))}
+              </div>
+            ))
+          ) : (
+            <div className={`${styles.a4Page} cl-a4-page`}>
+              <header className={styles.letterHeader}>
+                <h1 className={styles.name}>{fullName}</h1>
+                <div className={styles.contactLine}>
+                  {[
+                    contact.email,
+                    contact.phone,
+                    contact.city && contact.state
+                      ? `${contact.city}, ${contact.state}`
+                      : contact.city || contact.state,
+                    contact.linkedin,
+                  ]
+                    .filter(Boolean)
+                    .map((item, i, arr) => (
+                      <React.Fragment key={i}>
+                        <span className={styles.contactItem}>{item}</span>
+                        {i < arr.length - 1 && <span className={styles.sep}> | </span>}
+                      </React.Fragment>
+                    ))}
+                </div>
+                <div className={styles.divider} />
+              </header>
+              <div className={styles.body}>
+                {lines.map((line, i) => (
+                  <p key={i} className={styles.paragraph}>
+                    {line || '\u00A0'}
+                  </p>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className={styles.a4Page}>
           <div className={styles.placeholder}>
             <div className={styles.placeholderIcon}>
               <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -86,8 +168,8 @@ const CoverLetterPreview = () => {
               Select a job, choose a prompt, and click <strong>Generate Cover Letter</strong> to see your letter here.
             </p>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

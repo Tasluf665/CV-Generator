@@ -15,7 +15,7 @@ export const generateCoverLetter = async ({
   resumeData,
   jobDescription,
   tone = 'Professional',
-  length = 'Standard',
+  length = 'Detailed',
   userPrompt = null,
 }) => {
   try {

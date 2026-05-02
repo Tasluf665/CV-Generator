@@ -9,6 +9,15 @@
   overflow-y: auto;
 }
 
+.pagedContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  align-items: center;
+  width: 100%;
+}
+
+
 /* A4 paper */
 .a4Page {
   width: 794px;
@@ -21,7 +30,44 @@
   font-family: 'Inter', sans-serif;
   color: #1a1a1a;
   position: relative;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+  flex-shrink: 0;
 }
+
+.hiddenMaster {
+  position: absolute;
+  top: 0;
+  left: -9999px;
+  width: 794px;
+  padding: 72px 80px;
+  display: flex;
+  flex-direction: column;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+
+@media print {
+  body {
+    margin: 0;
+    padding: 0;
+  }
+  .pageWrapper {
+    padding: 0;
+    background: none;
+    overflow: visible;
+  }
+  .a4Page {
+    margin: 0;
+    box-shadow: none;
+    border-radius: 0;
+    width: 100%;
+    min-height: auto;
+    padding: 72px 80px;
+  }
+}
+
 
 /* ── Letter Header ── */
 .letterHeader {
@@ -34,6 +80,7 @@
   letter-spacing: 2px;
   color: #111827;
   margin: 0 0 8px 0;
+  font-family: 'Times New Roman', serif;
 }
 
 .contactLine {
@@ -52,6 +99,8 @@
 
 .contactItem {
   color: #374151;
+  font-family: 'Times New Roman', serif;
+  font-size: 14px;
 }
 
 .divider {
@@ -59,6 +108,8 @@
   background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 60%, transparent 100%);
   margin-top: 16px;
   border-radius: 1px;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
 }
 
 /* ── Meta (date + job) ── */
@@ -100,13 +151,15 @@
 }
 
 .paragraph {
-  font-size: 13.5px;
-  line-height: 1.75;
+  font-size: 14px;
+  line-height: 1.6;
   color: #374151;
-  margin: 0 0 16px 0;
+  margin: 0;
   white-space: pre-wrap;
   word-break: break-word;
   text-align: justify;
+  min-height: 1.2em; /* Ensure blank lines have height */
+  font-family: 'Times New Roman', serif;
 }
 
 .paragraph:last-child {
