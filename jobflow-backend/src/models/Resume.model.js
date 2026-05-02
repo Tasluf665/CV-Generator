@@ -139,6 +139,32 @@ const resumeSchema = new mongoose.Schema(
         order: Number,
       },
     ],
+    customSections: [
+      {
+        id: String,
+        title: { type: String, required: true },
+        isVisible: { type: Boolean, default: true },
+        items: [
+          {
+            id: String,
+            title: { type: String },
+            date: String,
+            isDateVisible: { type: Boolean, default: true },
+            subtitle: String,
+            isSubtitleVisible: { type: Boolean, default: true },
+            bullets: [
+              {
+                text: String,
+                isVisible: { type: Boolean, default: true },
+              }
+            ],
+            isVisible: { type: Boolean, default: true },
+            order: Number,
+          }
+        ],
+        order: Number,
+      }
+    ],
     certifications: [
       {
         name: { type: String, required: true },

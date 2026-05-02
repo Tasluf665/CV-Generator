@@ -205,3 +205,37 @@
   cursor: pointer;
   margin-top: 8px;
 }
+
+.titleEditContainer {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.titleInput {
+  width: 100%;
+  padding: 4px 8px;
+  font-size: 16px;
+  font-weight: 600;
+  border: 1px solid var(--primary-color, #00b894);
+  border-radius: 4px;
+  outline: none;
+}
+
+.deleteSectionBtn {
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  color: #94a3b8;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.deleteSectionBtn:hover {
+  background: #fee2e2;
+  color: #ef4444;
+}

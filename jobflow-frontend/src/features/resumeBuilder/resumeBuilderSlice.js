@@ -217,6 +217,7 @@ const initialResumeData = {
   education: [],
   skills: [],
   projects: [],
+  customSections: [],
   design: {
     template: 'modern',
     font: 'Inter',
@@ -510,6 +511,98 @@ const resumeBuilderSlice = createSlice({
     },
     removeProject: (state, action) => {
       state.resumeData.projects = state.resumeData.projects.filter(p => p.id !== action.payload);
+    },
+    // Custom Sections Reducers
+    addCustomSection: (state, action) => {
+      const newId = `custom_${Date.now()}`;
+      state.resumeData.customSections.push({
+        id: newId,
+        title: action.payload || 'New Section',
+        isVisible: true,
+        items: [],
+        order: state.resumeData.customSections.length,
+      });
+    },
+    updateCustomSection: (state, action) => {
+      const { id, updates } = action.payload;
+      const index = state.resumeData.customSections.findIndex(s => s.id === id);
+      if (index !== -1) {
+        state.resumeData.customSections[index] = { ...state.resumeData.customSections[index], ...updates };
+      }
+    },
+    removeCustomSection: (state, action) => {
+      state.resumeData.customSections = state.resumeData.customSections.filter(s => s.id !== action.payload);
+    },
+    addCustomSectionItem: (state, action) => {
+      const { sectionId, initialData } = action.payload;
+      const sectionIndex = state.resumeData.customSections.findIndex(s => s.id === sectionId);
+      if (sectionIndex !== -1) {
+        const newItem = {
+          id: `item_${Date.now()}`,
+          title: initialData?.title || '',
+          date: initialData?.date || '',
+          isDateVisible: true,
+          subtitle: initialData?.subtitle || '',
+          isSubtitleVisible: true,
+          bullets: initialData?.bullets || [{ text: '', isVisible: true }],
+          isVisible: true,
+          order: state.resumeData.customSections[sectionIndex].items.length,
+        };
+        state.resumeData.customSections[sectionIndex].items.push(newItem);
+      }
+    },
+    updateCustomSectionItem: (state, action) => {
+      const { sectionId, itemId, updates } = action.payload;
+      const sectionIndex = state.resumeData.customSections.findIndex(s => s.id === sectionId);
+      if (sectionIndex !== -1) {
+        const itemIndex = state.resumeData.customSections[sectionIndex].items.findIndex(i => i.id === itemId);
+        if (itemIndex !== -1) {
+          state.resumeData.customSections[sectionIndex].items[itemIndex] = {
+            ...state.resumeData.customSections[sectionIndex].items[itemIndex],
+            ...updates
+          };
+        }
+      }
+    },
+    removeCustomSectionItem: (state, action) => {
+      const { sectionId, itemId } = action.payload;
+      const sectionIndex = state.resumeData.customSections.findIndex(s => s.id === sectionId);
+      if (sectionIndex !== -1) {
+        state.resumeData.customSections[sectionIndex].items = state.resumeData.customSections[sectionIndex].items.filter(i => i.id !== itemId);
+      }
+    },
+    addCustomSectionBullet: (state, action) => {
+      const { sectionId, itemId } = action.payload;
+      const sectionIndex = state.resumeData.customSections.findIndex(s => s.id === sectionId);
+      if (sectionIndex !== -1) {
+        const itemIndex = state.resumeData.customSections[sectionIndex].items.findIndex(i => i.id === itemId);
+        if (itemIndex !== -1) {
+          state.resumeData.customSections[sectionIndex].items[itemIndex].bullets.push({ text: '', isVisible: true });
+        }
+      }
+    },
+    updateCustomSectionBullet: (state, action) => {
+      const { sectionId, itemId, bulletIndex, updates } = action.payload;
+      const sectionIndex = state.resumeData.customSections.findIndex(s => s.id === sectionId);
+      if (sectionIndex !== -1) {
+        const itemIndex = state.resumeData.customSections[sectionIndex].items.findIndex(i => i.id === itemId);
+        if (itemIndex !== -1) {
+          const bullet = state.resumeData.customSections[sectionIndex].items[itemIndex].bullets[bulletIndex];
+          if (bullet) {
+            state.resumeData.customSections[sectionIndex].items[itemIndex].bullets[bulletIndex] = { ...bullet, ...updates };
+          }
+        }
+      }
+    },
+    removeCustomSectionBullet: (state, action) => {
+      const { sectionId, itemId, bulletIndex } = action.payload;
+      const sectionIndex = state.resumeData.customSections.findIndex(s => s.id === sectionId);
+      if (sectionIndex !== -1) {
+        const itemIndex = state.resumeData.customSections[sectionIndex].items.findIndex(i => i.id === itemId);
+        if (itemIndex !== -1) {
+          state.resumeData.customSections[sectionIndex].items[itemIndex].bullets.splice(bulletIndex, 1);
+        }
+      }
     },
     updateDesign: (state, action) => {
       state.resumeData.design = { ...state.resumeData.design, ...action.payload };
@@ -834,6 +927,15 @@ export const {
   setCLContent,
   resetCoverLetter,
   restoreCLId,
+  addCustomSection,
+  updateCustomSection,
+  removeCustomSection,
+  addCustomSectionItem,
+  updateCustomSectionItem,
+  removeCustomSectionItem,
+  addCustomSectionBullet,
+  updateCustomSectionBullet,
+  removeCustomSectionBullet,
 } = resumeBuilderSlice.actions;
 
 export default resumeBuilderSlice.reducer;

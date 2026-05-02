@@ -4,3 +4,33 @@
   gap: var(--spacing-md);
   padding: 24px;
 }
+
+.customSectionsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.addSectionGlobalBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: white;
+  border: 2px dashed #e2e8f0;
+  border-radius: 12px;
+  color: #64748b;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.addSectionGlobalBtn:hover {
+  border-color: var(--primary-color, #00b894);
+  color: var(--primary-color, #00b894);
+  background: #f0fff4;
+  transform: translateY(-2px);
+}

@@ -91,6 +91,27 @@ const projectSchema = Joi.object({
   order: Joi.number().optional(),
 });
 
+const customSectionSchema = Joi.object({
+  id: Joi.string().optional(),
+  title: Joi.string().required(),
+  isVisible: Joi.boolean().optional(),
+  items: Joi.array().items(Joi.object({
+    id: Joi.string().optional(),
+    title: Joi.string().allow('').optional(),
+    date: Joi.string().allow('').optional(),
+    isDateVisible: Joi.boolean().optional(),
+    subtitle: Joi.string().allow('').optional(),
+    isSubtitleVisible: Joi.boolean().optional(),
+    bullets: Joi.array().items(Joi.object({
+      text: Joi.string().allow('').optional(),
+      isVisible: Joi.boolean().optional(),
+    })).optional(),
+    isVisible: Joi.boolean().optional(),
+    order: Joi.number().optional(),
+  })).optional(),
+  order: Joi.number().optional(),
+});
+
 export const createResume = Joi.object({
   title: Joi.string().required().trim(),
   targetJobTitle: Joi.string().allow('').optional().trim(),
@@ -104,6 +125,7 @@ export const createResume = Joi.object({
   education: Joi.array().items(educationSchema).optional(),
   skills: Joi.array().items(skillSchema).optional(),
   projects: Joi.array().items(projectSchema).optional(),
+  customSections: Joi.array().items(customSectionSchema).optional(),
 });
 
 export const updateResume = Joi.object({
@@ -119,6 +141,7 @@ export const updateResume = Joi.object({
   education: Joi.array().items(educationSchema).optional(),
   skills: Joi.array().items(skillSchema).optional(),
   projects: Joi.array().items(projectSchema).optional(),
+  customSections: Joi.array().items(customSectionSchema).optional(),
   design: Joi.object().optional(),
 });
 

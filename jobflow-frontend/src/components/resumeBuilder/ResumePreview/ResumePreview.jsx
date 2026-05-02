@@ -10,7 +10,7 @@ import styles from './ResumePreview.module.css';
 const ResumePreview = () => {
   const resumeData = useSelector(selectResumeData);
   const design = useSelector(selectDesign);
-  const { contact, summary, workExperience, education, skills, projects } = resumeData;
+  const { contact, summary, workExperience, education, skills, projects, customSections } = resumeData;
   const isVisible = (field) => (contact?.visibleFields || []).includes(field);
 
 
@@ -283,6 +283,35 @@ const ResumePreview = () => {
             </div>
           </section>
         );
+      case 'customSection':
+        const section = data;
+        if (!section || !section.isVisible) return null;
+        return (
+          <section key={section.id} className={styles.section}>
+            <h2 className={styles.sectionTitle}>{section.title}</h2>
+            {section.items?.filter(item => item.isVisible).map(item => (
+              <div key={item.id} className={styles.item}>
+                <div className={styles.itemHeader}>
+                  <div className={styles.itemMainInfo}>
+                    <span className={styles.itemTitle}>
+                      {item.title}
+                      {item.title && item.subtitle && ' | '}
+                      {item.subtitle}
+                    </span>
+                  </div>
+                  {item.isDateVisible && item.date && (
+                    <span className={styles.itemDate}>{item.date}</span>
+                  )}
+                </div>
+                <div className={styles.itemDescription}>
+                  {item.bullets?.filter(b => b.isVisible && b.text).map((bullet, i) => (
+                    <p key={i} className={styles.bullet}>{bullet.text}</p>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </section>
+        );
       default:
         return null;
     }
@@ -372,6 +401,7 @@ const ResumePreview = () => {
         {renderSection('education')}
         {renderSection('projects')}
         {renderSection('skills')}
+        {customSections?.map(section => renderSection('customSection', section))}
       </div>
 
       {/* Actual Pages */}
@@ -391,6 +421,7 @@ const ResumePreview = () => {
           {renderSection('education')}
           {renderSection('projects')}
           {renderSection('skills')}
+          {customSections?.map(section => renderSection('customSection', section))}
         </div>
       )}
     </div>
