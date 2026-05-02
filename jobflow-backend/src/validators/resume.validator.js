@@ -158,7 +158,7 @@ const sectionStyleSchema = Joi.object({
   margin: Joi.number().optional(),
   lineHeight: Joi.number().optional(),
   letterSpacing: Joi.number().optional(),
-  alignment: Joi.string().valid('left', 'center', 'right').optional(),
+  alignment: Joi.string().valid('left', 'center', 'right', 'justify').optional(),
 });
 
 export const updateDesign = Joi.object({
