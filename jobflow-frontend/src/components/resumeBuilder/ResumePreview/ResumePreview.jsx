@@ -1,7 +1,7 @@
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { 
+import {
   selectResumeData,
   selectDesign
 } from '../../../features/resumeBuilder/resumeBuilderSelectors';
@@ -32,7 +32,7 @@ const ResumePreview = () => {
       children.forEach((child) => {
         const gapHeight = currentPageItems.length === 0 ? 0 : 16; // Only add gap between items
         const childHeight = child.offsetHeight + gapHeight;
-        
+
         if (currentHeight + childHeight > MAX_CONTENT_HEIGHT && currentPageItems.length > 0) {
           newPages.push(currentPageItems);
           currentPageItems = [child.cloneNode(true)];
@@ -57,14 +57,14 @@ const ResumePreview = () => {
         return (
           <header key="header" className={styles.header}>
             <h1 className={styles.name}>
-              {contact?.firstName || contact?.lastName 
-                ? `${isVisible('firstName') ? contact.firstName || '' : ''} ${isVisible('lastName') ? contact.lastName || '' : ''}`.trim().toUpperCase() 
+              {contact?.firstName || contact?.lastName
+                ? `${isVisible('firstName') ? contact.firstName || '' : ''} ${isVisible('lastName') ? contact.lastName || '' : ''}`.trim().toUpperCase()
                 : 'YOUR NAME'}
               {isVisible('pronouns') && contact?.pronouns && (
                 <span className={styles.pronouns}> ({contact.pronouns})</span>
               )}
             </h1>
-            <div 
+            <div
               className={styles.contactInfo}
               style={{
                 fontFamily: 'var(--contact-font)',
@@ -114,7 +114,7 @@ const ResumePreview = () => {
         ) : null;
       case 'workExperience':
         return workExperience?.length > 0 && (
-          <section 
+          <section
             key="workExperience"
             className={styles.section}
             style={{
@@ -145,7 +145,7 @@ const ResumePreview = () => {
                       </span>
                     )}
                   </div>
-                  
+
                   {job.isCompanyVisible && job.companyDescription && (
                     <p className={styles.companyDescription}>{job.companyDescription}</p>
                   )}
@@ -164,7 +164,7 @@ const ResumePreview = () => {
         );
       case 'education':
         return education?.length > 0 && education.some(edu => edu.isVisible) && (
-          <section 
+          <section
             key="education"
             className={styles.section}
             style={{
@@ -202,7 +202,7 @@ const ResumePreview = () => {
                       <span className={styles.itemDate}>{edu.startDate} {edu.endDate && `— ${edu.endDate}`}</span>
                     )}
                   </div>
-                  
+
                   {edu.isGpaVisible && edu.gpa && (
                     <p className={styles.gpa}>GPA: {edu.gpa}</p>
                   )}
@@ -218,7 +218,7 @@ const ResumePreview = () => {
         );
       case 'projects':
         return projects?.length > 0 && projects.some(p => p.isVisible) && (
-          <section 
+          <section
             key="projects"
             className={styles.section}
             style={{
@@ -253,7 +253,7 @@ const ResumePreview = () => {
                       <span className={styles.itemDate}>{p.startDate} {p.endDate && `— ${p.endDate}`}</span>
                     )}
                   </div>
-                  
+
                   <div className={styles.itemDescription}>
                     {p.bullets?.filter(b => b.isVisible && b.text).map((bullet, i) => (
                       <p key={i} className={styles.bullet}>{bullet.text}</p>
@@ -266,10 +266,10 @@ const ResumePreview = () => {
       case 'skills':
         return (
           <section key="skills" className={styles.section}>
-            <h2 className={styles.sectionTitle}>Tech Skills</h2>
+            <h2 className={styles.sectionTitle}>Skills</h2>
             <div className={styles.skillsList}>
               {skills?.filter(skill => skill.isVisible !== false).map((skill, index) => {
-                const visibleItems = Array.isArray(skill.items) 
+                const visibleItems = Array.isArray(skill.items)
                   ? skill.items.filter(item => item.isVisible !== false).map(item => item.text).join(', ')
                   : skill.items;
 
@@ -289,8 +289,8 @@ const ResumePreview = () => {
   };
 
   return (
-    <div 
-      className={styles.pagedContainer} 
+    <div
+      className={styles.pagedContainer}
       ref={containerRef}
       style={{
         '--font-family': design?.font || 'Inter',
@@ -299,7 +299,7 @@ const ResumePreview = () => {
         '--list-line-height': design?.listLineHeight || 120,
         '--font-size': `${design?.fontSize || 14}px`,
         '--page-margin': `${design?.margin || 48}px`,
-        
+
         // Title styles
         '--title-font': design?.sectionStyles?.title?.fontFamily || design?.font || 'Inter',
         '--title-size': `${design?.sectionStyles?.title?.fontSize || 24}px`,
