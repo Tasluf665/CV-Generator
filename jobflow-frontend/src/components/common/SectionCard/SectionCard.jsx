@@ -8,6 +8,7 @@ const SectionCard = ({
   onToggle, 
   onAdd,
   onEdit,
+  rightAction,
   children, 
   className = '',
   isHighlighted = false
@@ -20,6 +21,7 @@ const SectionCard = ({
           <h3 className={styles.title}>{title}</h3>
         </div>
         <div className={styles.headerRight}>
+          {rightAction}
           <div className={styles.actions}>
             {onAdd && (
               <button 

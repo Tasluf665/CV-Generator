@@ -90,7 +90,13 @@ const CustomSectionCard = ({ section }) => {
       rightAction={
         <button 
           className={styles.deleteSectionBtn}
-          onClick={(e) => { e.stopPropagation(); dispatch(removeCustomSection(section.id)); }}
+          title="Delete Section"
+          onClick={(e) => { 
+            e.stopPropagation(); 
+            if (window.confirm(`Are you sure you want to delete the "${section.title}" section? This will remove all items inside it.`)) {
+              dispatch(removeCustomSection(section.id)); 
+            }
+          }}
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="3 6 5 6 21 6"></polyline>
@@ -125,6 +131,7 @@ const CustomSectionCard = ({ section }) => {
                 </div>
                 <button 
                   className={styles.deleteBtn}
+                  title="Delete Item"
                   onClick={(e) => { e.stopPropagation(); dispatch(removeCustomSectionItem({ sectionId: section.id, itemId: item.id })); }}
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
