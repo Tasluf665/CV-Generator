@@ -2,13 +2,13 @@ import Joi from 'joi';
 
 export const generateCoverLetter = Joi.object({
   resumeId: Joi.string().required(),
-  jobId: Joi.string(),
-  jobDescription: Joi.string(),
+  jobId: Joi.string().required(),
+  prompt: Joi.string().max(2000),
   tone: Joi.string()
     .valid('Professional', 'Friendly', 'Enthusiastic', 'Formal')
     .default('Professional'),
   length: Joi.string().valid('Short', 'Standard', 'Detailed').default('Standard'),
-}).or('jobId', 'jobDescription');
+});
 
 export const updateCoverLetter = Joi.object({
   title: Joi.string().max(100),

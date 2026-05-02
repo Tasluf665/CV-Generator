@@ -16,9 +16,13 @@ export const generateCoverLetter = async ({
   jobDescription,
   tone = 'Professional',
   length = 'Standard',
+  userPrompt = null,
 }) => {
   try {
-    const prompt = buildCoverLetterPrompt(resumeData, jobDescription, tone, length);
+    const basePrompt = buildCoverLetterPrompt(resumeData, jobDescription, tone, length);
+    const prompt = userPrompt
+      ? `User Instructions: ${userPrompt}\n\n${basePrompt}`
+      : basePrompt;
 
     const response = await openRouterClient.chat(
       [

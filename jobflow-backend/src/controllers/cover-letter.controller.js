@@ -7,9 +7,13 @@ import Job from '../models/Job.model.js';
 import * as coverLetterAiService from '../services/ai/coverLetter.service.js';
 
 export const getAllCoverLetters = asyncHandler(async (req, res) => {
-  const coverLetters = await CoverLetter.find({ userId: req.user._id })
+  const { resumeId } = req.query;
+  const filter = { userId: req.user._id };
+  if (resumeId) filter.resumeId = resumeId;
+
+  const coverLetters = await CoverLetter.find(filter)
     .populate('resumeId', 'title')
-    .populate('jobId', 'companyName role')
+    .populate('jobId', 'company jobTitle')
     .sort({ createdAt: -1 });
 
   res.status(200).json(
@@ -18,33 +22,45 @@ export const getAllCoverLetters = asyncHandler(async (req, res) => {
 });
 
 export const generateCoverLetter = asyncHandler(async (req, res) => {
-  const { resumeId, jobId, jobDescription, tone, length } = req.body;
+  const { resumeId, jobId, prompt, tone, length } = req.body;
 
-  // 1. Fetch Resume Data
+  // 1. Fetch Resume
   const resume = await Resume.findOne({ _id: resumeId, userId: req.user._id });
   if (!resume) {
     throw new ApiError(404, 'Resume not found');
   }
 
-  // 2. Get Job Description
-  let finalJobDescription = jobDescription;
-  if (jobId) {
-    const job = await Job.findOne({ _id: jobId, userId: req.user._id });
-    if (job) {
-      finalJobDescription = job.description || jobDescription;
-    }
+  // 2. Fetch Job from DB
+  const job = await Job.findOne({ _id: jobId, userId: req.user._id });
+  if (!job) {
+    throw new ApiError(404, 'Job not found');
   }
 
-  if (!finalJobDescription) {
-    throw new ApiError(400, 'Job description is required to generate a cover letter');
-  }
+  // 3. Build job context from all available fields
+  const parsedSummary = job.parsedData?.summary;
+  const parsedRequirements = job.parsedData?.requirements?.join('\n');
+  const parsedResponsibilities = job.parsedData?.responsibilities?.join('\n');
 
-  // 3. Generate Content via AI
+  const jobContext = [
+    job.jobTitle && `Role: ${job.jobTitle}`,
+    job.company && `Company: ${job.company}`,
+    job.location && `Location: ${job.location}`,
+    job.jobType && `Job Type: ${job.jobType}`,
+    parsedSummary && `Summary:\n${parsedSummary}`,
+    parsedRequirements && `Requirements:\n${parsedRequirements}`,
+    parsedResponsibilities && `Responsibilities:\n${parsedResponsibilities}`,
+    !parsedSummary && job.rawJobDescription && `Job Description:\n${job.rawJobDescription}`,
+  ]
+    .filter(Boolean)
+    .join('\n\n');
+
+  // 4. Generate Content via AI
   const content = await coverLetterAiService.generateCoverLetter({
     resumeData: resume,
-    jobDescription: finalJobDescription,
+    jobDescription: jobContext,
     tone,
     length,
+    userPrompt: prompt || null,
   });
 
   // 4. Save to Database
@@ -70,7 +86,7 @@ export const getCoverLetterById = asyncHandler(async (req, res) => {
     userId: req.user._id,
   })
     .populate('resumeId', 'title')
-    .populate('jobId', 'companyName role');
+    .populate('jobId', 'company jobTitle');
 
   if (!coverLetter) {
     throw new ApiError(404, 'Cover letter not found');

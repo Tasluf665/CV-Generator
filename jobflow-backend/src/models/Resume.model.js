@@ -52,6 +52,10 @@ const resumeSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    coverLetterPrompts: {
+      type: [String],
+      default: [],
+    },
     workExperience: [
       {
         isVisible: { type: Boolean, default: true },

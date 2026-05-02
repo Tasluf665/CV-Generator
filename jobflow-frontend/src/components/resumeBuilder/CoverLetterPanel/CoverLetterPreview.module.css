@@ -1,0 +1,155 @@
+/* Outer scrollable wrapper */
+.pageWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 24px;
+  min-height: 100%;
+  background: #f0f0f0;
+  overflow-y: auto;
+}
+
+/* A4 paper */
+.a4Page {
+  width: 794px;
+  min-height: 1122px;
+  background: #ffffff;
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.06);
+  border-radius: 2px;
+  padding: 72px 80px;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+  color: #1a1a1a;
+  position: relative;
+}
+
+/* ── Letter Header ── */
+.letterHeader {
+  margin-bottom: 28px;
+}
+
+.name {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #111827;
+  margin: 0 0 8px 0;
+}
+
+.contactLine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.sep {
+  color: #d1d5db;
+  font-size: 10px;
+}
+
+.contactItem {
+  color: #374151;
+}
+
+.divider {
+  height: 2px;
+  background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 60%, transparent 100%);
+  margin-top: 16px;
+  border-radius: 1px;
+}
+
+/* ── Meta (date + job) ── */
+.meta {
+  margin-bottom: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.date {
+  font-size: 12.5px;
+  color: #6b7280;
+}
+
+.jobMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 4px;
+}
+
+.jobMetaRole {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.jobMetaCompany {
+  font-size: 12.5px;
+  color: #6b7280;
+}
+
+/* ── Body ── */
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.paragraph {
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: #374151;
+  margin: 0 0 16px 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  text-align: justify;
+}
+
+.paragraph:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Placeholder ── */
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 600px;
+  gap: 16px;
+  text-align: center;
+}
+
+.placeholderIcon {
+  width: 80px;
+  height: 80px;
+  background: #f3f4f6;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+}
+
+.placeholderTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0;
+}
+
+.placeholderText {
+  font-size: 13.5px;
+  color: #9ca3af;
+  max-width: 320px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.placeholderText strong {
+  color: #6366f1;
+}

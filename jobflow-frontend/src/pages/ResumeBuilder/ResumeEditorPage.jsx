@@ -11,6 +11,8 @@ import ResumePreview from '../../components/resumeBuilder/ResumePreview/ResumePr
 import JobMatcherSidebar from '../../components/resumeBuilder/JobMatcherPanel/JobMatcherSidebar';
 import JobMatcherPlaceholder from '../../components/resumeBuilder/JobMatcherPanel/JobMatcherPlaceholder';
 import JobMatcherResults from '../../components/resumeBuilder/JobMatcherPanel/JobMatcherResults';
+import CoverLetterPanel from '../../components/resumeBuilder/CoverLetterPanel/CoverLetterPanel';
+import CoverLetterPreview from '../../components/resumeBuilder/CoverLetterPanel/CoverLetterPreview';
 import {
   selectActiveTab,
   selectContactInfo,
@@ -249,7 +251,8 @@ const ResumeEditorPage = () => {
           {activeTab === 'designer' && <DesignerPanel />}
           {activeTab === 'matcher' && !selectedJobId && <JobMatcherSidebar />}
           {activeTab === 'matcher' && selectedJobId && <ContentEditor />}
-          {activeTab !== 'content' && activeTab !== 'designer' && activeTab !== 'matcher' && (
+          {activeTab === 'cover-letter' && <CoverLetterPanel />}
+          {activeTab !== 'content' && activeTab !== 'designer' && activeTab !== 'matcher' && activeTab !== 'cover-letter' && (
             <div className={styles.placeholder}>
               <h2>{tabs.find(t => t.id === activeTab)?.label} coming soon!</h2>
             </div>
@@ -257,7 +260,9 @@ const ResumeEditorPage = () => {
         </aside>
         <div className={styles.resizer} onMouseDown={handleMouseDown} />
         <div className={styles.previewContainer}>
-          {activeTab !== 'matcher' ? (
+          {activeTab === 'cover-letter' ? (
+            <CoverLetterPreview />
+          ) : activeTab !== 'matcher' ? (
             <>
               <section className={styles.previewArea}>
                 <div

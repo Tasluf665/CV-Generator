@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import resumeService from '../../services/resumeService';
+import coverLetterService from '../../services/coverLetterService';
 
 export const fetchAllResumes = createAsyncThunk(
   'resumeBuilder/fetchAll',
@@ -71,7 +72,7 @@ export const saveResume = createAsyncThunk(
       } else {
         response = await resumeService.createResume(data);
       }
-      
+
       if (response.success) {
         return response.data;
       }
@@ -138,6 +139,51 @@ export const updateKeywordStatus = createAsyncThunk(
       return rejectWithValue(response.message);
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to update keyword status');
+    }
+  }
+);
+
+export const generateCoverLetterAction = createAsyncThunk(
+  'resumeBuilder/generateCoverLetter',
+  async ({ resumeId, jobId, prompt, tone, length }, { rejectWithValue }) => {
+    try {
+      const response = await coverLetterService.generate({ resumeId, jobId, prompt, tone, length });
+      if (response.success) {
+        return response.data.coverLetter;
+      }
+      return rejectWithValue(response.message);
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
+export const updateCoverLetterContent = createAsyncThunk(
+  'resumeBuilder/updateCoverLetterContent',
+  async ({ id, content }, { rejectWithValue }) => {
+    try {
+      const response = await coverLetterService.update(id, { content });
+      if (response.success) {
+        return response.data.coverLetter;
+      }
+      return rejectWithValue(response.message);
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
+export const fetchCoverLettersForResume = createAsyncThunk(
+  'resumeBuilder/fetchCoverLettersForResume',
+  async (resumeId, { rejectWithValue }) => {
+    try {
+      const response = await coverLetterService.getByResumeId(resumeId);
+      if (response.success) {
+        return response.data.coverLetters;
+      }
+      return rejectWithValue(response.message);
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
     }
   }
 );
@@ -213,6 +259,16 @@ const resumeBuilderSlice = createSlice({
     saving: false,
     error: null,
     lastSaved: null,
+    coverLetter: {
+      prompts: [],
+      activePromptIndex: null,
+      selectedJobId: null,
+      generatedContent: '',
+      savedCoverLetterId: null,
+      allCoverLetters: [],   // persisted cover letters for this resume
+      loading: false,
+      error: null,
+    },
   },
   reducers: {
     setResumeData: (state, action) => {
@@ -488,15 +544,28 @@ const resumeBuilderSlice = createSlice({
       state.lastSaved = null;
       state.ui.selectedJobId = null;
       state.matchResults = null;
+      state.coverLetter = {
+        prompts: [],
+        activePromptIndex: null,
+        selectedJobId: null,
+        generatedContent: '',
+        savedCoverLetterId: null,
+        allCoverLetters: [],
+        loading: false,
+        error: null,
+      };
+    },
+    restoreCLId: (state, action) => {
+      state.coverLetter.savedCoverLetterId = action.payload;
     },
     toggleKeywordMatchStatus: (state, action) => {
       const keyword = action.payload;
       if (!state.matchResults) return;
-      
+
       const lowerKeyword = keyword.toLowerCase();
       const isMatched = state.matchResults.matchedKeywords?.some(k => k.toLowerCase() === lowerKeyword);
       const isMissing = state.matchResults.missingKeywords?.some(k => k.toLowerCase() === lowerKeyword);
-      
+
       if (isMatched) {
         // Move to missing
         state.matchResults.matchedKeywords = state.matchResults.matchedKeywords.filter(k => k.toLowerCase() !== lowerKeyword);
@@ -525,7 +594,7 @@ const resumeBuilderSlice = createSlice({
         if (!state.resumeData.extractedKeywords) {
           state.resumeData.extractedKeywords = { 'Hard Skills': [], 'Soft Skills': [], 'Others': [] };
         }
-        
+
         // Check if already in extractedKeywords
         const alreadyInKeywords = Object.values(state.resumeData.extractedKeywords).flat().some(
           k => k && k.toLowerCase() === lowerKeyword
@@ -544,7 +613,25 @@ const resumeBuilderSlice = createSlice({
       if (totalCount > 0) {
         state.matchResults.matchScore = Math.round(((state.matchResults.matchedKeywords?.length || 0) / totalCount) * 100);
       }
-    }
+    },
+    // Cover Letter reducers
+    setCLPrompts: (state, action) => {
+      state.coverLetter.prompts = action.payload;
+    },
+    setCLActivePrompt: (state, action) => {
+      state.coverLetter.activePromptIndex = action.payload;
+    },
+    setCLSelectedJob: (state, action) => {
+      state.coverLetter.selectedJobId = action.payload;
+    },
+    setCLContent: (state, action) => {
+      state.coverLetter.generatedContent = action.payload;
+    },
+    resetCoverLetter: (state) => {
+      state.coverLetter.generatedContent = '';
+      state.coverLetter.savedCoverLetterId = null;
+      state.coverLetter.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -571,6 +658,10 @@ const resumeBuilderSlice = createSlice({
         state.loading = false;
         state.resumeData = action.payload;
         state.currentResumeId = action.payload._id;
+        // Seed cover letter prompts from the resume's stored prompts
+        if (action.payload.coverLetterPrompts?.length) {
+          state.coverLetter.prompts = action.payload.coverLetterPrompts;
+        }
       })
       .addCase(fetchResumeById.rejected, (state, action) => {
         state.loading = false;
@@ -656,6 +747,42 @@ const resumeBuilderSlice = createSlice({
         if (action.payload.extractedKeywords) {
           state.resumeData.extractedKeywords = action.payload.extractedKeywords;
         }
+      })
+      // Generate Cover Letter
+      .addCase(generateCoverLetterAction.pending, (state) => {
+        state.coverLetter.loading = true;
+        state.coverLetter.error = null;
+      })
+      .addCase(generateCoverLetterAction.fulfilled, (state, action) => {
+        state.coverLetter.loading = false;
+        state.coverLetter.generatedContent = action.payload.content;
+        state.coverLetter.savedCoverLetterId = action.payload._id;
+      })
+      .addCase(generateCoverLetterAction.rejected, (state, action) => {
+        state.coverLetter.loading = false;
+        state.coverLetter.error = action.payload;
+      })
+      // Update Cover Letter
+      .addCase(updateCoverLetterContent.fulfilled, (state, action) => {
+        state.coverLetter.generatedContent = action.payload.content;
+        // Also update in allCoverLetters list
+        const idx = state.coverLetter.allCoverLetters.findIndex(cl => cl._id === action.payload._id);
+        if (idx !== -1) state.coverLetter.allCoverLetters[idx] = action.payload;
+      })
+      // Fetch Cover Letters for Resume
+      .addCase(fetchCoverLettersForResume.fulfilled, (state, action) => {
+        state.coverLetter.allCoverLetters = action.payload;
+        // If a jobId is already selected, hydrate content from existing cover letters
+        if (state.coverLetter.selectedJobId && !state.coverLetter.generatedContent) {
+          const match = action.payload.find(
+            cl => cl.jobId?._id === state.coverLetter.selectedJobId ||
+                  cl.jobId === state.coverLetter.selectedJobId
+          );
+          if (match) {
+            state.coverLetter.generatedContent = match.content;
+            state.coverLetter.savedCoverLetterId = match._id;
+          }
+        }
       });
   },
 });
@@ -701,8 +828,12 @@ export const {
   resetResumeState,
   toggleKeywordMatchStatus,
   updateDesign,
+  setCLPrompts,
+  setCLActivePrompt,
+  setCLSelectedJob,
+  setCLContent,
+  resetCoverLetter,
+  restoreCLId,
 } = resumeBuilderSlice.actions;
-
-
 
 export default resumeBuilderSlice.reducer;

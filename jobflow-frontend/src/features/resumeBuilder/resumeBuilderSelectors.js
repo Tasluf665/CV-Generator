@@ -32,3 +32,13 @@ export const selectMatchLoading = (state) => state.resumeBuilder.matchLoading;
 
 export const selectResumeKeywords = (state) => state.resumeBuilder.resumeData.extractedKeywords;
 export const selectGenerateKeywordsLoading = (state) => state.resumeBuilder.generateKeywordsLoading;
+
+// Cover Letter selectors
+export const selectCoverLetter = (state) => state.resumeBuilder.coverLetter;
+export const selectCLPrompts = (state) => state.resumeBuilder.coverLetter.prompts;
+export const selectCLActivePromptIndex = (state) => state.resumeBuilder.coverLetter.activePromptIndex;
+export const selectCLSelectedJobId = (state) => state.resumeBuilder.coverLetter.selectedJobId;
+export const selectCLContent = (state) => state.resumeBuilder.coverLetter.generatedContent;
+export const selectCLLoading = (state) => state.resumeBuilder.coverLetter.loading;
+export const selectCLError = (state) => state.resumeBuilder.coverLetter.error;
+export const selectCLSavedId = (state) => state.resumeBuilder.coverLetter.savedCoverLetterId;

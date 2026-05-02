@@ -5,7 +5,7 @@ import api from './api';
  */
 const mapToBackend = (data) => {
   const { contact, ...rest } = data;
-  
+
   return {
     ...rest,
     targetJobTitle: data.targetJobTitle || '',
@@ -87,12 +87,12 @@ const mapToBackend = (data) => {
     skills: (data.skills || []).map(s => ({
       isVisible: s.isVisible ?? true,
       category: s.category,
-      items: Array.isArray(s.items) 
+      items: Array.isArray(s.items)
         ? s.items.map(i => ({
-            text: typeof i === 'string' ? i : i.text,
-            isVisible: typeof i === 'string' ? true : (i.isVisible ?? true)
-          }))
-        : typeof s.items === 'string' 
+          text: typeof i === 'string' ? i : i.text,
+          isVisible: typeof i === 'string' ? true : (i.isVisible ?? true)
+        }))
+        : typeof s.items === 'string'
           ? s.items.split(',').map(i => ({ text: i.trim(), isVisible: true })).filter(i => i.text)
           : [],
     })),
@@ -108,7 +108,7 @@ const DEFAULT_VISIBLE_FIELDS = ['firstName', 'lastName', 'email', 'phone', 'link
 const mapToFrontend = (data) => {
   if (!data) return null;
   const { contact, ...rest } = data;
-  
+
   return {
     ...rest,
     extractedKeywords: data.extractedKeywords || {
@@ -133,7 +133,7 @@ const mapToFrontend = (data) => {
       state: contact?.state || '',
       website: contact?.website || '',
       visibleFields: (contact?.visibleFields !== undefined && contact?.visibleFields !== null)
-        ? contact.visibleFields 
+        ? contact.visibleFields
         : DEFAULT_VISIBLE_FIELDS,
     },
     workExperience: (rest.workExperience || []).map(job => ({
@@ -203,16 +203,16 @@ const mapToFrontend = (data) => {
       category: s.category || '',
       items: Array.isArray(s.items)
         ? s.items.map((i, index) => ({
-            id: i._id || Date.now() + Math.random() + index,
-            text: typeof i === 'string' ? i : i.text,
-            isVisible: typeof i === 'string' ? true : (i.isVisible ?? true)
-          }))
+          id: i._id || Date.now() + Math.random() + index,
+          text: typeof i === 'string' ? i : i.text,
+          isVisible: typeof i === 'string' ? true : (i.isVisible ?? true)
+        }))
         : typeof s.items === 'string'
-          ? s.items.split(',').map((i, index) => ({ 
-              id: Date.now() + Math.random() + index,
-              text: i.trim(), 
-              isVisible: true 
-            })).filter(i => i.text)
+          ? s.items.split(',').map((i, index) => ({
+            id: Date.now() + Math.random() + index,
+            text: i.trim(),
+            isVisible: true
+          })).filter(i => i.text)
           : [],
     })),
   };
@@ -238,29 +238,29 @@ const resumeService = {
 
   createResume: async (data) => {
     // 1. Create an empty resume with the title
-    const createPayload = { 
-      title: data.title || 'Untitled Resume' 
+    const createPayload = {
+      title: data.title || 'Untitled Resume'
     };
     const createResponse = await api.post('/resumes', createPayload);
-    
+
     if (!createResponse.data.success) {
       return createResponse.data;
     }
 
     const newResume = createResponse.data.data.resume;
     const newId = newResume._id;
-    
+
     // 2. Immediately update it with the actual content
     const updatePayload = mapToBackend(data);
     const updateResponse = await api.patch(`/resumes/${newId}`, updatePayload);
-    
+
     if (updateResponse.data.success) {
       return {
         ...updateResponse.data,
         data: mapToFrontend(updateResponse.data.data.resume)
       };
     }
-    
+
     // Fallback to the created (but empty content) resume if update fails
     return {
       ...createResponse.data,
