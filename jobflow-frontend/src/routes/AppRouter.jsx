@@ -7,6 +7,7 @@ import AddJobPage from '../pages/JobTracker/AddJobPage';
 import LoginPage from '../pages/Auth/LoginPage';
 import RegisterPage from '../pages/Auth/RegisterPage';
 import ForgotPasswordPage from '../pages/Auth/ForgotPasswordPage';
+import ResetPasswordPage from '../pages/Auth/ResetPasswordPage';
 import VerifyEmailPage from '../pages/Auth/VerifyEmailPage';
 import NotFound from '../pages/NotFound/NotFound';
 
@@ -23,6 +24,7 @@ const AppRouter = () => {
         <Route path={ROUTE_PATHS.LOGIN} element={<LoginPage />} />
         <Route path={ROUTE_PATHS.REGISTER} element={<RegisterPage />} />
         <Route path={ROUTE_PATHS.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
+        <Route path={ROUTE_PATHS.RESET_PASSWORD} element={<ResetPasswordPage />} />
         <Route path={ROUTE_PATHS.VERIFY_EMAIL} element={<VerifyEmailPage />} />
  
         <Route path={ROUTE_PATHS.JOB_TRACKER} element={<JobTrackerPage />} />

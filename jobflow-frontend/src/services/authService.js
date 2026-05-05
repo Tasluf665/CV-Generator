@@ -30,8 +30,8 @@ const forgotPassword = async (email) => {
   return response.data;
 };
 
-const resetPassword = async (token, newPassword) => {
-  const response = await api.post('/auth/reset-password', { token, newPassword });
+const resetPassword = async (token, newPassword, confirmPassword) => {
+  const response = await api.post('/auth/reset-password', { token, newPassword, confirmPassword });
   return response.data;
 };
 

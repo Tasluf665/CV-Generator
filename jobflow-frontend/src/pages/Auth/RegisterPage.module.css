@@ -186,6 +186,82 @@
   text-decoration: underline;
 }
 
+.messageBox {
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  animation: slideDown 0.3s ease-out;
+}
+
+.errorBox {
+  background-color: #fef2f2;
+  border: 1px solid #fee2e2;
+}
+
+.successBox {
+  background-color: #f0fdf4;
+  border: 1px solid #dcfce7;
+}
+
+.messageIcon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.errorIcon {
+  color: #ef4444;
+}
+
+.successIcon {
+  color: #22c55e;
+}
+
+.messageContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.messageTitle {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.errorTitle {
+  color: #991b1b;
+}
+
+.successTitle {
+  color: #166534;
+}
+
+.messageDescription {
+  font-size: 13px;
+  margin: 0;
+}
+
+.errorDescription {
+  color: #b91c1c;
+}
+
+.successDescription {
+  color: #15803d;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (max-width: 480px) {
   .row {
     grid-template-columns: 1fr;

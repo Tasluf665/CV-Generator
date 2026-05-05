@@ -4,6 +4,7 @@ export const ROUTE_PATHS = {
   REGISTER: '/register',
   FORGOT_PASSWORD: '/forgot-password',
   VERIFY_EMAIL: '/verify-email',
+  RESET_PASSWORD: '/reset-password',
   JOB_TRACKER: '/jobs',
   JOB_DETAIL: '/jobs/:id',
   ADD_JOB: '/jobs/add',

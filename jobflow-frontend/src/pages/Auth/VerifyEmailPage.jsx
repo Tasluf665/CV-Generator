@@ -14,7 +14,11 @@ const VerifyEmailPage = () => {
   const [error, setError] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
 
+  const hasVerified = React.useRef(false);
+
   useEffect(() => {
+    if (hasVerified.current) return;
+    
     const verifyToken = async () => {
       const token = searchParams.get('token');
       if (!token) {
@@ -24,6 +28,7 @@ const VerifyEmailPage = () => {
       }
 
       try {
+        hasVerified.current = true;
         await authService.verifyEmail(token);
         setIsSuccess(true);
       } catch (err) {

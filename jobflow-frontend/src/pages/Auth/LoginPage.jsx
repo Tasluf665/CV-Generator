@@ -26,16 +26,18 @@ const LoginPage = () => {
     (state) => state.auth
   );
 
+  const [localError, setLocalError] = useState('');
+
   useEffect(() => {
     if (isError) {
-      console.error(message);
+      setLocalError(message);
+      dispatch(reset());
     }
 
     if (isSuccess || user) {
       navigate(ROUTE_PATHS.JOB_TRACKER);
+      dispatch(reset());
     }
-
-    dispatch(reset());
   }, [user, isError, isSuccess, message, navigate, dispatch]);
 
   const handleChange = (e) => {
@@ -44,6 +46,10 @@ const LoginPage = () => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+    // Clear error when user starts typing
+    if (localError) {
+      setLocalError('');
+    }
   };
 
   const handleSubmit = (e) => {
@@ -72,6 +78,19 @@ const LoginPage = () => {
             <h1 className={styles.title}>Welcome Back</h1>
             <p className={styles.subtitle}>Log in to manage your career journey</p>
           </div>
+
+          {localError && (
+            <div className={styles.errorBox}>
+              <div className={styles.errorIcon}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+              </div>
+              <p className={styles.errorMessage}>{localError}</p>
+            </div>
+          )}
 
           <form className={styles.form} onSubmit={handleSubmit}>
             <Input

@@ -29,22 +29,32 @@ const RegisterPage = () => {
     (state) => state.auth
   );
 
+  const [localError, setLocalError] = useState('');
+  const [localSuccess, setLocalSuccess] = useState('');
+
   useEffect(() => {
     if (isError) {
-      console.error(message);
+      setLocalError(message);
+      dispatch(reset());
     }
 
     if (isSuccess) {
-      // For registration, we might want to stay on the page or redirect to a "Verify Email" instructions page
-      // In this design, the backend sends a verification email.
-      // We'll reset the form and maybe show a success message.
+      setLocalSuccess(message || 'Registration successful! Please check your email to verify your account.');
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        agreeToTerms: false
+      });
+      dispatch(reset());
     }
 
     if (user) {
       navigate(ROUTE_PATHS.JOB_TRACKER);
+      dispatch(reset());
     }
-
-    dispatch(reset());
   }, [user, isError, isSuccess, message, navigate, dispatch]);
 
   const handleChange = (e) => {
@@ -53,13 +63,17 @@ const RegisterPage = () => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+
+    // Clear messages when user starts typing
+    if (localError) setLocalError('');
+    if (localSuccess) setLocalSuccess('');
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      console.error('Passwords do not match');
+      setLocalError('Passwords do not match');
       return;
     }
 
@@ -92,6 +106,37 @@ const RegisterPage = () => {
             <h1 className={styles.title}>Create Your Account</h1>
             <p className={styles.subtitle}>Join thousands of job seekers managing their careers.</p>
           </div>
+
+          {localError && (
+            <div className={`${styles.messageBox} ${styles.errorBox}`}>
+              <div className={`${styles.messageIcon} ${styles.errorIcon}`}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+              </div>
+              <div className={styles.messageContent}>
+                <h4 className={`${styles.messageTitle} ${styles.errorTitle}`}>Registration Failed</h4>
+                <p className={`${styles.messageDescription} ${styles.errorDescription}`}>{localError}</p>
+              </div>
+            </div>
+          )}
+
+          {localSuccess && (
+            <div className={`${styles.messageBox} ${styles.successBox}`}>
+              <div className={`${styles.messageIcon} ${styles.successIcon}`}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+              </div>
+              <div className={styles.messageContent}>
+                <h4 className={`${styles.messageTitle} ${styles.successTitle}`}>Account Created</h4>
+                <p className={`${styles.messageDescription} ${styles.successDescription}`}>{localSuccess}</p>
+              </div>
+            </div>
+          )}
 
           <div className={styles.card}>
             <form className={styles.form} onSubmit={handleSubmit}>
