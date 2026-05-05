@@ -15,9 +15,6 @@ const PipelineFunnel = ({ stages, onStageClick }) => {
             <span className={styles.count}>{stage.count}</span>
             <span className={styles.label}>{stage.label}</span>
           </div>
-          {index < stages.length - 1 && (
-            <div className={styles.chevron}></div>
-          )}
         </div>
       ))}
     </div>

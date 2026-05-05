@@ -18,11 +18,32 @@ const JobTrackerPage = () => {
   const { items, pipelineCounts, pagination, status, error } = useSelector((state) => state.jobs);
   const isLoading = status === 'loading';
 
-  const [selectedStatus, setSelectedStatus] = React.useState(null);
-  const [searchTerm, setSearchTerm] = React.useState('');
-  const [locationFilter, setLocationFilter] = React.useState('');
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const [sortConfig, setSortConfig] = React.useState({ key: 'dateSaved', direction: 'desc' });
+  const [selectedStatus, setSelectedStatus] = React.useState(() => {
+    const saved = localStorage.getItem('jobTracker_status');
+    return saved !== null && saved !== 'undefined' ? JSON.parse(saved) : null;
+  });
+  const [searchTerm, setSearchTerm] = React.useState(() => {
+    return localStorage.getItem('jobTracker_search') || '';
+  });
+  const [locationFilter, setLocationFilter] = React.useState(() => {
+    return localStorage.getItem('jobTracker_location') || '';
+  });
+  const [currentPage, setCurrentPage] = React.useState(() => {
+    const saved = localStorage.getItem('jobTracker_page');
+    return saved ? parseInt(saved, 10) : 1;
+  });
+  const [sortConfig, setSortConfig] = React.useState(() => {
+    const saved = localStorage.getItem('jobTracker_sort');
+    return saved !== null && saved !== 'undefined' ? JSON.parse(saved) : { key: 'dateSaved', direction: 'desc' };
+  });
+
+  useEffect(() => {
+    localStorage.setItem('jobTracker_status', JSON.stringify(selectedStatus));
+    localStorage.setItem('jobTracker_search', searchTerm);
+    localStorage.setItem('jobTracker_location', locationFilter);
+    localStorage.setItem('jobTracker_page', currentPage.toString());
+    localStorage.setItem('jobTracker_sort', JSON.stringify(sortConfig));
+  }, [selectedStatus, searchTerm, locationFilter, currentPage, sortConfig]);
 
   const jobQuery = React.useMemo(() => ({
     status: selectedStatus,
@@ -98,6 +119,7 @@ const JobTrackerPage = () => {
             <Input
               placeholder="Filter jobs..."
               className={styles.filterInput}
+              value={searchTerm}
               onChange={handleSearch}
               icon={
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
